@@ -191,11 +191,12 @@
 <nav>
   <a href="index.html" class="nav-logo" style="font-family: 'Bebas Neue', sans-serif; font-size: 24px; font-weight: 900; letter-spacing: -0.01em; text-decoration: none; color: currentColor;">RISE</a>
   <ul class="nav-links">
-    <li><a href="rise-landing.html#approach">Approach</a></li>
+    <li><a href="index.html#approach">Approach</a></li>
     <li><a href="rise-works.html">Rising Works</a></li>
-    <li><a href="rise-landing.html#collective">Collective</a></li>
+    <li><a href="index.html#collective">Collective</a></li>
     <li><a href="rise-risers.html" class="active">The Risers</a></li>
   </ul>
+  <button id="themeToggle" class="theme-toggle" aria-label="Toggle theme" title="Toggle dark/light mode">🌙</button>
   <a href="rise-form.html" class="nav-cta">Let's build</a>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -285,6 +286,20 @@
     if (mNav) { mNav.classList.remove('open'); document.body.style.overflow = ''; }
   }
   document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', closeMobileNav));
+
+// ── THEME TOGGLE ──────────────────────────────────
+const themeBtn = document.getElementById('themeToggle');
+const htmlEl = document.documentElement;
+if (localStorage.getItem('theme') === 'light') {
+  htmlEl.classList.add('light-mode');
+  themeBtn.textContent = '☀️';
+}
+themeBtn.addEventListener('click', () => {
+  htmlEl.classList.toggle('light-mode');
+  const isLight = htmlEl.classList.contains('light-mode');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  themeBtn.textContent = isLight ? '☀️' : '🌙';
+});
 
 // ── CURSOR ────────────────────────────────────────
 const cursor = document.getElementById('cursor');
