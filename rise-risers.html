@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Risers — RISE Collective</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --black: #f7f5f0;
+    --white: #111110;
+    --accent: #5a9e00;
+    --muted: rgba(17,17,16,0.72);
+    --border: rgba(17,17,16,0.14);
+    --card-bg: rgba(17,17,16,0.04);
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+
+  /* CURSOR */
+  .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.15s ease; transform: translate(-50%, -50%); }
+  .cursor-ring { position: fixed; width: 32px; height: 32px; border: 1px solid rgba(80,160,0,0.5); border-radius: 50%; pointer-events: none; z-index: 9998; transition: opacity 0.2s; transform: translate(-50%, -50%); }
+
+  /* NAV */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 28px 48px; background: linear-gradient(to bottom, rgba(247,245,240,0.95) 0%, transparent 100%); }
+  .nav-logo { display: inline-flex; align-items: center; text-decoration: none; color: var(--ink, #111110); }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a.active { color: var(--accent); }
+  .nav-cta { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--border); color: var(--white); padding: 10px 22px; cursor: none; text-decoration: none; transition: border-color 0.2s, background 0.2s, color 0.2s; }
+  .nav-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
+
+  /* HERO */
+  .team-hero { min-height: 60vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 0 48px 64px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+  .hero-bg-text { position: absolute; bottom: -40px; left: 40px; font-family: 'Bebas Neue', sans-serif; font-size: clamp(160px, 22vw, 320px); line-height: 1; -webkit-text-stroke: 1px rgba(17,17,16,0.04); color: transparent; pointer-events: none; user-select: none; letter-spacing: -0.02em; }
+  .hero-noise { position: absolute; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; }
+  .team-hero-inner { position: relative; z-index: 2; }
+  .hero-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; display: flex; align-items: center; gap: 12px; opacity: 0; animation: fadeUp 0.8s 0.2s forwards; }
+  .hero-eyebrow::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+  .team-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px, 10vw, 140px); line-height: 0.9; opacity: 0; animation: fadeUp 0.9s 0.35s forwards; }
+  .team-hero h1 .outline { -webkit-text-stroke: 1px rgba(17,17,16,0.15); color: transparent; }
+  .team-hero h1 .accent { color: var(--accent); }
+  .hero-meta-row { display: flex; align-items: flex-end; justify-content: space-between; margin-top: 40px; opacity: 0; animation: fadeUp 0.8s 0.55s forwards; }
+  .hero-descriptor { max-width: 440px; font-size: 15px; line-height: 1.7; color: var(--muted); }
+  .hero-descriptor strong { color: var(--white); font-weight: 500; }
+  .hero-count { font-family: 'Bebas Neue', sans-serif; font-size: 72px; line-height: 1; text-align: right; }
+  .hero-count span { display: block; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+
+  /* FILTER BAR */
+  .filter-bar { padding: 24px 48px; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: center; position: sticky; top: 80px; background: rgba(247,245,240,0.95); backdrop-filter: blur(12px); z-index: 50; }
+  .filter-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-right: 8px; }
+  .filter-btn { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; padding: 7px 16px; border: 1px solid var(--border); color: var(--muted); background: transparent; cursor: none; transition: all 0.2s; }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: rgba(80,160,0,0.08); }
+
+  /* GRID */
+  .team-grid-section { padding: 64px 48px 120px; }
+  .section-divider { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 16px; margin-bottom: 40px; }
+  .section-divider::before { content: ''; width: 24px; height: 1px; background: var(--accent); }
+  .section-divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .team-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-bottom: 2px; }
+
+  /* CARD */
+  .member-card { background: var(--card-bg); border: 1px solid var(--border); padding: 0; position: relative; overflow: hidden; transition: border-color 0.3s, background 0.3s; cursor: none; }
+  .member-card:hover { border-color: rgba(200,255,0,0.2); background: rgba(80,160,0,0.04); }
+  .member-card:hover .card-avatar-wrap { transform: scale(1.03); }
+  .member-card:hover .member-num { color: var(--accent); }
+
+  .card-avatar-wrap { transition: transform 0.4s ease; overflow: hidden; aspect-ratio: 1; background: linear-gradient(135deg, rgba(200,255,0,0.05) 0%, rgba(247,245,240,0) 60%); display: flex; align-items: center; justify-content: center; }
+  .card-avatar-wrap svg { width: 100%; height: 100%; display: block; }
+
+  .card-info { padding: 20px 24px 24px; border-top: 1px solid var(--border); }
+  .member-num { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 8px; transition: color 0.2s; }
+  .member-name { font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .member-role { font-family: 'DM Mono', monospace; font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; line-height: 1.5; }
+  .member-bio { font-size: 12px; line-height: 1.65; color: var(--muted); }
+
+  /* CTA */
+  .team-cta { padding: 120px 48px; border-top: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .team-cta-left { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 6vw, 88px); line-height: 0.9; }
+  .team-cta-left .dim { -webkit-text-stroke: 1px rgba(244,242,237,0.2); color: transparent; display: block; }
+  .team-cta-right p { font-size: 15px; line-height: 1.8; color: var(--muted); margin-bottom: 40px; }
+  .team-cta-right p strong { color: var(--white); font-weight: 500; }
+  .cta-link { display: inline-flex; align-items: center; gap: 14px; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 4px; transition: color 0.2s, gap 0.2s; }
+  .cta-link:hover { color: var(--accent); gap: 22px; }
+  .cta-link::after { content: '→'; }
+
+  footer { border-top: 1px solid var(--border); padding: 32px 48px; display: flex; align-items: center; justify-content: space-between; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.2em; }
+  .footer-slogan { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+  .footer-copy { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+
+  /* ── HAMBURGER ─────────────────────────────── */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; z-index: 200; }
+  .hamburger span { display: block; width: 22px; height: 1.5px; background: var(--ink, #111110); transition: all 0.3s ease; }
+  .hamburger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+  .mobile-nav {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--bg, #f7f5f0);
+    z-index: 150;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 10vw, 64px);
+    letter-spacing: 0.05em;
+    color: var(--ink, #111110);
+    text-decoration: none;
+    padding: 16px 32px;
+    border-bottom: 1px solid var(--border, rgba(17,17,16,0.12));
+    width: 100%;
+    text-align: center;
+    transition: color 0.2s;
+  }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover, .mobile-nav a.active { color: var(--accent, #5a9e00); }
+  .mobile-nav-cta {
+    margin-top: 32px;
+    font-family: 'DM Mono', monospace !important;
+    font-size: 12px !important;
+    letter-spacing: 0.1em !important;
+    border: 1px solid var(--border, rgba(17,17,16,0.14)) !important;
+    padding: 14px 32px !important;
+  }
+  /* touch: disable custom cursor */
+  @media (hover: none), (pointer: coarse) {
+    .cursor, .cursor-ring { display: none !important; }
+    body { cursor: auto !important; }
+    a, button, .chip, .filter-btn, .nav-cta, .process-item, .member-card, .work-card { cursor: pointer !important; }
+  }
+  @media (max-width: 768px) {
+    .hamburger { display: flex; }
+  }
+  @media (max-width: 1100px) { .team-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 768px) {
+    nav { padding: 24px; }
+    .nav-links { display: none; }
+    .team-hero, .team-grid-section, .team-cta { padding-left: 24px; padding-right: 24px; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+    .filter-bar { padding: 16px 24px; flex-wrap: wrap; top: 72px; }
+    .hero-meta-row { flex-direction: column; align-items: flex-start; gap: 24px; }
+    .team-cta { grid-template-columns: 1fr; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+    .filter-bar { top: 72px; }
+    .card-info { padding: 14px 16px 18px; }
+    .member-name { font-size: 14px; }
+    .member-bio { font-size: 11px; }
+  }
+  @media (max-width: 480px) { .team-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="rise-landing.html" class="nav-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" fill="none" height="36" style="display:block;vertical-align:middle">
+  <!-- R -->
+  <path d="M4 44 L4 4 L28 4 C36 4 42 9.5 42 18 C42 23.5 39 27.5 34 29.5 L43 44 L32 44 L24.5 31 L15 31 L15 44 Z M15 13 L15 22 L26.5 22 C29.5 22 31.5 20.5 31.5 17.5 C31.5 14.5 29.5 13 26.5 13 Z" fill="currentColor"/>
+  <!-- accent arrow on R -->
+  <path d="M27 39 L35 30 L30.5 30" stroke="#5a9e00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- I -->
+  <rect x="48" y="4" width="10" height="40" fill="currentColor"/>
+
+  <!-- S -->
+  <path d="M65 34.5 C65 39.5 69 45 78 45 C87 45 91.5 39.5 91.5 33.5 C91.5 27.5 87.5 24.5 80.5 22.5 C74.5 20.8 72.5 19 72.5 16.5 C72.5 14 74.5 12 78 12 C81.5 12 83.5 14 83.5 16.5 L91.5 16.5 C91.5 10 87 3 78 3 C69 3 65 8.5 65 15.5 C65 21.5 68.5 24.5 76 26.5 C82 28.2 84 30 84 33.5 C84 37 81.5 39 78 39 C74.5 39 72.5 37 72.5 34.5 Z" fill="currentColor"/>
+
+  <!-- E -->
+  <path d="M98 4 L98 44 L124 44 L124 35 L109 35 L109 28 L122 28 L122 20 L109 20 L109 13 L124 13 L124 4 Z" fill="currentColor"/>
+
+  <!-- . (dot) -->
+  <rect x="130" y="33" width="11" height="11" rx="1.5" fill="currentColor"/>
+</svg></a>
+  <ul class="nav-links">
+    <li><a href="rise-landing.html#approach">Approach</a></li>
+    <li><a href="rise-works.html">Rising Works</a></li>
+    <li><a href="rise-landing.html#collective">Collective</a></li>
+    <li><a href="rise-risers.html" class="active">The Risers</a></li>
+  </ul>
+  <a href="rise-form.html" class="nav-cta">Let's build</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-nav" id="mobileNav">
+  <a href="rise-landing.html#approach">Approach</a>
+  <a href="rise-works.html">Rising Works</a>
+  <a href="rise-landing.html#collective">Collective</a>
+  <a href="rise-risers.html" class="active">The Risers</a>
+  <a href="rise-form.html" class="mobile-nav-cta">Let's build →</a>
+</div>
+
+<!-- HERO -->
+<section class="team-hero">
+  <div class="hero-noise"></div>
+  <div class="hero-bg-text">RISERS</div>
+  <div class="team-hero-inner">
+    <div class="hero-eyebrow">Core Collective · 24 Builders</div>
+    <h1>
+      <span class="outline">The</span><br>
+      <span class="accent">Risers.</span>
+    </h1>
+    <div class="hero-meta-row">
+      <p class="hero-descriptor">
+        <strong>Operators. Engineers. Strategists. Builders.</strong> No bench warmers — every person in this collective has shipped, scaled, or raised. We don't advise from the outside. We build from the inside.
+      </p>
+      <div class="hero-count">
+        24
+        <span>Active builders</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FILTER -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active" data-filter="all">All</button>
+  <button class="filter-btn" data-filter="core">Core</button>
+  <button class="filter-btn" data-filter="expansion">Expansion</button>
+  <button class="filter-btn" data-filter="tech">Tech</button>
+  <button class="filter-btn" data-filter="strategy">Strategy</button>
+  <button class="filter-btn" data-filter="growth">Growth</button>
+</div>
+
+<!-- TEAM GRID -->
+<section class="team-grid-section">
+  <div class="section-divider">Core Collective · 01–12</div>
+  <div class="team-grid" id="coreGrid"></div>
+
+  <div class="section-divider" style="margin-top: 64px;">Expansion Collective · 13–24</div>
+  <div class="team-grid" id="expansionGrid"></div>
+</section>
+
+<!-- CTA -->
+<section class="team-cta">
+  <div class="team-cta-left">
+    <span class="dim">Join the</span>
+    Rise.
+  </div>
+  <div class="team-cta-right">
+    <p>We're a selective collective. If you <strong>build things that matter</strong>, think in systems, and move with urgency — there might be a seat at the table.</p>
+    <a href="/cdn-cgi/l/email-protection#bfd7dad3d3d0ffcdd6ccda91dcd0" class="cta-link">Apply to the collective</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 48" fill="none" height="28" style="display:block"><path d="M4 44 L4 4 L28 4 C36 4 42 9.5 42 18 C42 23.5 39 27.5 34 29.5 L43 44 L32 44 L24.5 31 L15 31 L15 44 Z M15 13 L15 22 L26.5 22 C29.5 22 31.5 20.5 31.5 17.5 C31.5 14.5 29.5 13 26.5 13 Z" fill="currentColor"/><path d="M27 39 L35 30 L30.5 30" stroke="#5a9e00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><rect x="48" y="4" width="10" height="40" fill="currentColor"/><path d="M65 34.5 C65 39.5 69 45 78 45 C87 45 91.5 39.5 91.5 33.5 C91.5 27.5 87.5 24.5 80.5 22.5 C74.5 20.8 72.5 19 72.5 16.5 C72.5 14 74.5 12 78 12 C81.5 12 83.5 14 83.5 16.5 L91.5 16.5 C91.5 10 87 3 78 3 C69 3 65 8.5 65 15.5 C65 21.5 68.5 24.5 76 26.5 C82 28.2 84 30 84 33.5 C84 37 81.5 39 78 39 C74.5 39 72.5 37 72.5 34.5 Z" fill="currentColor"/><path d="M98 4 L98 44 L124 44 L124 35 L109 35 L109 28 L122 28 L122 20 L109 20 L109 13 L124 13 L124 4 Z" fill="currentColor"/><rect x="130" y="33" width="11" height="11" rx="1.5" fill="currentColor"/></svg></div>
+  <div class="footer-slogan">We are rising</div>
+  <div class="footer-copy">© 2025 RISE Collective</div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // ── HAMBURGER ──────────────────────────────────
+  const ham = document.getElementById('hamburger');
+  const mNav = document.getElementById('mobileNav');
+  if (ham && mNav) {
+    ham.addEventListener('click', () => {
+      ham.classList.toggle('open');
+      mNav.classList.toggle('open');
+      document.body.style.overflow = mNav.classList.contains('open') ? 'hidden' : '';
+    });
+  }
+  function closeMobileNav() {
+    if (ham) ham.classList.remove('open');
+    if (mNav) { mNav.classList.remove('open'); document.body.style.overflow = ''; }
+  }
+  document.querySelectorAll('.mobile-nav a').forEach(a => a.addEventListener('click', closeMobileNav));
+
+// ── CURSOR ────────────────────────────────────────
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mouseX = 0, mouseY = 0, ringX = 0, ringY = 0;
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px'; cursor.style.top = mouseY + 'px';
+});
+(function animateRing() {
+  ringX += (mouseX - ringX) * 0.12; ringY += (mouseY - ringY) * 0.12;
+  ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+  requestAnimationFrame(animateRing);
+})();
+
+// ── AVATAR SVG GENERATOR (Pixar-style minimal) ───
+function avatar(seed, name) {
+  const h = (n, s, l) => `hsl(${n},${s}%,${l}%)`;
+  // deterministic pseudo-random from seed
+  const r = (min, max, offset=0) => {
+    let x = Math.sin(seed * 127.1 + offset * 311.7) * 43758.5453;
+    x = x - Math.floor(x);
+    return min + x * (max - min);
+  };
+
+  const skinTones = [
+    ['#FDDBB4','#F5C08A'],['#F1C27D','#E5A757'],['#C68642','#A0522D'],
+    ['#8D5524','#6B3A1F'],['#FBEADC','#F5D5BC'],['#FFE0BD','#F7C899'],
+    ['#D4A574','#C48B55'],['#A0522D','#7B3F20']
+  ];
+  const hairColors = ['#1a0a00','#2c1a0e','#4a2c0a','#8B4513','#D2691E','#C0C0C0','#F5D042','#8B0000','#2F4F4F','#191970'];
+  const bgColors = [
+    ['#e8f5e8','#d0ebcf'],['#e8e8f5','#d0d0eb'],['#f5e8e8','#ebd0d0'],
+    ['#e8f5f5','#d0ebeb'],['#f5f4e8','#ebe9cf'],['#ede8f5','#ddd0eb'],
+    ['#e8f2f5','#d0e5eb'],['#f5e8f2','#ebd0e6']
+  ];
+
+  const si = Math.floor(r(0, skinTones.length, 1)) % skinTones.length;
+  const hi = Math.floor(r(0, hairColors.length, 2)) % hairColors.length;
+  const bi = Math.floor(r(0, bgColors.length, 3)) % bgColors.length;
+  const [skin1, skin2] = skinTones[si];
+  const hairC = hairColors[hi];
+  const [bg1, bg2] = bgColors[bi];
+
+  // face proportions
+  const faceW = 80 + r(-8, 8, 4);
+  const faceH = 90 + r(-8, 8, 5);
+  const eyeSpread = 20 + r(-4, 4, 6);
+  const eyeY = 118 + r(-4, 4, 7);
+  const noseY = 138 + r(-4, 4, 8);
+  const mouthY = 158 + r(-3, 3, 9);
+  const mouthW = 18 + r(-4, 4, 10);
+
+  // hair style selector
+  const hairStyle = Math.floor(r(0, 6, 11)) % 6;
+  const hasGlasses = r(0, 1, 12) > 0.72;
+  const eyebrowAngle = r(-8, 8, 13);
+
+  let hairPath = '';
+  const cx = 120, headTop = 72;
+  if (hairStyle === 0) { // short
+    hairPath = `<ellipse cx="${cx}" cy="${headTop+4}" rx="${faceW/2+8}" ry="30" fill="${hairC}"/><rect x="${cx-faceW/2-8}" y="${headTop}" width="${faceW+16}" height="22" fill="${hairC}"/>`;
+  } else if (hairStyle === 1) { // long
+    hairPath = `<ellipse cx="${cx}" cy="${headTop+4}" rx="${faceW/2+10}" ry="32" fill="${hairC}"/>
+    <rect x="${cx-faceW/2-10}" y="${headTop+10}" width="18" height="70" rx="9" fill="${hairC}"/>
+    <rect x="${cx+faceW/2-8}" y="${headTop+10}" width="18" height="70" rx="9" fill="${hairC}"/>`;
+  } else if (hairStyle === 2) { // wavy long
+    hairPath = `<ellipse cx="${cx}" cy="${headTop+4}" rx="${faceW/2+12}" ry="34" fill="${hairC}"/>
+    <path d="M${cx-faceW/2-10},${headTop+20} Q${cx-faceW/2-18},${headTop+50} ${cx-faceW/2-8},${headTop+80}" stroke="${hairC}" stroke-width="16" fill="none" stroke-linecap="round"/>
+    <path d="M${cx+faceW/2+10},${headTop+20} Q${cx+faceW/2+18},${headTop+50} ${cx+faceW/2+8},${headTop+80}" stroke="${hairC}" stroke-width="16" fill="none" stroke-linecap="round"/>`;
+  } else if (hairStyle === 3) { // bun
+    hairPath = `<ellipse cx="${cx}" cy="${headTop+4}" rx="${faceW/2+8}" ry="30" fill="${hairC}"/>
+    <circle cx="${cx}" cy="${headTop-12}" r="16" fill="${hairC}"/>`;
+  } else if (hairStyle === 4) { // curly afro
+    hairPath = `<ellipse cx="${cx}" cy="${headTop}" rx="${faceW/2+20}" ry="42" fill="${hairC}"/>
+    <circle cx="${cx-faceW/2-10}" cy="${headTop+10}" r="16" fill="${hairC}"/>
+    <circle cx="${cx+faceW/2+10}" cy="${headTop+10}" r="16" fill="${hairC}"/>`;
+  } else { // buzz / bald
+    hairPath = `<ellipse cx="${cx}" cy="${headTop+4}" rx="${faceW/2+4}" ry="26" fill="${hairC}" opacity="0.6"/>`;
+  }
+
+  // eye shape: round vs almond
+  const eyeType = Math.floor(r(0, 3, 14)) % 3;
+  let leftEye, rightEye;
+  if (eyeType === 0) {
+    leftEye = `<ellipse cx="${cx-eyeSpread}" cy="${eyeY}" rx="8" ry="7" fill="white"/><ellipse cx="${cx-eyeSpread+1}" cy="${eyeY+1}" rx="5" ry="5" fill="#1a1a1a"/><ellipse cx="${cx-eyeSpread+2}" cy="${eyeY-2}" rx="2" ry="2" fill="white"/>`;
+    rightEye = `<ellipse cx="${cx+eyeSpread}" cy="${eyeY}" rx="8" ry="7" fill="white"/><ellipse cx="${cx+eyeSpread+1}" cy="${eyeY+1}" rx="5" ry="5" fill="#1a1a1a"/><ellipse cx="${cx+eyeSpread+2}" cy="${eyeY-2}" rx="2" ry="2" fill="white"/>`;
+  } else if (eyeType === 1) {
+    leftEye = `<path d="M${cx-eyeSpread-9},${eyeY} Q${cx-eyeSpread},${eyeY-8} ${cx-eyeSpread+9},${eyeY} Q${cx-eyeSpread},${eyeY+5} ${cx-eyeSpread-9},${eyeY}z" fill="white"/><ellipse cx="${cx-eyeSpread+1}" cy="${eyeY+1}" rx="5" ry="4.5" fill="#1a1a1a"/><circle cx="${cx-eyeSpread+2}" cy="${eyeY-1}" r="1.8" fill="white"/>`;
+    rightEye = `<path d="M${cx+eyeSpread-9},${eyeY} Q${cx+eyeSpread},${eyeY-8} ${cx+eyeSpread+9},${eyeY} Q${cx+eyeSpread},${eyeY+5} ${cx+eyeSpread-9},${eyeY}z" fill="white"/><ellipse cx="${cx+eyeSpread+1}" cy="${eyeY+1}" rx="5" ry="4.5" fill="#1a1a1a"/><circle cx="${cx+eyeSpread+2}" cy="${eyeY-1}" r="1.8" fill="white"/>`;
+  } else {
+    leftEye = `<ellipse cx="${cx-eyeSpread}" cy="${eyeY}" rx="8" ry="6" fill="white"/><circle cx="${cx-eyeSpread}" cy="${eyeY}" r="4.5" fill="#2a1a0a"/><circle cx="${cx-eyeSpread+2}" cy="${eyeY-1.5}" r="1.5" fill="white"/>`;
+    rightEye = `<ellipse cx="${cx+eyeSpread}" cy="${eyeY}" rx="8" ry="6" fill="white"/><circle cx="${cx+eyeSpread}" cy="${eyeY}" r="4.5" fill="#2a1a0a"/><circle cx="${cx+eyeSpread+2}" cy="${eyeY-1.5}" r="1.5" fill="white"/>`;
+  }
+
+  const glassesHTML = hasGlasses ? `
+    <rect x="${cx-eyeSpread-11}" y="${eyeY-9}" width="22" height="18" rx="6" fill="none" stroke="rgba(60,130,0,0.7)" stroke-width="1.5"/>
+    <rect x="${cx+eyeSpread-11}" y="${eyeY-9}" width="22" height="18" rx="6" fill="none" stroke="rgba(60,130,0,0.7)" stroke-width="1.5"/>
+    <line x1="${cx-eyeSpread+11}" y1="${eyeY}" x2="${cx+eyeSpread-11}" y2="${eyeY}" stroke="rgba(60,130,0,0.7)" stroke-width="1.5"/>` : '';
+
+  const smileType = Math.floor(r(0,3,15))%3;
+  let mouth = '';
+  if(smileType===0) mouth = `<path d="M${cx-mouthW},${mouthY} Q${cx},${mouthY+10} ${cx+mouthW},${mouthY}" stroke="${skin2}" stroke-width="2.5" fill="none" stroke-linecap="round"/>`;
+  else if(smileType===1) mouth = `<path d="M${cx-mouthW},${mouthY} Q${cx},${mouthY+14} ${cx+mouthW},${mouthY}" fill="#c0685a" stroke="none"/><path d="M${cx-mouthW+2},${mouthY+2} Q${cx},${mouthY+12} ${cx+mouthW-2},${mouthY+2}" fill="#e8a0a0"/>`;
+  else mouth = `<path d="M${cx-mouthW},${mouthY+4} Q${cx},${mouthY-2} ${cx+mouthW},${mouthY+4}" stroke="${skin2}" stroke-width="2" fill="none" stroke-linecap="round"/>`;
+
+  return `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg${seed}" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="${bg1}"/>
+      <stop offset="100%" stop-color="${bg2}"/>
+    </linearGradient>
+    <linearGradient id="skin${seed}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${skin1}"/>
+      <stop offset="100%" stop-color="${skin2}"/>
+    </linearGradient>
+    <filter id="soft${seed}">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.4"/>
+    </filter>
+  </defs>
+  <!-- BG -->
+  <rect width="240" height="240" fill="url(#bg${seed})"/>
+  <!-- subtle grid -->
+  <line x1="0" y1="120" x2="240" y2="120" stroke="rgba(200,255,0,0.04)" stroke-width="1"/>
+  <line x1="120" y1="0" x2="120" y2="240" stroke="rgba(200,255,0,0.04)" stroke-width="1"/>
+  <!-- accent dot -->
+  <circle cx="200" cy="40" r="24" fill="rgba(80,160,0,0.08)"/>
+  <circle cx="200" cy="40" r="12" fill="rgba(80,160,0,0.1)"/>
+  <!-- BODY / SHOULDERS -->
+  <ellipse cx="${cx}" cy="235" rx="75" ry="48" fill="${skin2}" opacity="0.9"/>
+  <ellipse cx="${cx}" cy="228" rx="52" ry="30" fill="url(#skin${seed})"/>
+  <!-- NECK -->
+  <rect x="${cx-14}" y="${eyeY+52}" width="28" height="30" rx="14" fill="url(#skin${seed})"/>
+  <!-- HEAD -->
+  <ellipse cx="${cx}" cy="${headTop+faceH/2}" rx="${faceW/2}" ry="${faceH/2}" fill="url(#skin${seed})"/>
+  <!-- HAIR BACK -->
+  ${hairPath}
+  <!-- FACE DETAIL -->
+  <ellipse cx="${cx}" cy="${headTop+faceH/2}" rx="${faceW/2}" ry="${faceH/2}" fill="url(#skin${seed})"/>
+  <!-- EARS -->
+  <ellipse cx="${cx-faceW/2}" cy="${eyeY+4}" rx="8" ry="11" fill="${skin1}"/>
+  <ellipse cx="${cx+faceW/2}" cy="${eyeY+4}" rx="8" ry="11" fill="${skin1}"/>
+  <!-- EYEBROWS -->
+  <path d="M${cx-eyeSpread-9},${eyeY-14+eyebrowAngle} Q${cx-eyeSpread},${eyeY-18} ${cx-eyeSpread+9},${eyeY-14-eyebrowAngle}" stroke="${hairC}" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M${cx+eyeSpread-9},${eyeY-14-eyebrowAngle} Q${cx+eyeSpread},${eyeY-18} ${cx+eyeSpread+9},${eyeY-14+eyebrowAngle}" stroke="${hairC}" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- EYES -->
+  ${leftEye}
+  ${rightEye}
+  <!-- GLASSES -->
+  ${glassesHTML}
+  <!-- NOSE -->
+  <ellipse cx="${cx}" cy="${noseY}" rx="5" ry="3.5" fill="${skin2}" opacity="0.6"/>
+  <!-- MOUTH -->
+  ${mouth}
+  <!-- HAIR FRONT (fringe) -->
+  ${hairStyle < 4 ? `<ellipse cx="${cx}" cy="${headTop+8}" rx="${faceW/2-4}" ry="16" fill="${hairC}" opacity="0.3"/>` : ''}
+  <!-- bottom fade -->
+  <rect x="0" y="190" width="240" height="50" fill="url(#bg${seed})" opacity="0.4"/>
+</svg>`;
+}
+
+// ── TEAM DATA ────────────────────────────────────
+const coreTeam = [
+  { num:'01', name:'Oğuz Yumuk', role:'Business Development · Strategic Deal Architect', bio:'Designs scalable growth systems that compound capital flow and structural defensibility.', tags:['strategy','growth'] },
+  { num:'02', name:'Barış Yaşbala', role:'Marketing Systems · Vibecoding Strategist', bio:'Builds distribution engines where brand, product, and velocity converge into momentum.', tags:['growth','strategy'] },
+  { num:'03', name:'Göktürk Özge', role:'Research · Gen-Z Signal Interpreter', bio:'Bridges generational intelligence into product and positioning advantage.', tags:['strategy','growth'] },
+  { num:'04', name:'Stefanie Pinsley', role:'AI Speaker · Former Google PMM', bio:'Translates AI into executive clarity and scales influence through community and thought leadership.', tags:['strategy','growth'] },
+  { num:'05', name:'Ricardo Martines', role:'International Talent Architect · LatAm Connector', bio:'Builds high-quality pipelines across Spanish-speaking ecosystems with precision and speed.', tags:['growth','strategy'] },
+  { num:'06', name:'Hüseyin Bardakci', role:'Code-Master · Systems Architect', bio:'Designs resilient technical infrastructure that ships fast and scales without friction.', tags:['tech'] },
+  { num:'07', name:'Uğur Arslan', role:'Execution Lead · Product Operator', bio:'Turns roadmap into shipped product. Focused on compounding execution, not planning cycles.', tags:['tech','strategy'] },
+  { num:'08', name:'London W.', role:'International Finance · Valuation Strategist', bio:'Ensures capital integrity, structural compliance, and growth readiness for cross-border ventures.', tags:['strategy'] },
+  { num:'09', name:'Colleen Schepegel', role:'Founder Mentor · Business Analyst', bio:'Strengthens founder clarity and operational alignment at every critical inflection point.', tags:['strategy'] },
+  { num:'10', name:'Ada Raylan', role:'Venture Coach · Business Structuring Advisor', bio:'Sharpens business models into fundable, defensible systems that attract capital.', tags:['strategy'] },
+  { num:'11', name:'Sinem Yurttaş', role:'International Relations · Strategic Partnerships', bio:'Expands cross-border leverage and builds institutional access across global ecosystems.', tags:['strategy','growth'] },
+  { num:'12', name:'Sinem Doğan', role:'Business Developer · Network Catalyst', bio:'Activates ecosystems and converts conversations into compounding business momentum.', tags:['growth','strategy'] },
+];
+
+const expansionTeam = [
+  { num:'13', name:'Eren Kaya', role:'AI Systems Engineer · Agent Architect', bio:'Designs autonomous workflows and production-grade AI agents that operate at scale.', tags:['tech'] },
+  { num:'14', name:'Melis Karaca', role:'Product Experience Designer · Interface Strategist', bio:'Builds clarity into complexity. UX that drives conversion and reduces decision friction.', tags:['tech','growth'] },
+  { num:'15', name:'Daniel Moore', role:'Growth Analytics · Data Intelligence Lead', bio:'Transforms raw data into decision velocity and capital signals that move the needle.', tags:['growth','strategy'] },
+  { num:'16', name:'Javier Ortega', role:'LatAm Market Expansion · Strategic Partnerships', bio:'Builds regional leverage across emerging AI ecosystems in high-growth markets.', tags:['growth','strategy'] },
+  { num:'17', name:'Zeynep Akın', role:'Operations Architect · Process Optimizer', bio:'Designs internal systems that compound speed, eliminate waste, and scale precision.', tags:['strategy','tech'] },
+  { num:'18', name:'Marcus Lee', role:'Capital Strategy · Investor Relations', bio:'Aligns narrative, traction, and valuation logic for funding events that close.', tags:['strategy'] },
+  { num:'19', name:'Elif Çelik', role:'Community Engine Builder · Network Growth', bio:'Turns audience into movement. Designs scalable engagement loops that compound reach.', tags:['growth'] },
+  { num:'20', name:'Arda Demir', role:'Full-Stack Developer · Infrastructure Builder', bio:'Ships scalable backend and frontend ecosystems with speed and architectural integrity.', tags:['tech'] },
+  { num:'21', name:'Laura Bennett', role:'Brand Strategy · Positioning Architect', bio:'Builds signal clarity in competitive markets where attention is the scarcest resource.', tags:['growth','strategy'] },
+  { num:'22', name:'Mehmet Özkan', role:'Cybersecurity · Risk Infrastructure', bio:'Protects systems, data, and capital integrity against structural and operational risk.', tags:['tech','strategy'] },
+  { num:'23', name:'Sofia Alvarez', role:'People Strategy · Talent Scaling', bio:'Designs hiring systems aligned with velocity, culture, and compounding team performance.', tags:['strategy','growth'] },
+  { num:'24', name:'Tom Richardson', role:'Strategic Advisor · Market Intelligence', bio:'Maps competitive landscapes into structural advantage that guides decisive action.', tags:['strategy'] },
+];
+
+// ── RENDER CARDS ──────────────────────────────────
+function renderCard(member, index) {
+  const seed = index + 1;
+  const tagStr = member.tags.join(' ');
+  return `<div class="member-card" data-tags="${tagStr}" style="opacity:0;transform:translateY(20px);transition:opacity 0.6s ${(index%4)*0.07}s ease,transform 0.6s ${(index%4)*0.07}s ease,border-color 0.3s,background 0.3s">
+    <div class="card-avatar-wrap">${avatar(seed * 7 + index * 13, member.name)}</div>
+    <div class="card-info">
+      <div class="member-num">${member.num}</div>
+      <div class="member-name">${member.name}</div>
+      <div class="member-role">${member.role}</div>
+      <div class="member-bio">${member.bio}</div>
+    </div>
+  </div>`;
+}
+
+document.getElementById('coreGrid').innerHTML = coreTeam.map((m,i) => renderCard(m,i)).join('');
+document.getElementById('expansionGrid').innerHTML = expansionTeam.map((m,i) => renderCard(m,i+12)).join('');
+
+// ── SCROLL REVEAL ─────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.member-card').forEach(el => observer.observe(el));
+
+// ── FILTER ────────────────────────────────────────
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('.member-card').forEach(card => {
+      if (filter === 'all' || card.dataset.tags.includes(filter)) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  });
+});
+
+// ── CURSOR INTERACTIONS ───────────────────────────
+document.querySelectorAll('a, button, .member-card').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform = 'translate(-50%,-50%) scale(2.5)'; ring.style.opacity = '0'; });
+  el.addEventListe
