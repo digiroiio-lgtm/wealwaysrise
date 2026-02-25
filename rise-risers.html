@@ -32,6 +32,10 @@
   }
   html { scroll-behavior: smooth; }
   body { background: var(--black); color: var(--white); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; cursor: none; }
+  html.light-mode { --black: #111110; --white: #f7f5f0; --muted: rgba(247,245,240,0.72); --border: rgba(247,245,240,0.14); }
+  html.light-mode body { background: var(--black); color: var(--white); }
+  html.light-mode nav { background: rgba(17,17,16,0.96); border-bottom: 1px solid var(--border); }
+  html.light-mode .theme-toggle { border-color: rgba(247,245,240,0.14); }
 
   /* CURSOR */
   .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.15s ease; transform: translate(-50%, -50%); }
@@ -44,6 +48,8 @@
   .nav-links a { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
   .nav-links a:hover { color: var(--white); }
   .nav-links a.active { color: var(--accent); }
+  .theme-toggle { font-size: 18px; background: none; border: 1px solid var(--border); padding: 8px 12px; cursor: pointer; border-radius: 4px; transition: border-color 0.2s, background 0.2s; margin-right: 16px; }
+  .theme-toggle:hover { border-color: var(--accent); background: rgba(90,158,0,0.1); }
   .nav-cta { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; background: transparent; border: 1px solid var(--border); color: var(--white); padding: 10px 22px; cursor: none; text-decoration: none; transition: border-color 0.2s, background 0.2s, color 0.2s; }
   .nav-cta:hover { background: var(--accent); border-color: var(--accent); color: var(--black); }
 
