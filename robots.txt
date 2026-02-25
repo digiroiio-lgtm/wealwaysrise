@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /admin/
+Disallow: /*.pdf$
+
+# Sitemap
+Sitemap: https://digiroiio-lgtm.github.io/wealwaysrise/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1
