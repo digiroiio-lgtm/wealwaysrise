@@ -77,7 +77,7 @@ const ME = 'Oğuz';
 const PROJECTS = [
   { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','UK Market Inspection · Tahtakale (fırsat)','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
   { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
-  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
+  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
   { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
@@ -85,6 +85,8 @@ const PROJECTS = [
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
+  { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
+  { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
   { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
@@ -176,6 +178,23 @@ EVENTS.push(
   { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
     title:'🦷 PL hasta — otelden transfer (11:00) + muayene, Akdeniz Dental', note:'İmplant + zirkon planlaması; muayene sonrası tedaviye başlamak istiyor. Kaynak: akdenizdental.pl reklamı.' }
 );
+/* Best House Turkey — SEO takip & iyileştirme */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'13:30', e:'14:30', type:'task', short:'BestHouseTurkey · takip & iyileştirme', project:'Best House Turkey', group:'Markalar',
+    title:'📈 Best House Turkey — Search Console takip & iyileştirme', note:'Son 3 ay: 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7. Tıklamalar ~7 Kas sonrası öncekinin altına düştü.' }
+);
+/* 25–26 Kas: SE Ranking incelemesi + kişisel büyük gün (detaylar şifreli) */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'14:30', e:'15:00', type:'task', short:'SE Ranking incelemesi', project:'Werrise Digital', group:'Platform',
+    title:'🔎 SE Ranking — iş geliştirme için tool incelemesi (seranking.com/subscription)', note:'Planlar, fiyatlar ve kotalar; Best House / DMC / Akdeniz SEO ihtiyaçlarına uygunluk.' },
+  { date:'2026-11-26', key:'k26', allDay:true, lead:2, s:'07:00', e:'07:15', type:'plan', short:'Önemli gün', project:'Aile & Kişisel', group:'Yaşam',
+    title:'⭐ Önemli gün — kişisel', note:'Detaylar şifreli notlarda.' }
+);
+/* DMC Turkey Partner — outreach sihirbazı kurulumu */
+EVENTS.push(
+  { date:'2026-12-10', lead:2, s:'11:45', e:'12:45', type:'task', short:'DMC · outreach sihirbazı', project:'DMC Turkey Partner', group:'Markalar',
+    title:'🛠️ DMC Turkey Partner — outreach sihirbazını kur', note:'Londra Depo’daki outreach paneli + müşteri keşif sihirbazı modeli DMC için uyarlanacak.' }
+);
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
   { date:'2027-06-01', lead:7, s:'09:00', e:'09:15', type:'plan', short:'ABD seyahati · tarih teyidi', project:'İTO · Filtre Kümelenmesi', group:'Proje',
@@ -193,6 +212,13 @@ EVENTS.push(
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
 MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
+/* Her ayın son günü — dijital tool ücretleri & kota aşımları kontrolü (Kas 2026 – Ara 2027) */
+const MONTH_END = { s:'16:00', e:'16:30', type:'task', monthEnd:true, lead:1, short:'Tool ücretleri & kota kontrolü', project:'Werrise Digital', group:'Platform',
+  title:'🧾 Dijital tool ücretleri & kota aşımları kontrolü', note:'Her ayın son günü: abonelikler, kullanım limitleri ve aşım ücretleri.' };
+const MONTH_ENDS = [];
+for (let y = 2026; y <= 2027; y++) for (let m = (y === 2026 ? 10 : 0); m < 12; m++) MONTH_ENDS.push(isoDate(new Date(y, m + 1, 0)));
+const NEXT_ME = MONTH_ENDS.find(iso => dayOff(iso) >= 0);
+MONTH_ENDS.forEach(date => EVENTS.push({ ...MONTH_END, date, hideInList: date !== NEXT_ME }));
 const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
 
 let uid = 100;
@@ -294,6 +320,40 @@ const TASKS = [
     { t:'Transfer zamanında yapıldı mı?', done:false },
     { t:'Muayene sonucu ve tedavi planı (implant + zirkon) netleşti mi?', done:false },
     { t:'.pl reklam dönüşümü olarak raporla (Google Ads)', done:false } ]}),
+  T('Best House Turkey: takip ve iyileştirme', { pri:'Yüksek', group:'Markalar', cat:'İçerik / SEO', project:'Best House Turkey', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:1, slot:'Çar 25 Kas · 13:30', subs:[
+    { t:'Tıklama düşüşünü incele: ~5–7 Kas sonrası hangi sayfa/sorgular kaybetti?', done:false },
+    { t:'Konum 11–20 arasındaki sorguları bul (ilk sayfaya yakın fırsatlar)', done:false },
+    { t:'Gösterimi yüksek, TO’su düşük sayfalarda başlık/açıklama iyileştir', done:false },
+    { t:'Dizin oluşturma ve Önemli Web Verileri hatalarını kontrol et', done:false },
+    { t:'Yapılanları not et, 2 hafta sonra sonuçları karşılaştır', done:false } ]}),
+  T('SE Ranking’i incele (iş geliştirme)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 14:30', subs:[
+    { t:'Plan ve fiyatları karşılaştır: seranking.com/subscription.html', done:false },
+    { t:'Kotalar: takip edilen anahtar kelime, proje, site denetimi, kullanıcı sayısı', done:false },
+    { t:'Kullanım alanları: Best House, DMC, Akdeniz (.pl/.de/.ro), müşteri raporlaması', done:false },
+    { t:'Karar: hangi plan / beyaz etiket (white-label) raporlama gerekli mi?', done:false } ]}),
+  T('Kişisel araştırma', { key:'ev', pri:'Yüksek', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:1.5 }),
+  T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
+    { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
+    { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
+    { t:'Keşif kriterleri ve ilk lead listesi', done:false },
+    { t:'Outreach mesaj şablonları (EN) ve gönderim akışı', done:false },
+    { t:'Günlük çalıştırma rutinine ekle (Claude’a yaz)', done:false } ]}),
+  ...(NEXT_ME ? [T('Dijital tool ücretleri & kota aşımlarını kontrol et', { pri:'Yüksek', group:'Platform', cat:'Finans', project:'Werrise Digital', due:dayOff(NEXT_ME), today:dayOff(NEXT_ME) === 0, est:.5, recur:'Her ayın son günü', subs:[
+    { t:'Yapay zeka araçları (Claude, ChatGPT, Gemini vb.): abonelik ücreti ve kullanım limiti', done:false },
+    { t:'Hosting & altyapı (Vercel vb.): kullanım, limit ve aşım ücreti', done:false },
+    { t:'SEO araçları (SE Ranking, Semrush vb.): kota ve yenileme tarihi', done:false },
+    { t:'Reklam hesapları (Google Ads): bütçe aşımı var mı?', done:false },
+    { t:'Alan adı ve e-posta yenilemeleri', done:false },
+    { t:'Müşteriye yansıyan / müşteri kartından ödenen araçları ayır', done:false },
+    { t:'Ay toplamını Bütçe’ye işle (Claude’a yaz)', done:false } ]})] : []),
+  T('Dental Ops: logo + Sağlık Bakanlığı (Health) logosu ve açıklamasını ilet', { key:'dops1', pri:'Yüksek', group:'Markalar', cat:'Operasyon', project:'Dental Ops', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:.5, subs:[
+    { t:'Kurum logosu (yüksek çözünürlük)', done:false },
+    { t:'Sağlık Bakanlığı Health logosu', done:false },
+    { t:'Logo yanındaki kısa açıklama metni', done:false },
+    { t:'Ömer Bey ile kimin ileteceğini netleştir', done:false } ]}),
+  T('Dental Ops: sonraki toplantıda 22 Kas maddelerinin takibi', { key:'dops2', pri:'Orta', group:'Markalar', cat:'Toplantı', project:'Dental Ops', due:null, est:.5, follow:true, subs:[
+    { t:'Madde 1–6 durumunu gözden geçir (detay: Projeler › Dental Ops › Notlar)', done:false },
+    { t:'Toplantı tarihi gelince takvime ekle (Claude’a yaz)', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -323,7 +383,7 @@ window.WR_setPrivate = data => {
   // Özel başlıklar (ör. site / okul adı) — sadece giriş sonrası
   const L = data.labels || {};
   EVENTS.forEach(ev => { if (!ev.key) return; ev._t = ev._t || ev.title; ev._s = ev._s || ev.short; ev.title = L[ev.key]?.title || ev._t; ev.short = L[ev.key]?.short || ev._s; });
-  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; });
+  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; t._subs = t._subs || t.subs; t.subs = L[t.key]?.subs ? L[t.key].subs.map(x => ({ t:x, done:false })) : t._subs; });
   (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
   render();
 };
@@ -431,7 +491,7 @@ function renderNowbar() {
 /* ================= SHARED UI ================= */
 const gdot = g => `<span class="cdot" style="background:${GROUPS[g] || '#999'}"></span>`;
 const priPill = p => `<span class="pill ${PRIS[p]} dot">${p}</span>`;
-const dueBadge = t => t.done ? '' : t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due} gün gecikti</span>` : t.due === 0 ? '' : `<span class="pill">${dLabel(t.due)}</span>`;
+const dueBadge = t => t.done ? '' : t.due == null ? '<span class="pill amber">Tarih bekliyor</span>' : t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due} gün gecikti</span>` : t.due === 0 ? '' : `<span class="pill">${dLabel(t.due)}</span>`;
 
 function taskCard(t, compact) {
   const sd = t.subs.filter(s => s.done).length;
@@ -482,7 +542,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -633,7 +693,7 @@ PAGES.planlama = () => {
   const d = NOW(), mon = addDays(d, -((d.getDay() + 6) % 7));
   const days = [...Array(7)].map((_, i) => addDays(mon, i));
   const off = dd => Math.round((new Date(dd.toDateString()) - new Date(d.toDateString())) / 864e5);
-  const backlog = TASKS.filter(t => !t.done && (t.due < off(days[0]) || t.due > off(days[6])));
+  const backlog = TASKS.filter(t => !t.done && (t.due == null || t.due < off(days[0]) || t.due > off(days[6])));
   return `
   <div class="page-head"><div><div class="eyebrow">Planlama · ${isoWeek(d)}</div><h1>Haftanı yerleştir<span class="dot">.</span></h1><p class="lede">İşleri sürükleyip günlere bırak. Her günün dolulük çubuğu ~6 saatlik odak kapasitesine göre hesaplanır.</p></div>
     <button class="btn btn-primary" data-act="place">Haftayı otomatik dağıt <span class="arrow">→</span></button></div>
@@ -648,6 +708,7 @@ PAGES.planlama = () => {
   <div class="card-head mt2"><div><div class="eyebrow">Her hafta içi otomatik</div><h2 style="margin-top:4px">Rutinler</h2></div><span class="pill green">${ic('repeat',12)} Pzt–Cum</span></div>
   <div class="card"><div class="table-wrap"><table><thead><tr><th>Saat</th><th>Rutin</th><th>Marka / proje</th><th>Tür</th><th>Günler</th></tr></thead><tbody>
     ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>Pzt–Cum</td></tr>`).join('')}
+    ${[...MONTHLY, MONTH_END].map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong><small>${esc(r.note || '')}</small></td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill amber">${r.kind === 'expense' ? 'Ödeme' : r.monthEnd ? 'Kontrol' : 'Gelir'}</span></td><td>${r.monthEnd ? 'Her ayın son günü' : `Her ayın ${r.day}’i`}</td></tr>`).join('')}
   </tbody></table></div></div>`;
 };
 const kcardTask = t => `<div class="kcard" draggable="true" data-drag="task" data-id="${t.id}"><b>${esc(t.title)}</b><div class="meta row" style="margin-top:6px;gap:5px">${priPill(t.pri)}<span class="pill">${gdot(t.group)} ${esc(t.project)}</span>${t.due<0?`<span class="pill red">${-t.due}g</span>`:''}</div></div>`;
@@ -751,12 +812,12 @@ PAGES.oncelik = () => {
 
 PAGES.tarihler = () => {
   const o = openTasks();
-  const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), '']];
+  const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), ''], ['Tarih bekleyen', o.filter(t => t.due == null), 'amber']];
   const imp = [];
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Tarihler<span class="dot">.</span></h1><p class="lede">Teslim tarihlerine göre tüm açık işler ve takvimdeki önemli günler.</p></div></div>
   <div class="grid split"><div>${sec.map(([n, ts, c]) => `<div class="card mt" style="padding:20px"><div class="card-head"><h3>${n}</h3><span class="pill ${c}">${ts.length}</span></div>
-    ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
+    ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${t.due == null ? '—' : dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
   <div style="align-self:start"><div class="card mt"><h3>Randevular & ödemeler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşmeler, maaş ve ödeme günleri</p>
     ${EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).sort((a,b)=>a.off-b.off).map(ev => `<div class="qitem"><span class="pill ${ev.off<0?'':ev.off<=1?'red':'blue'}">${dLabel(ev.off)} ${evTime(ev)}</span><span style="flex:1">${esc(ev.title)}<br><small class="muted">${esc(ev.note||'')}</small></span><small class="muted">${ev.off<0?'geçti':ev.off===0?'bugün':ev.off+' gün'}</small></div>`).join('')}</div>
   <div class="card mt"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
