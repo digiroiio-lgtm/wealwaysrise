@@ -80,7 +80,7 @@ const PROJECTS = [
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
@@ -147,6 +147,8 @@ EVENTS.push(
     title:'💬 Dotneed — iş başvurusu yapan Semih’e WhatsApp’tan yanıt yaz', note:'Semih 12 Kas’ta “DotNeed Paketleme Çalışması” PDF’ini ve sesli mesaj gönderdi, 16 Kas’ta gelişme sordu.' },
   { date:'2026-11-26', lead:0, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · alternatif', project:'Luenire SPA', group:'Proje',
     title:'📞 Luenire SPA · Sabrina — alternatif gün: Perşembe 09:00 UK / 12:00 TR', note:'Salı uymazsa Sabrina Perşembe’yi önerdi.' },
+  { date:'2026-11-27', lead:1, s:'11:15', e:'11:30', type:'task', short:'Skal · takip mesajı', project:'Parti', group:'Platform',
+    title:'💬 Skal başkanı Erdoğan Turan’a Part-y × Skal iş birliği takip mesajı', note:'Part-y için Skal iş birliğinin takibi.' },
   { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
     title:'🤝 Tahtakale × Part-y App — kurumsal görüşme', note:'Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
   { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
@@ -230,6 +232,10 @@ const TASKS = [
   T('Luenire SPA · Sabrina görüşmesi', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.5, slot:'Sal 24 Kas · 12:00 TR / 09:00 UK (taslak)', subs:[
     { t:'Görüşme gündemini ve ekip koordinasyonunu netleştir', done:false },
     { t:'Görüşme sonrası notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Skal · Erdoğan Turan’a iş birliği takip mesajı yolla (Part-y)', { pri:'Yüksek', group:'Platform', cat:'Takip', project:'Parti', due:dayOff('2026-11-27'), today:dayOff('2026-11-27') === 0, est:.25, follow:true, slot:'Cum 27 Kas · 11:15', subs:[
+    { t:'Son konuşulanları hatırla: Part-y × Skal iş birliği kapsamı', done:false },
+    { t:'Kısa takip mesajı: somut öneri + sonraki adım (görüşme tarihi)', done:false },
+    { t:'Yanıt gelince CRM’de aşamayı güncelle', done:false } ]}),
   T('Tahtakale × Part-y App kurumsal görüşmesi (Cmt 11:00)', { pri:'Kesin', group:'Platform', cat:'Toplantı', project:'Parti', due:dayOff('2026-11-28'), today:dayOff('2026-11-28') === 0, est:1, slot:'Cmt 28 Kas · 11:00', subs:[
     { t:'Part-y App kurumsal sunumunu hazırla (değer önerisi, kurumsal kullanım senaryoları)', done:false },
     { t:'Tahtakale’nin ihtiyacını ve karar vericileri netleştir', done:false },
@@ -300,6 +306,7 @@ const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
+  { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
   { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
