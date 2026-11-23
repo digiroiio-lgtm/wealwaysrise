@@ -83,6 +83,7 @@ const PROJECTS = [
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
+  { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
   { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
@@ -147,6 +148,8 @@ EVENTS.push(
     title:'🤝 Tahtakale × Part-y App — kurumsal görüşme', note:'Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
   { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
     title:'📝 Werrise Ltd — İngiltere’de şirket kurma işi', note:'Not: UK şirket kuruluşu adımlarını başlat.' },
+  { date:'2026-12-02', lead:2, s:'11:30', e:'12:00', type:'meeting', short:'Ezgi · UK Longevity', project:'UK Longevity', group:'Proje',
+    title:'📞 Ezgi — UK Longevity iş geliştirme görüşmesi', note:'WhatsApp üzerinden sesli görüşme. Gani’nin Ezgi ile yaptığı görüşmenin özetini önceden al.' },
   { date:'2026-12-01', lead:2, s:'12:30', e:'12:45', type:'plan', short:'Akdeniz çok dilli siteler', project:'Akdeniz Dental', group:'Markalar',
     title:'📝 Akdeniz Dental çok dilli siteler: .pl → .de → .ro, ardından Google Ads', note:'.pl’den sonra sırasıyla .de ve .ro siteleri kurgulanacak; siteler bitince Google Ads kampanya kurguları yapılacak.' },
   { date:'2026-12-05', key:'tatil1', allDay:true, lead:3, s:'07:00', e:'07:15', type:'plan', short:'Tatil (1 gece 2 gün)', project:'Aile & Kişisel', group:'Yaşam',
@@ -228,6 +231,11 @@ const TASKS = [
     { t:'28 Kas görüşmesinde fırsatı aç: kapsam, beklenti, bütçe', done:false },
     { t:'UK vizit tarihini netleştir ve inspection planını ona göre yap', done:false },
     { t:'Kısa teklif / iş tanımı gönder', done:false } ]}),
+  T('Ezgi ile UK Longevity iş geliştirme görüşmesi (Çar 11:30)', { pri:'Yüksek', group:'Proje', cat:'Satış / Lead', project:'UK Longevity', due:dayOff('2026-12-02'), today:dayOff('2026-12-02') === 0, est:.5, slot:'Çar 2 Ara · 11:30', subs:[
+    { t:'Gani’den Ezgi ile yaptığı görüşmenin özetini al', done:false },
+    { t:'UK Longevity fırsatı: hizmet kapsamı, hedef kitle, iş birliği modeli', done:false },
+    { t:'Görüşme: rol dağılımı ve ilk adımlar', done:false },
+    { t:'Görüşme sonrası: notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
   T('Werrise Ltd (UK) şirket kuruluşunu başlat', { pri:'Yüksek', group:'Platform', cat:'Operasyon', project:'Werrise Digital', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 11:00', subs:[
     { t:'Kuruluş yolunu seç (Companies House doğrudan / formation agent)', done:false },
     { t:'Registered office adresi ve direktör/hissedar bilgileri', done:false },
@@ -282,6 +290,7 @@ let SIGNALS = [
 const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
+  { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
