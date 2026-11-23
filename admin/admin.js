@@ -183,6 +183,13 @@ EVENTS.push(
   { date:'2026-11-25', lead:1, s:'13:30', e:'14:30', type:'task', short:'BestHouseTurkey · takip & iyileştirme', project:'Best House Turkey', group:'Markalar',
     title:'📈 Best House Turkey — Search Console takip & iyileştirme', note:'Son 3 ay: 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7. Tıklamalar ~7 Kas sonrası öncekinin altına düştü.' }
 );
+/* 25–26 Kas: SE Ranking incelemesi + kişisel büyük gün (detaylar şifreli) */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'14:30', e:'15:00', type:'task', short:'SE Ranking incelemesi', project:'Werrise Digital', group:'Platform',
+    title:'🔎 SE Ranking — iş geliştirme için tool incelemesi (seranking.com/subscription)', note:'Planlar, fiyatlar ve kotalar; Best House / DMC / Akdeniz SEO ihtiyaçlarına uygunluk.' },
+  { date:'2026-11-26', key:'k26', allDay:true, lead:2, s:'07:00', e:'07:15', type:'plan', short:'Önemli gün', project:'Aile & Kişisel', group:'Yaşam',
+    title:'⭐ Önemli gün — kişisel', note:'Detaylar şifreli notlarda.' }
+);
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
   { date:'2026-12-10', lead:2, s:'11:45', e:'12:45', type:'task', short:'DMC · outreach sihirbazı', project:'DMC Turkey Partner', group:'Markalar',
@@ -319,6 +326,12 @@ const TASKS = [
     { t:'Gösterimi yüksek, TO’su düşük sayfalarda başlık/açıklama iyileştir', done:false },
     { t:'Dizin oluşturma ve Önemli Web Verileri hatalarını kontrol et', done:false },
     { t:'Yapılanları not et, 2 hafta sonra sonuçları karşılaştır', done:false } ]}),
+  T('SE Ranking’i incele (iş geliştirme)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 14:30', subs:[
+    { t:'Plan ve fiyatları karşılaştır: seranking.com/subscription.html', done:false },
+    { t:'Kotalar: takip edilen anahtar kelime, proje, site denetimi, kullanıcı sayısı', done:false },
+    { t:'Kullanım alanları: Best House, DMC, Akdeniz (.pl/.de/.ro), müşteri raporlaması', done:false },
+    { t:'Karar: hangi plan / beyaz etiket (white-label) raporlama gerekli mi?', done:false } ]}),
+  T('Kişisel araştırma', { key:'ev', pri:'Yüksek', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:1.5 }),
   T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
     { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
     { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
