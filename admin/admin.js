@@ -140,7 +140,7 @@ const MONTHLY = [
 /* İzmir · İnnova Akademi × Akbank dijital dönüşüm / satış eğitimi (eğitmen) */
 EVENTS.push(
   { date:'2026-12-07', allDay:true, lead:3, s:'07:00', e:'07:15', type:'plan', short:'İzmir (Akbank eğitimi)', project:'İnnova Akademi · Akbank', group:'Proje',
-    title:'✈️ İzmir — Akbank eğitimi için şehir dışı (7–8 Aralık)', note:'8 Aralık Salı 15:30’da eğitim var.' },
+    title:'✈️ İzmir — Akbank eğitimi için şehir dışı (7–8 Aralık)', note:'Dönüşüm Akademisi · Uçuş 08:15 gidiş / 22:00 dönüş · Otel Alsancak. 8 Aralık Salı 15:30’da eğitim var.' },
   { date:'2026-12-08', allDay:true, s:'07:00', e:'07:15', type:'plan', short:'İzmir', project:'İnnova Akademi · Akbank', group:'Proje', hideInList:true, lead:0,
     title:'📍 İzmir’de (2. gün)', note:'' },
   { date:'2026-12-08', lead:5, s:'15:30', e:'17:30', type:'meeting', short:'Akbank eğitimi · İzmir', project:'İnnova Akademi · Akbank', group:'Proje',
@@ -208,6 +208,17 @@ EVENTS.push(
   { date:'2026-12-10', lead:2, s:'11:45', e:'12:45', type:'task', short:'DMC · outreach sihirbazı', project:'DMC Turkey Partner', group:'Markalar',
     title:'🛠️ DMC Turkey Partner — outreach sihirbazını kur', note:'Londra Depo’daki outreach paneli + müşteri keşif sihirbazı modeli DMC için uyarlanacak.' }
 );
+/* İzmir seyahati — uçuş & otel (Dönüşüm Akademisi; PNR/voucher şifreli) */
+EVENTS.push(
+  { date:'2026-12-07', key:'izf1', lead:2, s:'07:45', e:'09:25', type:'plan', short:'Uçuş AYT → İzmir', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'✈️ Antalya → İzmir uçuşu (biniş 07:45 · kalkış 08:15 · varış 09:25)', note:'Kayıtlı bagaj 15 kg + 1 kabin (8 kg). Detay şifreli notlarda.' },
+  { date:'2026-12-07', key:'izh1', lead:0, s:'14:00', e:'14:15', type:'plan', short:'Otel check-in (İzmir)', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'🏨 Otel check-in — İzmir Alsancak (14:00)', note:'1 gece, kahvaltı dahil. Check-out 8 Ara 12:00.' },
+  { date:'2026-12-08', key:'izh2', lead:0, s:'12:00', e:'12:15', type:'plan', short:'Otel check-out', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'🏨 Otel check-out (12:00) — bavulu otelde bırak / yanına al', note:'Eğitim 15:30, dönüş uçuşu 22:00.' },
+  { date:'2026-12-08', key:'izf2', lead:0, s:'21:30', e:'23:05', type:'plan', short:'Uçuş İzmir → AYT', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'✈️ İzmir → Antalya uçuşu (biniş 21:30 · kalkış 22:00 · varış 23:05)', note:'Detay şifreli notlarda.' }
+);
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
   { date:'2027-06-01', lead:7, s:'09:00', e:'09:15', type:'plan', short:'ABD seyahati · tarih teyidi', project:'İTO · Filtre Kümelenmesi', group:'Proje',
@@ -263,12 +274,18 @@ const TASKS = [
   T('Kredi kartı #2 ekstre borcunu öde (son gün)', { key:'kart2', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.1 }),
   T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
   T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
-  T('Akbank eğitimi: İzmir ulaşım & konaklama ayarla (7–8 Ara)', { pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:.5 }),
+  T('Akbank eğitimi: İzmir ulaşım & konaklama ayarla (7–8 Ara)', { done:true, pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:.5 }),
   T('Akbank eğitimi: sunum ve materyalleri hazırla', { pri:'Kesin', group:'Proje', cat:'Eğitim', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-04'), today:dayOff('2026-12-04') === 0, est:3, subs:[
     { t:'İnnova Akademi’den katılımcı profili ve süreyi teyit et', done:false },
     { t:'Dijital dönüşüm & satış odaklı akışı çıkar', done:false },
     { t:'Sunum + örnek vaka + uygulama alıştırması', done:false },
     { t:'Gerekirse ekipman / bağlantı ihtiyacını bildir', done:false } ]}),
+  T('İzmir seyahati hazırlığı: online check-in, bagaj, belgeler', { key:'izt1', pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-06'), today:dayOff('2026-12-06') === 0, est:.5, subs:[
+    { t:'Gidiş uçuşu online check-in (7 Ara 08:15)', done:false },
+    { t:'Bagaj: kayıtlı 15 kg + kabin 8 kg (55×40×23)', done:false },
+    { t:'Kimlik + eğitim sunumu (laptop, şarj, adaptör)', done:false },
+    { t:'7 Ara sabah 07:00 civarı havalimanında ol (biniş 07:45)', done:false },
+    { t:'İzmir’deyken Antalya’daki UK hasta karşılamasını devret', done:false } ]}),
   T('Eğitmen: İnnova Akademi × Akbank eğitimi (İzmir, Sal 15:30)', { pri:'Kesin', group:'Proje', cat:'Eğitim', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-08'), today:dayOff('2026-12-08') === 0, est:2, slot:'Sal 8 Ara · 15:30 · İzmir' }),
   T('ABD seyahati (İTO filtre kümelenmesi): net tarihi teyit et', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'İTO · Filtre Kümelenmesi', due:dayOff('2027-06-01'), today:dayOff('2027-06-01') === 0, est:.25, follow:true, subs:[
     { t:'Planlanan: 22–26 Haziran 2027 — Ticaret Bakanlığı / İTO’dan kesin tarihi al', done:false },
