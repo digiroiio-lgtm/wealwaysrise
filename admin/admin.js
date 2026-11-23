@@ -62,7 +62,7 @@ const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}${d.getFullYear() !== NOW().getFullYear() ? ' ' + d.getFullYear() : ''}`; };
 const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
 const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
-const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : money(d.value);
+const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : d.value ? money(d.value) : '—';
 const tl = d => !d.cur;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); };
 
@@ -75,14 +75,19 @@ const PEOPLE = ['Oğuz'];
 const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'Kontrol merkezini gerçek verilerle doldurmak', subs:['wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
-  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','UK Market Inspection · Tahtakale (fırsat)','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
+  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
+  { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
+  { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
+  { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
+  { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
   { name:'Kişisel Finans', group:'Finans', owner:'Oğuz', next:'Aidat her ayın 1’i · kira her ayın 15’i', subs:['Düzenli giderler','Planlı ödemeler (kart, okul)','Yatırım (fon)'] }
 ];
 
@@ -131,6 +136,45 @@ EVENTS.push(
     title:'📍 İzmir’de (2. gün)', note:'' },
   { date:'2026-12-08', lead:5, s:'15:30', e:'17:30', type:'meeting', short:'Akbank eğitimi · İzmir', project:'İnnova Akademi · Akbank', group:'Proje',
     title:'🎤 İnnova Akademi × Akbank — dijital dönüşüm & satış eğitimi (eğitmen)', note:'İzmir, Salı 15:30. Eğitmen olarak aktif görev.' }
+);
+/* 23 Kas 2026 eklenenler: Ask a Roamer, Werrise Ltd UK, Akdeniz çok dilli siteler, tatil */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'11:30', e:'12:00', type:'task', short:'Ask a Roamer · rehber PDF', project:'Ask a Roamer', group:'Markalar',
+    title:'📘 Ask a Roamer — rehber PDF geliştirmelerini takip et', note:'Yeni marka. Rehber (.pdf) üzerindeki geliştirmelerin durumu.' },
+  { date:'2026-11-24', lead:1, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · Luenire SPA (taslak)', project:'Luenire SPA', group:'Proje',
+    title:'📞 Luenire SPA · Sabrina görüşmesi — Salı 09:00 UK / 12:00 TR (teyit bekliyor)', note:'Sabrina Salı 09:00 UK’yi onayladı; teyidi bizde. Alternatif: Perşembe.' },
+  { date:'2026-11-24', lead:1, s:'13:30', e:'13:45', type:'task', short:'Semih’e yanıt (Dotneed)', project:'Dotneed', group:'Platform',
+    title:'💬 Dotneed — iş başvurusu yapan Semih’e WhatsApp’tan yanıt yaz', note:'Semih 12 Kas’ta “DotNeed Paketleme Çalışması” PDF’ini ve sesli mesaj gönderdi, 16 Kas’ta gelişme sordu.' },
+  { date:'2026-11-26', lead:0, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · alternatif', project:'Luenire SPA', group:'Proje',
+    title:'📞 Luenire SPA · Sabrina — alternatif gün: Perşembe 09:00 UK / 12:00 TR', note:'Salı uymazsa Sabrina Perşembe’yi önerdi.' },
+  { date:'2026-11-27', lead:1, s:'11:15', e:'11:30', type:'task', short:'Skal · takip mesajı', project:'Parti', group:'Platform',
+    title:'💬 Skal başkanı Erdoğan Turan’a Part-y × Skal iş birliği takip mesajı', note:'Part-y için Skal iş birliğinin takibi.' },
+  { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
+    title:'🤝 Tahtakale × Part-y App — kurumsal görüşme', note:'Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
+  { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
+    title:'📝 Werrise Ltd — İngiltere’de şirket kurma işi', note:'Not: UK şirket kuruluşu adımlarını başlat.' },
+  { date:'2026-12-02', lead:2, s:'11:30', e:'12:00', type:'meeting', short:'Ezgi · UK Longevity', project:'UK Longevity', group:'Proje',
+    title:'📞 Ezgi — UK Longevity iş geliştirme görüşmesi', note:'WhatsApp üzerinden sesli görüşme. Gani’nin Ezgi ile yaptığı görüşmenin özetini önceden al.' },
+  { date:'2026-12-01', lead:2, s:'12:30', e:'12:45', type:'plan', short:'Akdeniz çok dilli siteler', project:'Akdeniz Dental', group:'Markalar',
+    title:'📝 Akdeniz Dental çok dilli siteler: .pl → .de → .ro, ardından Google Ads', note:'.pl’den sonra sırasıyla .de ve .ro siteleri kurgulanacak; siteler bitince Google Ads kampanya kurguları yapılacak.' },
+  { date:'2026-12-05', key:'tatil1', allDay:true, lead:3, s:'07:00', e:'07:15', type:'plan', short:'Tatil (1 gece 2 gün)', project:'Aile & Kişisel', group:'Yaşam',
+    title:'🌴 Aile & eş dost tatili (5–6 Aralık, 1 gece 2 gün)', note:'Konaklamalı.' },
+  { date:'2026-12-06', key:'tatil2', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'Tatil (2. gün)', project:'Aile & Kişisel', group:'Yaşam',
+    title:'🌴 Tatil — 2. gün (dönüş)', note:'' }
+);
+/* UK hasta gelişi — Akdeniz Dental (isim/otel/referans şifreli notlarda) */
+EVENTS.push(
+  { date:'2026-12-07', key:'kb1', allDay:true, lead:4, s:'07:00', e:'07:15', type:'plan', short:'UK hasta gelişi', project:'Akdeniz Dental', group:'Markalar',
+    title:'🦷 UK hasta gelişi — Akdeniz Dental (7–10 Ara, otel check-in)', note:'Diş tedavisi için geliyor. Detaylar şifreli notlarda.' },
+  { date:'2026-12-08', key:'kb2', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'UK hasta Antalya’da', project:'Akdeniz Dental', group:'Markalar', title:'🦷 UK hasta Antalya’da — tedavi süreci', note:'' },
+  { date:'2026-12-09', key:'kb3', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'UK hasta Antalya’da', project:'Akdeniz Dental', group:'Markalar', title:'🦷 UK hasta Antalya’da — tedavi süreci', note:'' },
+  { date:'2026-12-10', key:'kb4', lead:1, s:'21:00', e:'22:40', type:'plan', short:'UK hasta dönüş uçuşu', project:'Akdeniz Dental', group:'Markalar',
+    title:'✈️ UK hasta dönüşü — easyJet EZY5710 · Antalya 21:00 → London Southend 22:40', note:'Bagaj teslimi 18:30–20:00, Terminal 2. Otel check-out aynı gün.' }
+);
+/* PL hasta (akdenizdental.pl reklamından) — isim/otel şifreli notlarda */
+EVENTS.push(
+  { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
+    title:'🦷 PL hasta — otelden transfer (11:00) + muayene, Akdeniz Dental', note:'İmplant + zirkon planlaması; muayene sonrası tedaviye başlamak istiyor. Kaynak: akdenizdental.pl reklamı.' }
 );
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
@@ -186,6 +230,70 @@ const TASKS = [
     { t:'Vize, uçuş ve konaklama durumunu kontrol et', done:false } ]}),
   T('Planlı ödeme için nakit hazırla', { key:'bes', pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-01'), today:dayOff('2027-02-01') === 0, est:.25 }),
   T('Planlı USD ödemesini yap', { key:'deniz', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-15'), today:dayOff('2027-02-15') === 0, est:.25 }),
+  T('Ask a Roamer: rehber PDF geliştirmelerini takip et', { pri:'Orta', group:'Markalar', cat:'Takip', project:'Ask a Roamer', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, follow:true, slot:'Çar 25 Kas · 11:30', subs:[
+    { t:'Rehber PDF’in son sürümünü gözden geçir', done:false },
+    { t:'Bekleyen geliştirmeleri ve sorumluları listele', done:false },
+    { t:'Bir sonraki takip tarihini belirle', done:false } ]}),
+  T('Sabrina’ya (Luenire SPA) görüşme saatini teyit et', { pri:'Kesin', group:'Proje', cat:'Takip', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.1, follow:true, slot:'Sal 24 Kas · sabah', subs:[
+    { t:'Takvimi kontrol et: Salı 12:00 TR (09:00 UK) uygun mu?', done:false },
+    { t:'WhatsApp’tan yaz: Salı 09:00 UK teyit — olmazsa Perşembe 09:00 UK', done:false },
+    { t:'Kesin günü Claude’a bildir (takvim güncellensin)', done:false } ]}),
+  T('Semih’e WhatsApp’tan yanıt yaz (Dotneed iş başvurusu)', { pri:'Yüksek', group:'Platform', cat:'Takip', project:'Dotneed', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, slot:'Sal 24 Kas · 13:30', subs:[
+    { t:'“DotNeed Paketleme Çalışması” PDF’ini (3 sayfa) gözden geçir', done:false },
+    { t:'12 Kas tarihli sesli mesajı (4:18) dinle', done:false },
+    { t:'Karar / sonraki adım: görüşme, deneme işi ya da bekleme', done:false },
+    { t:'WhatsApp’tan yanıt gönder (16 Kas’taki “gelişme var mı” sorusuna)', done:false } ]}),
+  T('Luenire SPA · Sabrina görüşmesi', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.5, slot:'Sal 24 Kas · 12:00 TR / 09:00 UK (taslak)', subs:[
+    { t:'Görüşme gündemini ve ekip koordinasyonunu netleştir', done:false },
+    { t:'Görüşme sonrası notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Skal · Erdoğan Turan’a iş birliği takip mesajı yolla (Part-y)', { pri:'Yüksek', group:'Platform', cat:'Takip', project:'Parti', due:dayOff('2026-11-27'), today:dayOff('2026-11-27') === 0, est:.25, follow:true, slot:'Cum 27 Kas · 11:15', subs:[
+    { t:'Son konuşulanları hatırla: Part-y × Skal iş birliği kapsamı', done:false },
+    { t:'Kısa takip mesajı: somut öneri + sonraki adım (görüşme tarihi)', done:false },
+    { t:'Yanıt gelince CRM’de aşamayı güncelle', done:false } ]}),
+  T('Tahtakale × Part-y App kurumsal görüşmesi (Cmt 11:00)', { pri:'Kesin', group:'Platform', cat:'Toplantı', project:'Parti', due:dayOff('2026-11-28'), today:dayOff('2026-11-28') === 0, est:1, slot:'Cmt 28 Kas · 11:00', subs:[
+    { t:'Part-y App kurumsal sunumunu hazırla (değer önerisi, kurumsal kullanım senaryoları)', done:false },
+    { t:'Tahtakale’nin ihtiyacını ve karar vericileri netleştir', done:false },
+    { t:'Gündeme ekle: UK Market Inspection fırsatı (UK vizit sırasında)', done:false },
+    { t:'Görüşme sonrası: notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Tahtakale · UK Market Inspection fırsatını kovala', { pri:'Yüksek', group:'Platform', cat:'Satış / Lead', project:'Werrise Digital', due:dayOff('2026-11-28') + 3, today:dayOff('2026-11-28') + 3 === 0, est:.5, follow:true, subs:[
+    { t:'28 Kas görüşmesinde fırsatı aç: kapsam, beklenti, bütçe', done:false },
+    { t:'UK vizit tarihini netleştir ve inspection planını ona göre yap', done:false },
+    { t:'Kısa teklif / iş tanımı gönder', done:false } ]}),
+  T('Ezgi ile UK Longevity iş geliştirme görüşmesi (Çar 11:30)', { pri:'Yüksek', group:'Proje', cat:'Satış / Lead', project:'UK Longevity', due:dayOff('2026-12-02'), today:dayOff('2026-12-02') === 0, est:.5, slot:'Çar 2 Ara · 11:30', subs:[
+    { t:'Gani’den Ezgi ile yaptığı görüşmenin özetini al', done:false },
+    { t:'UK Longevity fırsatı: hizmet kapsamı, hedef kitle, iş birliği modeli', done:false },
+    { t:'Görüşme: rol dağılımı ve ilk adımlar', done:false },
+    { t:'Görüşme sonrası: notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Werrise Ltd (UK) şirket kuruluşunu başlat', { pri:'Yüksek', group:'Platform', cat:'Operasyon', project:'Werrise Digital', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 11:00', subs:[
+    { t:'Kuruluş yolunu seç (Companies House doğrudan / formation agent)', done:false },
+    { t:'Registered office adresi ve direktör/hissedar bilgileri', done:false },
+    { t:'UK iş bankası hesabı', done:false },
+    { t:'Muhasebeci ve vergi kayıtları (Corporation Tax, gerekirse VAT)', done:false } ]}),
+  T('Akdeniz Dental çok dilli siteler + Google Ads planı', { pri:'Yüksek', group:'Markalar', cat:'İçerik / SEO', project:'Akdeniz Dental', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 12:30', subs:[
+    { t:'.pl sitesi (mevcut) — referans yapı olarak kullan', done:true },
+    { t:'1. sıra: Almanca site (.de) kurgusu', done:false },
+    { t:'2. sıra: Rumence site (.ro) kurgusu', done:false },
+    { t:'Siteler bitince: .de Google Ads kampanya kurgusu', done:false },
+    { t:'Siteler bitince: .ro Google Ads kampanya kurgusu', done:false } ]}),
+  T('Tatil hazırlığı: rezervasyon ve plan kontrolü', { key:'tatil', pri:'Orta', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-12-03'), today:dayOff('2026-12-03') === 0, est:.25 }),
+  T('UK hasta gelişi hazırlığı (Akdeniz Dental, 7–10 Ara)', { key:'kbt1', pri:'Kesin', group:'Markalar', cat:'Operasyon', project:'Akdeniz Dental', due:dayOff('2026-12-03'), today:dayOff('2026-12-03') === 0, est:.5, subs:[
+    { t:'Akdeniz Dental’e geliş bilgisini ilet (7–10 Ara, otel, dönüş uçuşu)', done:false },
+    { t:'Tedavi planı ve randevu saatlerini netleştir', done:false },
+    { t:'Geliş uçuşu bilgisini hastadan al → havalimanı transferi', done:false },
+    { t:'Referans veren kişiye bilgi ver', done:false } ]}),
+  T('UK hasta: geliş ve otel check-in kontrolü', { key:'kbt2', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.2 }),
+  T('UK hasta dönüşü: otel → havalimanı transferi ve tedavi sonrası takip', { key:'kbt3', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:.25, slot:'Per 10 Ara · bagaj 18:30–20:00', subs:[
+    { t:'Transfer saatini teyit et (uçuş 21:00, AYT Terminal 2)', done:false },
+    { t:'Tedavi sonrası kontrol / bakım talimatları iletildi mi?', done:false },
+    { t:'Memnuniyet ve yorum (Google) rica et', done:false } ]}),
+  T('PL hasta: Pzt 14 Ara 11:00 transferini organize et', { key:'jlt1', pri:'Kesin', group:'Markalar', cat:'Operasyon', project:'Akdeniz Dental', due:dayOff('2026-12-11'), today:dayOff('2026-12-11') === 0, est:.25, subs:[
+    { t:'Otelden kliniğe transfer: Pzt 14 Ara 11:00 — araç ve şoförü ayarla', done:false },
+    { t:'Hasta koordinatörüne (PL) transfer detayını ilet', done:false },
+    { t:'Klinikte muayene randevusunu teyit et (implant + zirkon planlaması)', done:false } ]}),
+  T('PL hasta: muayene ve tedavi başlangıcı takibi', { key:'jlt2', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-14'), today:dayOff('2026-12-14') === 0, est:.25, slot:'Pzt 14 Ara · 11:00 transfer', subs:[
+    { t:'Transfer zamanında yapıldı mı?', done:false },
+    { t:'Muayene sonucu ve tedavi planı (implant + zirkon) netleşti mi?', done:false },
+    { t:'.pl reklam dönüşümü olarak raporla (Google Ads)', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -228,6 +336,12 @@ let SIGNALS = [
 const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
+  { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
+  { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
+  { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
+  { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
+  { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
+  { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
   { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
   { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
 ];
