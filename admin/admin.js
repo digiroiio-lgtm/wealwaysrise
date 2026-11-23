@@ -205,6 +205,13 @@ EVENTS.push(
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
 MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
+/* Her ayın son günü — dijital tool ücretleri & kota aşımları kontrolü (Kas 2026 – Ara 2027) */
+const MONTH_END = { s:'16:00', e:'16:30', type:'task', monthEnd:true, lead:1, short:'Tool ücretleri & kota kontrolü', project:'Werrise Digital', group:'Platform',
+  title:'🧾 Dijital tool ücretleri & kota aşımları kontrolü', note:'Her ayın son günü: abonelikler, kullanım limitleri ve aşım ücretleri.' };
+const MONTH_ENDS = [];
+for (let y = 2026; y <= 2027; y++) for (let m = (y === 2026 ? 10 : 0); m < 12; m++) MONTH_ENDS.push(isoDate(new Date(y, m + 1, 0)));
+const NEXT_ME = MONTH_ENDS.find(iso => dayOff(iso) >= 0);
+MONTH_ENDS.forEach(date => EVENTS.push({ ...MONTH_END, date, hideInList: date !== NEXT_ME }));
 const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
 
 let uid = 100;
@@ -318,6 +325,14 @@ const TASKS = [
     { t:'Keşif kriterleri ve ilk lead listesi', done:false },
     { t:'Outreach mesaj şablonları (EN) ve gönderim akışı', done:false },
     { t:'Günlük çalıştırma rutinine ekle (Claude’a yaz)', done:false } ]}),
+  ...(NEXT_ME ? [T('Dijital tool ücretleri & kota aşımlarını kontrol et', { pri:'Yüksek', group:'Platform', cat:'Finans', project:'Werrise Digital', due:dayOff(NEXT_ME), today:dayOff(NEXT_ME) === 0, est:.5, recur:'Her ayın son günü', subs:[
+    { t:'Yapay zeka araçları (Claude, ChatGPT, Gemini vb.): abonelik ücreti ve kullanım limiti', done:false },
+    { t:'Hosting & altyapı (Vercel vb.): kullanım, limit ve aşım ücreti', done:false },
+    { t:'SEO araçları (SE Ranking, Semrush vb.): kota ve yenileme tarihi', done:false },
+    { t:'Reklam hesapları (Google Ads): bütçe aşımı var mı?', done:false },
+    { t:'Alan adı ve e-posta yenilemeleri', done:false },
+    { t:'Müşteriye yansıyan / müşteri kartından ödenen araçları ayır', done:false },
+    { t:'Ay toplamını Bütçe’ye işle (Claude’a yaz)', done:false } ]})] : []),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -506,7 +521,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -672,6 +687,7 @@ PAGES.planlama = () => {
   <div class="card-head mt2"><div><div class="eyebrow">Her hafta içi otomatik</div><h2 style="margin-top:4px">Rutinler</h2></div><span class="pill green">${ic('repeat',12)} Pzt–Cum</span></div>
   <div class="card"><div class="table-wrap"><table><thead><tr><th>Saat</th><th>Rutin</th><th>Marka / proje</th><th>Tür</th><th>Günler</th></tr></thead><tbody>
     ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>Pzt–Cum</td></tr>`).join('')}
+    ${[...MONTHLY, MONTH_END].map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong><small>${esc(r.note || '')}</small></td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill amber">${r.kind === 'expense' ? 'Ödeme' : r.monthEnd ? 'Kontrol' : 'Gelir'}</span></td><td>${r.monthEnd ? 'Her ayın son günü' : `Her ayın ${r.day}’i`}</td></tr>`).join('')}
   </tbody></table></div></div>`;
 };
 const kcardTask = t => `<div class="kcard" draggable="true" data-drag="task" data-id="${t.id}"><b>${esc(t.title)}</b><div class="meta row" style="margin-top:6px;gap:5px">${priPill(t.pri)}<span class="pill">${gdot(t.group)} ${esc(t.project)}</span>${t.due<0?`<span class="pill red">${-t.due}g</span>`:''}</div></div>`;
