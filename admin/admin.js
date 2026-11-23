@@ -88,7 +88,7 @@ const PROJECTS = [
   { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
   { name:'UK Hasta Referans', group:'Proje', owner:'Oğuz', next:'Cmt 5 Ara 14:00 · David’e takip mesajı', subs:['David & Neil — UK reviews platformu ve Facebook grupları','Banner + benzersiz takip linki (Turkey Teeth on Finance)','Finans metni onayı · referans anlaşması','Hastalar → Akdeniz Dental'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
-  { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
+  { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Per 26 Kas 12:00 TR · Sabrina görüşmesi (kesin)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
   { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
   { name:'Kişisel Finans', group:'Finans', owner:'Oğuz', next:'Aidat her ayın 1’i · kira her ayın 15’i', subs:['Düzenli giderler','Planlı ödemeler (kart, okul)','Yatırım (fon)'] }
@@ -148,12 +148,8 @@ EVENTS.push(
 EVENTS.push(
   { date:'2026-11-25', lead:1, s:'11:30', e:'12:00', type:'task', short:'Ask a Roamer · rehber PDF', project:'Ask a Roamer', group:'Markalar',
     title:'📘 Ask a Roamer — rehber PDF geliştirmelerini takip et', note:'Yeni marka. Rehber (.pdf) üzerindeki geliştirmelerin durumu.' },
-  { date:'2026-11-24', lead:1, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · Luenire SPA (taslak)', project:'Luenire SPA', group:'Proje',
-    title:'📞 Luenire SPA · Sabrina görüşmesi — Salı 09:00 UK / 12:00 TR (teyit bekliyor)', note:'Sabrina Salı 09:00 UK’yi onayladı; teyidi bizde. Alternatif: Perşembe.' },
-  { date:'2026-11-24', lead:1, s:'13:30', e:'13:45', type:'task', short:'Semih’e yanıt (Dotneed)', project:'Dotneed', group:'Platform',
-    title:'💬 Dotneed — iş başvurusu yapan Semih’e WhatsApp’tan yanıt yaz', note:'Semih 12 Kas’ta “DotNeed Paketleme Çalışması” PDF’ini ve sesli mesaj gönderdi, 16 Kas’ta gelişme sordu.' },
-  { date:'2026-11-26', lead:0, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · alternatif', project:'Luenire SPA', group:'Proje',
-    title:'📞 Luenire SPA · Sabrina — alternatif gün: Perşembe 09:00 UK / 12:00 TR', note:'Salı uymazsa Sabrina Perşembe’yi önerdi.' },
+  { date:'2026-11-26', lead:2, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · Luenire SPA', project:'Luenire SPA', group:'Proje',
+    title:'📞 Luenire SPA · Sabrina görüşmesi — Perşembe 09:00 UK / 12:00 TR (kesin)', note:'Gün Perşembe olarak kesinleşti.' },
   { date:'2026-11-27', lead:1, s:'11:15', e:'11:30', type:'task', short:'Skal · takip mesajı', project:'Parti', group:'Platform',
     title:'💬 Skal başkanı Erdoğan Turan’a Part-y × Skal iş birliği takip mesajı', note:'Part-y için Skal iş birliğinin takibi.' },
   { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
@@ -270,7 +266,7 @@ const TASKS = [
     { t:'Rehber PDF’in son sürümünü gözden geçir', done:false },
     { t:'Bekleyen geliştirmeleri ve sorumluları listele', done:false },
     { t:'Bir sonraki takip tarihini belirle', done:false } ]}),
-  T('Sabrina’ya (Luenire SPA) görüşme saatini teyit et', { pri:'Kesin', group:'Proje', cat:'Takip', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.1, follow:true, slot:'Sal 24 Kas · sabah', subs:[
+  T('Sabrina’ya (Luenire SPA) görüşme saatini teyit et', { done:true, pri:'Kesin', group:'Proje', cat:'Takip', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.1, follow:true, slot:'Sal 24 Kas · sabah', subs:[
     { t:'Takvimi kontrol et: Salı 12:00 TR (09:00 UK) uygun mu?', done:false },
     { t:'WhatsApp’tan yaz: Salı 09:00 UK teyit — olmazsa Perşembe 09:00 UK', done:false },
     { t:'Kesin günü Claude’a bildir (takvim güncellensin)', done:false } ]}),
@@ -279,7 +275,7 @@ const TASKS = [
     { t:'12 Kas tarihli sesli mesajı (4:18) dinle', done:false },
     { t:'Karar / sonraki adım: görüşme, deneme işi ya da bekleme', done:false },
     { t:'WhatsApp’tan yanıt gönder (16 Kas’taki “gelişme var mı” sorusuna)', done:false } ]}),
-  T('Luenire SPA · Sabrina görüşmesi', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.5, slot:'Sal 24 Kas · 12:00 TR / 09:00 UK (taslak)', subs:[
+  T('Luenire SPA · Sabrina görüşmesi (Per 12:00 TR)', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'Luenire SPA', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:.5, slot:'Per 26 Kas · 12:00 TR / 09:00 UK', subs:[
     { t:'Görüşme gündemini ve ekip koordinasyonunu netleştir', done:false },
     { t:'Görüşme sonrası notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
   T('Skal · Erdoğan Turan’a iş birliği takip mesajı yolla (Part-y)', { pri:'Yüksek', group:'Platform', cat:'Takip', project:'Parti', due:dayOff('2026-11-27'), today:dayOff('2026-11-27') === 0, est:.25, follow:true, slot:'Cum 27 Kas · 11:15', subs:[
@@ -416,7 +412,7 @@ const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
-  { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
+  { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Per 26 Kas 09:00 UK (12:00 TR) — kesin' },
   { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
   { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
