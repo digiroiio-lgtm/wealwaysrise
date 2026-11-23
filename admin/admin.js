@@ -129,6 +129,8 @@ const MONTHLY = [
     title:'💷 GBP ödeme günü — Akdeniz Dental UK finans (ayın 1’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
   { day:15, key:'gbp15', kind:'income', lead:1, s:'09:15', e:'09:20', type:'plan', short:'GBP ödemesi · Akdeniz UK finans', project:'Akdeniz Dental', group:'Markalar',
     title:'💷 GBP ödeme günü — Akdeniz Dental UK finans (ayın 15’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
+  { day:25, key:'maxm', kind:'expense', manualTask:true, from:'2026-12-01', lead:3, s:'09:05', e:'09:10', type:'plan', short:'Kart #2 son ödeme', project:'Kişisel Finans', group:'Finans',
+    title:'💳 Kredi kartı #2 — son ödeme günü (her ayın 25’i)', note:'Kesim her ayın 15’i civarı. Ekstre tutarını Claude’a yaz, Bütçe’ye işlensin.' },
   { day:1, key:'aidat', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Aidat', project:'Kişisel Finans', group:'Finans',
     title:'🏢 Aidat ödemesi', note:'Her ayın 1’i. Tutar Bütçe › Düzenli giderler’de.' },
   { day:15, key:'kira', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kira', project:'Kişisel Finans', group:'Finans',
@@ -223,7 +225,8 @@ EVENTS.push(
 );
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
-MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
+MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 4; k++) { const date = isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)); if (!m.from || date >= m.from) EVENTS.push({ ...m, monthly:true, date }); } });
+const nextOf = key => EVENTS.filter(ev => ev.key === key && dayOff(ev.date) >= 0).sort((a, b) => dayOff(a.date) - dayOff(b.date))[0];
 /* Her ayın son günü — dijital tool ücretleri & kota aşımları kontrolü (Kas 2026 – Ara 2027) */
 const MONTH_END = { s:'16:00', e:'16:30', type:'task', monthEnd:true, lead:1, short:'Tool ücretleri & kota kontrolü', project:'Werrise Digital', group:'Platform',
   title:'🧾 Dijital tool ücretleri & kota aşımları kontrolü', note:'Her ayın son günü: abonelikler, kullanım limitleri ve aşım ücretleri.' };
@@ -251,8 +254,12 @@ const TASKS = [
     { t:'Görüşme sonrası: notları ve kararları panele işle', done:false } ]}),
   T('Parti maaşının hesaba geçtiğini kontrol et', { pri:'Orta', group:'Finans', cat:'Finans', project:'Parti',
     due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
-  ...MONTHLY.filter(m => m.kind === 'expense').map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
+  ...MONTHLY.filter(m => m.kind === 'expense' && !m.manualTask).map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
     due:dayOff(nextMonthly(m)), today:dayOff(nextMonthly(m)) === 0, est:.1, recur:`Her ayın ${m.day}’i` })),
+  ...(nextOf('maxm') ? [T('Kredi kartı #2: ekstreyi kontrol et ve öde', { key:'maxmt', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff(nextOf('maxm').date), today:dayOff(nextOf('maxm').date) === 0, est:.15, recur:'Her ayın 25’i', subs:[
+    { t:'Ekstre tutarı ve asgari ödemeyi kontrol et (kesim ~15’i)', done:false },
+    { t:'Mümkünse tamamını öde (asgari ödenirse kalan borca faiz işler)', done:false },
+    { t:'Tutarı Claude’a yaz → Bütçe’ye işlensin', done:false } ]})] : []),
   T('Kredi kartı #2 ekstre borcunu öde (son gün)', { key:'kart2', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.1 }),
   T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
   T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
