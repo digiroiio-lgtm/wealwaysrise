@@ -79,6 +79,7 @@ const PROJECTS = [
   { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
+  { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
   { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
@@ -142,6 +143,8 @@ EVENTS.push(
     title:'📘 Ask a Roamer — rehber PDF geliştirmelerini takip et', note:'Yeni marka. Rehber (.pdf) üzerindeki geliştirmelerin durumu.' },
   { date:'2026-11-24', lead:1, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · Luenire SPA (taslak)', project:'Luenire SPA', group:'Proje',
     title:'📞 Luenire SPA · Sabrina görüşmesi — Salı 09:00 UK / 12:00 TR (teyit bekliyor)', note:'Sabrina Salı 09:00 UK’yi onayladı; teyidi bizde. Alternatif: Perşembe.' },
+  { date:'2026-11-24', lead:1, s:'13:30', e:'13:45', type:'task', short:'Semih’e yanıt (Dotneed)', project:'Dotneed', group:'Platform',
+    title:'💬 Dotneed — iş başvurusu yapan Semih’e WhatsApp’tan yanıt yaz', note:'Semih 12 Kas’ta “DotNeed Paketleme Çalışması” PDF’ini ve sesli mesaj gönderdi, 16 Kas’ta gelişme sordu.' },
   { date:'2026-11-26', lead:0, tentative:true, s:'12:00', e:'12:30', type:'meeting', short:'Sabrina · alternatif', project:'Luenire SPA', group:'Proje',
     title:'📞 Luenire SPA · Sabrina — alternatif gün: Perşembe 09:00 UK / 12:00 TR', note:'Salı uymazsa Sabrina Perşembe’yi önerdi.' },
   { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
@@ -219,6 +222,11 @@ const TASKS = [
     { t:'Takvimi kontrol et: Salı 12:00 TR (09:00 UK) uygun mu?', done:false },
     { t:'WhatsApp’tan yaz: Salı 09:00 UK teyit — olmazsa Perşembe 09:00 UK', done:false },
     { t:'Kesin günü Claude’a bildir (takvim güncellensin)', done:false } ]}),
+  T('Semih’e WhatsApp’tan yanıt yaz (Dotneed iş başvurusu)', { pri:'Yüksek', group:'Platform', cat:'Takip', project:'Dotneed', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, slot:'Sal 24 Kas · 13:30', subs:[
+    { t:'“DotNeed Paketleme Çalışması” PDF’ini (3 sayfa) gözden geçir', done:false },
+    { t:'12 Kas tarihli sesli mesajı (4:18) dinle', done:false },
+    { t:'Karar / sonraki adım: görüşme, deneme işi ya da bekleme', done:false },
+    { t:'WhatsApp’tan yanıt gönder (16 Kas’taki “gelişme var mı” sorusuna)', done:false } ]}),
   T('Luenire SPA · Sabrina görüşmesi', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'Luenire SPA', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.5, slot:'Sal 24 Kas · 12:00 TR / 09:00 UK (taslak)', subs:[
     { t:'Görüşme gündemini ve ekip koordinasyonunu netleştir', done:false },
     { t:'Görüşme sonrası notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
