@@ -59,8 +59,11 @@ const isoWeek = d => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth()
 const hm = d => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
 const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(); };
-const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`; };
+const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}${d.getFullYear() !== NOW().getFullYear() ? ' ' + d.getFullYear() : ''}`; };
 const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
+const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : money(d.value);
+const tl = d => !d.cur;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); };
 
 /* ================= DEMO DATA ================= */
@@ -68,112 +71,181 @@ const GROUPS = { 'Markalar':'#d92d20','Proje':'#e8590c','NGO':'#2f8a4c','Platfor
 const CATS = { 'Kampanya':'#d92d20','Etkinlik':'#b93a8a','İçerik / SEO':'#7048c6','Toplantı':'#0e8a8a','Satış / Lead':'#e8590c','Eğitim':'#222','Takip':'#2563c9','Operasyon':'#555','Finans':'#2f8a4c','Rapor':'#b7791f','Rutin':'#3f9142','Kişisel':'#8d8c86' };
 const PRIS = { 'Kesin':'red','Yüksek':'amber','Orta':'green','Düşük':'' };
 const PRI_ORDER = ['Kesin','Yüksek','Orta','Düşük'];
-const PEOPLE = ['Barış','Umut','İmran','Elif','Mert'];
-const ME = 'Barış';
+const PEOPLE = ['Oğuz'];
+const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', progress:62, health:'green', owner:'Barış', next:'Masterclass satış sayfası', subs:['Web sitesi','Masterclass','Danışmanlık'] },
-  { name:'İmes Spor', group:'Markalar', progress:28, health:'red', owner:'Umut', next:'2027 pazarlama planı onayı', subs:['Sosyal medya','Web sitesi','2027 Plan'] },
-  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Elif', next:'Aralık reklam bütçesi', subs:['Google Ads','Hasta operasyonu'] },
-  { name:'Dentafly', group:'Markalar', progress:45, health:'amber', owner:'Barış', next:'Evrak teslimi', subs:['Belgeler','Landing page'] },
-  { name:'Çevik / Multiligo', group:'Platform', progress:54, health:'amber', owner:'Mert', next:'MCP entegrasyonu testi', subs:['Uygulama','Criteo ortaklığı'] },
-  { name:'Gönüllü Ağı', group:'NGO', progress:35, health:'amber', owner:'İmran', next:'Ocak etkinliği mekan', subs:['Etkinlik','Bağış'] },
-  { name:'Kişisel Finans', group:'Finans', progress:80, health:'green', owner:'Barış', next:'Yıl sonu vergi hazırlığı', subs:['Vergi','Yatırım'] },
-  { name:'Sağlık & Spor', group:'Yaşam', progress:40, health:'amber', owner:'Barış', next:'Haftada 3 antrenman', subs:['Spor','Uyku'] }
+  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'Kontrol merkezini gerçek verilerle doldurmak', subs:['wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
+  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
+  { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
+  { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
+  { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
+  { name:'Kişisel Finans', group:'Finans', owner:'Oğuz', next:'Aidat her ayın 1’i · kira her ayın 15’i', subs:['Düzenli giderler','Planlı ödemeler (kart, okul)','Yatırım (fon)'] }
 ];
+
+/* Hafta içi rutinler (Pzt–Cum) — takvime ve görevlere otomatik işlenir */
+const WEEKDAYS = [1,2,3,4,5];
+const RECURRING = [
+  { s:'09:30', e:'09:55', type:'task', short:'Soğuyan Fırsatlar', project:'Akdeniz Dental', group:'Markalar', pri:'Yüksek',
+    title:'Akdeniz Dental · Soğuyan Fırsatlar mailleri (14 temsilci + yönetici özeti)',
+    subs:['Plan Ports CRM’den temsilci bazlı hasta takip listesini çek','14 temsilciye “Soğuyan Fırsatlar” maillerini gönder','Yöneticilere özet maili gönder'] },
+  { s:'10:00', e:'10:15', type:'meeting', short:'Parti huddle', project:'Parti', group:'Platform',
+    title:'Parti · Günlük huddle (iş bulma uygulaması)' },
+  { s:'11:30', e:'12:00', type:'task', short:'Londra outreach', project:'Londra Depo', group:'Markalar', pri:'Orta',
+    title:'Londra Depo · Outreach paneli + müşteri keşif sihirbazı',
+    subs:['Müşteri keşif sihirbazını çalıştır (yeni potansiyel müşteriler)','Outreach panelinden günlük gönderimleri yap','Gelen yanıtları kontrol et'] },
+  { s:'22:30', e:'22:45', type:'task', short:'Tıklama raporu', project:'Akdeniz Dental', group:'Markalar', pri:'Yüksek',
+    title:'Akdeniz Dental · Günlük tıklama raporu → kurucu ortaklar',
+    subs:['Günlük tıklama raporunu hazırla','Kurucu ortaklara / yöneticilere gönder'] }
+];
+/* Tarihli (tek seferlik) randevular — o gün ajandaya düşer, öncesinde hatırlatma olur */
+const EVENTS = [
+  { date:'2026-11-25', s:'17:00', e:'17:15', type:'meeting', short:'Kim · kök hücre', project:'Kök Hücre Yönlendirme', group:'Proje',
+    title:'Kim (Harex) · WhatsApp görüşmesi — kök hücre hasta yönlendirme',
+    note:'Türkiye, ABD ve Avustralya’dan kök hücre tedavisi düşünen hasta adayları. Kim görüşme detaylarını gönderecek; hasta ihtiyaçlarının özetini istedik.' },
+  { date:'2026-11-27', s:'19:00', e:'20:00', type:'meeting', short:'Akdeniz Dental ekibi', project:'Akdeniz Dental', group:'Markalar',
+    title:'Akdeniz Dental ekibi · ortak yol haritası & dijital büyüme paketi görüşmesi',
+    note:'Tüm dijital geliştirme ve büyüme işlerinin (Dental Ops, Polonya sitesi + Google Ads, UK finans) uzaktan, freelance formatta tek pakette yönetilmesi. Teklif detayları: Projeler › Akdeniz Dental notları.' }
+];
+const dayOff = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(NOW().toDateString())) / 864e5);
+const isWeekday = d => WEEKDAYS.includes(d.getDay());
+/* Aylık tekrar eden günler (her ayın X’i) — önümüzdeki 3 ay için takvime düşer */
+const MONTHLY = [
+  { day:5, s:'09:00', e:'09:10', type:'plan', short:'Maaş günü · Parti', project:'Parti', group:'Platform',
+    title:'💰 Maaş günü · Parti (iş geliştirme & pazarlama yöneticisi)',
+    note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' },
+  { day:1, key:'aidat', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Aidat', project:'Kişisel Finans', group:'Finans',
+    title:'🏢 Aidat ödemesi', note:'Her ayın 1’i. Tutar Bütçe › Düzenli giderler’de.' },
+  { day:15, key:'kira', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kira', project:'Kişisel Finans', group:'Finans',
+    title:'🏠 Kira ödemesi', note:'Her ayın 15’i. Tutar Bütçe › Düzenli giderler’de.' }
+];
+/* Tek seferlik planlı ödemeler (banka takviminden) — tutarlar şifreli notlarda */
+/* İzmir · İnnova Akademi × Akbank dijital dönüşüm / satış eğitimi (eğitmen) */
+EVENTS.push(
+  { date:'2026-12-07', allDay:true, lead:3, s:'07:00', e:'07:15', type:'plan', short:'İzmir (Akbank eğitimi)', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'✈️ İzmir — Akbank eğitimi için şehir dışı (7–8 Aralık)', note:'8 Aralık Salı 15:30’da eğitim var.' },
+  { date:'2026-12-08', allDay:true, s:'07:00', e:'07:15', type:'plan', short:'İzmir', project:'İnnova Akademi · Akbank', group:'Proje', hideInList:true, lead:0,
+    title:'📍 İzmir’de (2. gün)', note:'' },
+  { date:'2026-12-08', lead:5, s:'15:30', e:'17:30', type:'meeting', short:'Akbank eğitimi · İzmir', project:'İnnova Akademi · Akbank', group:'Proje',
+    title:'🎤 İnnova Akademi × Akbank — dijital dönüşüm & satış eğitimi (eğitmen)', note:'İzmir, Salı 15:30. Eğitmen olarak aktif görev.' }
+);
+/* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
+EVENTS.push(
+  { date:'2027-06-01', lead:7, s:'09:00', e:'09:15', type:'plan', short:'ABD seyahati · tarih teyidi', project:'İTO · Filtre Kümelenmesi', group:'Proje',
+    title:'📝 ABD seyahati notu — net tarihi teyit et', note:'Ticaret Bakanlığı kapsamında İskenderun TO filtre kümelenmesi ABD seyahati 22–26 Haziran 2027 olarak planlandı; kesin tarih bekleniyor.' },
+  ...['2027-06-22','2027-06-23','2027-06-24','2027-06-25','2027-06-26'].map((date, i) => ({ date, allDay:true, tentative:true, hideInList:i > 0, lead:i === 0 ? 7 : 0,
+    s:'07:00', e:'07:15', type:'meeting', short:'ABD seyahati (taslak)', project:'İTO · Filtre Kümelenmesi', group:'Proje',
+    title:`✈️ ABD seyahati — İTO filtre kümelenmesi${i === 0 ? ' (22–26 Haz, taslak)' : ` (${i + 1}. gün, taslak)`}`, note:'Taslak tarih — net tarih gelince güncellenecek.' }))
+);
+EVENTS.push(
+  { date:'2026-12-07', key:'okul', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Okul ödemesi', project:'Kişisel Finans', group:'Finans', title:'🎓 Okul ödemesi', note:'Banka takviminde planlı ödeme.' },
+  { date:'2026-12-09', key:'kart', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kart ekstresi', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı ekstre ödemesi', note:'Ekstre borcu son ödeme günü.' },
+  { date:'2027-02-15', key:'deniz', kind:'expense', lead:7, s:'09:00', e:'09:15', type:'plan', short:'Planlı USD ödemesi', project:'Kişisel Finans', group:'Finans', title:'💵 Planlı ödeme (USD)', note:'Detay ve tutar şifreli notlarda.' },
+  { date:'2026-12-09', key:'fon', kind:'expense', s:'09:10', e:'09:20', type:'plan', short:'Fon alışı', project:'Kişisel Finans', group:'Finans', title:'📈 Fon alışı (yatırım)', note:'Otomatik fon alışı.' }
+);
+const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
+MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
+const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
 
 let uid = 100;
 const T = (title, o) => ({ id: ++uid, title, pri:'Orta', group:'Proje', cat:'Operasyon', project:'Werrise Digital', owner:ME, due:0, today:false, done:false, follow:false, est:0, slot:'', subs:[], ...o });
 const TASKS = [
-  T('İmes – 2027 pazarlama planı, web sitesi & içerik', { pri:'Kesin', group:'Markalar', cat:'Kampanya', project:'İmes Spor', owner:'Umut', due:-34, today:true, est:4, slot:'Per 18:30–19:45', subs:[
-    { t:'2027 pazarlama planı: marka bazlı Excel planları ve 12 aylık takvimleri tamamla', done:true },
-    { t:'2027 ekip kararları: SEO sorunları, foto/video ekipmanı, sosyal medya personeli', done:false },
-    { t:'Web sitesi yeni sayfa yapısı taslağı', done:false },
-    { t:'İçerik takvimi: ilk 3 ay', done:false } ]}),
-  T('Styku gym tanıtımı için AI video', { pri:'Kesin', group:'Markalar', cat:'İçerik / SEO', project:'İmes Spor', owner:'Umut', due:-34, today:true, est:2 }),
-  T('İmes Instagram hesabı erişimi: kurtarma yolunu belirle', { pri:'Yüksek', group:'Markalar', cat:'Operasyon', project:'İmes Spor', owner:'İmran', due:-3, today:true, est:1, follow:true }),
-  T('Dentafly: pasaport ve ikametgâh belgesini gönder', { pri:'Kesin', group:'Markalar', cat:'Takip', project:'Dentafly', due:0, today:true, est:.5 }),
-  T('Masterclass satış sayfası metnini bitir', { pri:'Yüksek', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:2, today:true, est:3, subs:[{t:'Başlık ve alt başlık',done:true},{t:'12 iş akışı açıklaması',done:false},{t:'SSS bölümü',done:false}] }),
-  T('Akdeniz Dental Aralık reklam bütçesi onayı', { pri:'Yüksek', group:'Markalar', cat:'Kampanya', project:'Akdeniz Dental', owner:'Elif', due:1, est:1, follow:true }),
-  T('Google Adgrant takibi', { pri:'Orta', group:'NGO', cat:'Rutin', project:'Gönüllü Ağı', due:0, today:true, est:.5 }),
-  T('Criteo x Multiligo toplantı notlarını aksiyona çevir', { pri:'Orta', group:'Platform', cat:'Toplantı', project:'Çevik / Multiligo', owner:'Mert', due:-1, today:true, est:1 }),
-  T('Haftalık müşteri raporu (Akdeniz Dental)', { pri:'Orta', group:'Markalar', cat:'Rapor', project:'Akdeniz Dental', due:4, est:1.5 }),
-  T('Yıl sonu vergi evraklarını topla', { pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:9, est:2 }),
-  T('Ocak gönüllü etkinliği için mekan teklifleri', { pri:'Orta', group:'NGO', cat:'Etkinlik', project:'Gönüllü Ağı', owner:'İmran', due:12, est:2, follow:true }),
-  T('MCP bağlantısını test et (Claude)', { pri:'Orta', group:'Platform', cat:'Operasyon', project:'Çevik / Multiligo', owner:'Mert', due:3, est:1 }),
-  T('Affiliate komisyon kontrolü', { pri:'Düşük', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:0, today:true, est:.7 }),
-  T('İngilizce dersi ödevi', { pri:'Düşük', group:'Yaşam', cat:'Eğitim', project:'Sağlık & Spor', due:1, est:.5 }),
-  T('Haftada 3 antrenman planı', { pri:'Orta', group:'Yaşam', cat:'Kişisel', project:'Sağlık & Spor', due:5, est:.5 }),
-  T('Werrise LinkedIn içerik serisi (4 gönderi)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:-16, est:3 }),
-  T('Eski lead listesini temizle', { pri:'Düşük', group:'Proje', cat:'Satış / Lead', project:'Werrise Digital', due:-21, est:1 }),
-  T('Sabah planı & e-posta taraması', { pri:'Orta', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 }),
-  T('Haftayı + günü planla', { pri:'Yüksek', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 })
+  T('Kim (Harex) ile WhatsApp görüşmesi — kök hücre hasta yönlendirme', { pri:'Kesin', group:'Proje', cat:'Toplantı', project:'Kök Hücre Yönlendirme',
+    due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.25, slot:'Çar 25 Kas · 17:00–17:15 (TR)', subs:[
+    { t:'Kim’in gönderdiği hasta özetini oku (tedavi ihtiyacı, kök hücre türü, ülke)', done:false },
+    { t:'Tıbbi ekiple ön değerlendirme: hangi konsültasyon/tedaviler mümkün', done:false },
+    { t:'Görüşme: hasta sayısı, ülkeler (TR/ABD/AU), süreç ve iş birliği modeli', done:false },
+    { t:'Görüşme notunu CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Akdeniz Dental ekibiyle paket görüşmesi (Cuma 19:00)', { pri:'Kesin', group:'Markalar', cat:'Toplantı', project:'Akdeniz Dental',
+    due:dayOff('2026-11-27'), today:dayOff('2026-11-27') === 0, est:1, slot:'Cum 27 Kas · 19:00–20:00', subs:[
+    { t:'Teklif özetini gözden geçir (Projeler › Akdeniz Dental › Notlar)', done:false },
+    { t:'Kapsamı netleştir: Dental Ops, Polonya sitesi + Google Ads, UK finans (Ideal for Finance)', done:false },
+    { t:'Yapay zeka araçlarının kendi kartlarından ödenmesini teyit et', done:false },
+    { t:'Başlangıç tarihi, ödeme günü ve sözleşme adımını konuş', done:false },
+    { t:'Görüşme sonrası: notları ve kararları panele işle', done:false } ]}),
+  T('Parti maaşının hesaba geçtiğini kontrol et', { pri:'Orta', group:'Finans', cat:'Finans', project:'Parti',
+    due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
+  ...MONTHLY.filter(m => m.kind === 'expense').map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
+    due:dayOff(nextMonthly(m)), today:dayOff(nextMonthly(m)) === 0, est:.1, recur:`Her ayın ${m.day}’i` })),
+  T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
+  T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
+  T('Akbank eğitimi: İzmir ulaşım & konaklama ayarla (7–8 Ara)', { pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:.5 }),
+  T('Akbank eğitimi: sunum ve materyalleri hazırla', { pri:'Kesin', group:'Proje', cat:'Eğitim', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-04'), today:dayOff('2026-12-04') === 0, est:3, subs:[
+    { t:'İnnova Akademi’den katılımcı profili ve süreyi teyit et', done:false },
+    { t:'Dijital dönüşüm & satış odaklı akışı çıkar', done:false },
+    { t:'Sunum + örnek vaka + uygulama alıştırması', done:false },
+    { t:'Gerekirse ekipman / bağlantı ihtiyacını bildir', done:false } ]}),
+  T('Eğitmen: İnnova Akademi × Akbank eğitimi (İzmir, Sal 15:30)', { pri:'Kesin', group:'Proje', cat:'Eğitim', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-08'), today:dayOff('2026-12-08') === 0, est:2, slot:'Sal 8 Ara · 15:30 · İzmir' }),
+  T('ABD seyahati (İTO filtre kümelenmesi): net tarihi teyit et', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'İTO · Filtre Kümelenmesi', due:dayOff('2027-06-01'), today:dayOff('2027-06-01') === 0, est:.25, follow:true, subs:[
+    { t:'Planlanan: 22–26 Haziran 2027 — Ticaret Bakanlığı / İTO’dan kesin tarihi al', done:false },
+    { t:'Kesin tarih gelince takvimi güncelle (Claude’a yaz)', done:false },
+    { t:'Vize, uçuş ve konaklama durumunu kontrol et', done:false } ]}),
+  T('Planlı ödeme için nakit hazırla', { key:'bes', pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-01'), today:dayOff('2027-02-01') === 0, est:.25 }),
+  T('Planlı USD ödemesini yap', { key:'deniz', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-15'), today:dayOff('2027-02-15') === 0, est:.25 }),
+  T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
+    due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
+    { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
+    { t:'Gelmediyse kısa hatırlatma mesajı at', done:false } ]}),
+  ...RECURRING.filter(r => r.type === 'task').map(r => T(r.title, { pri:r.pri, group:r.group, cat:'Rutin', project:r.project,
+    due:nextWeekdayOff(), today:isWeekday(NOW()), est:(toMin(r.e) - toMin(r.s)) / 60, recur:`Hafta içi · ${r.s}`, subs:r.subs.map(t => ({ t, done:false })) }))
 ];
 
-const AGENDA = [
-  ['07:45','08:00','task','Sabah planı & e-posta taraması'],
-  ['08:40','09:00','plan','Haftayı + günü planla (20 dk)'],
-  ['09:30','10:15','meeting','Akdeniz Dental haftalık toplantı'],
-  ['10:30','11:30','task','İmes – 2027 pazarlama planı taslağı'],
-  ['12:00','13:00','plan','Öğle arası'],
-  ['13:30','14:30','meeting','Criteo x Multiligo'],
-  ['15:00','16:00','task','Masterclass satış sayfası metni'],
-  ['16:30','17:00','task','Dentafly evrak takibi'],
-  ['19:15','20:00','meeting','İngilizce dersi'],
-  ['20:10','20:50','task','Affiliate komisyon kontrolü']
-].map(([s, e, type, title]) => ({ s, e, type, title }));
+const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
+ .concat(isWeekday(NOW()) ? RECURRING.map(r => ({ ...r, rec:true })) : [])
+ .concat(EVENTS.filter(ev => dayOff(ev.date) === 0))
+ .sort((a, b) => toMin(a.s) - toMin(b.s));
+
+/* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
+let NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
+/* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
+const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
+window.WR_setPrivate = data => {
+  NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
+  (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
+  REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
+  // Son 30 günde gerçekleşmiş düzenli giderler ve planlı ödemeler → Hareketler
+  REC_EXP.forEach(r => occurrences(r.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${r.desc} (her ayın ${r.day}’i)`, proj:'Kişisel Finans', cat:r.cat, amt:-r.amt, priv:true })));
+  PAYMENTS.filter(p => dayOff(p.date) < 0 && dayOff(p.date) >= -30).forEach(p => BUDGET.push({ d:dayOff(p.date), desc:p.desc, proj:'Kişisel Finans', cat:p.cat, amt:-p.amt, cur:p.cur, priv:true }));
+  BUDGET.sort((a, b) => b.d - a.d);
+  // Özel başlıklar (ör. site / okul adı) — sadece giriş sonrası
+  const L = data.labels || {};
+  EVENTS.forEach(ev => { if (!ev.key) return; ev._t = ev._t || ev.title; ev._s = ev._s || ev.short; ev.title = L[ev.key]?.title || ev._t; ev.short = L[ev.key]?.short || ev._s; });
+  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; });
+  (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
+  render();
+};
 
 let SIGNALS = [
-  { ic:'gauge', tone:'red', t:'Stres makul aralığın üstünde', p:'Seviyen 8/10. Bu modda gelecek planı yapma — önce toplu uzaklaştır, öğrenme ancak rahatken açılır.', a:'Toplu uzaklaştır', go:'oncelik' },
-  { ic:'alarm', tone:'amber', t:'{overdue} işin tarihi geçti', p:'En acili: “İmes – 2027 pazarlama planı” (34 gün). Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
-  { ic:'repeat', tone:'blue', t:'Bugün 1 rutin var', p:'Google Adgrant takibi', a:'Rutinleri aç', go:'gorevler' },
-  { ic:'repeat', tone:'amber', t:'{review} iş gözden geçirilmeyi bekliyor', p:'Ertelenen, geciken, bir süredir yapılmayanlar birikti. Tek tek tart: yap, küçült, devret ya da bilinçle bırak.', a:"Öncelik'te gözden geçir", go:'oncelik' },
-  { ic:'hour', tone:'red', t:'Yüksek öncelikli işler 14+ gündür yapılmadı', p:'Görünmez birikim özgüveni eritir — bugün ya küçük bir adım tanımla ya da bilinçle park et.', a:'Görevlerde görüntüle', go:'gorevler?overdue' }
+  { ic:'alarm', tone:'amber', when:() => overdueTasks().length > 0, t:'{overdue} işin tarihi geçti', p:'En acili: “{topOverdue}”. Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
+  { ic:'repeat', tone:'blue', when:() => AGENDA.some(a => a.rec), t:'Bugün {routines} rutin var', p:'{routineList}', a:'Rutinleri aç', go:'planlama' },
+  { ic:'repeat', tone:'amber', when:() => reviewTasks().length > 0, t:'{review} iş gözden geçirilmeyi bekliyor', p:'14 günden uzun süredir bekleyenler var. Tek tek tart: yap, küçült, devret ya da bilinçle bırak.', a:"Öncelik'te gözden geçir", go:'oncelik' }
 ];
+const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
-  { id:1, name:'Kagi M — Danışmanlık', co:'Kagi', value:45000, stage:'Yeni lead', src:'Web formu' },
-  { id:2, name:'Masterclass kurumsal paket', co:'Agency A', value:120000, stage:'Görüşme', src:'LinkedIn' },
-  { id:3, name:'Klinik AI asistan kurulumu', co:'Akdeniz Dental', value:60000, stage:'Teklif', src:'Mevcut müşteri' },
-  { id:4, name:'SEO + içerik retainer', co:'İmes Spor', value:35000, stage:'Kazanıldı', src:'Referans' },
-  { id:5, name:'Global Growth danışmanlığı', co:'Northwind', value:90000, stage:'Görüşme', src:'Book a Call' },
-  { id:6, name:'Etkinlik otomasyonu', co:'Events Co.', value:28000, stage:'Kayıp', src:'Web formu' },
-  { id:7, name:'Satış ekibi AI eğitimi', co:'SalesHub', value:52000, stage:'Yeni lead', src:'Book a Call' }
+  { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
+  { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
 ];
 const STAGES = ['Yeni lead','Görüşme','Teklif','Kazanıldı','Kayıp'];
 
-const BUDGET = [
-  { d:-1, desc:'İmes Spor — Kasım retainer', proj:'İmes Spor', cat:'Gelir', amt:35000 },
-  { d:-2, desc:'Google Ads — Akdeniz Dental', proj:'Akdeniz Dental', cat:'Reklam', amt:-18500 },
-  { d:-4, desc:'Akdeniz Dental — danışmanlık', proj:'Akdeniz Dental', cat:'Gelir', amt:42000 },
-  { d:-5, desc:'Yazılım abonelikleri (AI, CRM)', proj:'Werrise Digital', cat:'Yazılım', amt:-6200 },
-  { d:-7, desc:'Video ekipmanı kiralama', proj:'İmes Spor', cat:'Ekipman', amt:-9500 },
-  { d:-9, desc:'Masterclass ön satış', proj:'Werrise Digital', cat:'Gelir', amt:14000 },
-  { d:-11, desc:'Freelance tasarımcı', proj:'Werrise Digital', cat:'Personel', amt:-12000 },
-  { d:-14, desc:'Gönüllü Ağı bağış', proj:'Gönüllü Ağı', cat:'Gelir', amt:8000 }
-];
+const BUDGET = [];  // gerçek hareketler şifreli notlardan (private.js) gelir
 
-const TEAM_EVENTS = {
-  'Barış': [[0,'Akdeniz toplantı','m'],[0,'İngilizce','m'],[1,'Criteo görüşme','m'],[3,'Masterclass çekim','t'],[5,'İzin','o']],
-  'Umut': [[0,'İmes plan','t'],[1,'Sahada çekim','t'],[2,'İmes toplantı','m'],[4,'Rapor','t']],
-  'İmran': [[1,'Mekan ziyareti','t'],[2,'İmes toplantı','m'],[3,'İzin','o'],[4,'İzin','o']],
-  'Elif': [[0,'Akdeniz toplantı','m'],[2,'Reklam optimizasyon','t'],[4,'Haftalık rapor','t']],
-  'Mert': [[1,'Criteo görüşme','m'],[2,'MCP test','t'],[3,'Sprint demo','m']]
-};
+const TEAM_EVENTS = { 'Oğuz': [] };
 
-const REVIEWS = [
-  { w:-1, score:7, done:38, over:9, note:'İmes planı yine kaydı; toplantılar fazlaydı.' },
-  { w:-2, score:8, done:44, over:5, note:'Masterclass yapısı netleşti.' },
-  { w:-3, score:6, done:29, over:12, note:'Seyahat haftası, düşük odak.' }
-];
+const REVIEWS = [];
 
 /* ================= STATE ================= */
 const S = {
   tf: { tab:'all', q:'', hideDone:true, overdue:false, essential:false, mine:false, person:'herkes', group:'Tümü', cat:'Tümü', pri:'Tümü', view:'single' },
   todayGroup:'Tümü', todayView:'single', agendaView:'v', dashAgenda:'h', gear:'Odak',
-  open:new Set([TASKS[0].id]),
-  nowId: TASKS[0].id,
-  focus:{ taskId:TASKS[0].id, len:25, left:25*60, running:false, sessions:2 }
+  open:new Set(),
+  nowId: null,
+  focus:{ taskId:(TASKS.find(t => !t.done) || {}).id, len:25, left:25*60, running:false, sessions:0 }
 };
 
 /* ================= DERIVED ================= */
@@ -183,7 +255,17 @@ const todayTasks = () => TASKS.filter(t => t.today || t.due === 0);
 const reviewTasks = () => TASKS.filter(t => !t.done && t.due <= -14);
 const byPri = (a, b) => PRI_ORDER.indexOf(a.pri) - PRI_ORDER.indexOf(b.pri) || a.due - b.due;
 const nowTask = () => TASKS.find(t => t.id === S.nowId && !t.done) || openTasks().sort(byPri)[0];
-const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length);
+const reminders = () => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= (ev.lead ?? 2)).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
+const upcoming = (max = 7) => EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= max).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
+const evTime = ev => ev.allDay ? 'tüm gün' : ev.s;
+const fmtCur = (amt, cur) => !cur || cur === '₺' ? moneyD(amt) : cur + Number(amt).toLocaleString('tr-TR', { maximumFractionDigits:2 });
+const payStr = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return fmtCur(r.amt, r.cur); const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? fmtCur(p.amt, p.cur) : ''; };
+const payAmt = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
+const whenTxt = off => off === 0 ? 'Bugün' : off === 1 ? 'Yarın' : `${DAYS[addDays(NOW(), off).getDay()]} (${dLabel(off)})`;
+const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
+  .replace('{topOverdue}', (overdueTasks().sort((a, b) => a.due - b.due)[0] || {}).title || '')
+  .replace('{routines}', AGENDA.filter(a => a.rec).length)
+  .replace('{routineList}', AGENDA.filter(a => a.rec).map(a => `${a.s} ${a.short}`).join(' · ') || 'Hafta sonu — rutin yok');
 
 /* ================= ROUTES ================= */
 const ROUTES = [
@@ -227,9 +309,9 @@ function renderNowbar() {
     ${t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due}g</span>` : ''}
     <button class="btn btn-ghost btn-sm" data-act="start" data-id="${t.id}">${ic('play',14)} Başla</button>
     <span class="pill">+${openTasks().length - 1}</span>
-    <a class="pill red-o lg end" href="#gorevler?overdue">${ic('alarm',14)} ${od} gecikmiş</a>`
+    ${od ? `<a class="pill red-o lg end" href="#gorevler?overdue">${ic('alarm',14)} ${od} gecikmiş</a>` : '<span class="pill green lg end">Gecikmiş iş yok ✓</span>'}`
     : `<span class="lbl">ŞİMDİ</span><span class="t">Açık iş kalmadı 🎉</span>`;
-  $('#bellCount').textContent = SIGNALS.length + od;
+  $('#bellCount').textContent = activeSignals().length + reminders().length;
 }
 
 /* ================= SHARED UI ================= */
@@ -254,6 +336,7 @@ function taskCard(t, compact) {
         ${t.est ? `<span class="pill">${ic('timer',12)} ${t.est < 1 ? Math.round(t.est*60)+' dk' : t.est+' sa'}</span>` : ''}
         ${t.subs.length ? `<span class="pill">☑ ${sd}/${t.subs.length}</span>` : ''}
         ${t.slot ? `<span class="pill blue">${ic('cal',12)} ${t.slot}</span>` : ''}
+        ${t.recur ? `<span class="pill green">${ic('repeat',12)} ${t.recur}</span>` : ''}
         ${t.follow ? '<span class="pill amber">Takip</span>' : ''}
       </div>
       ${t.subs.length && open && !compact ? `<div class="subs"><div class="sh">Alt görevler · ${sd}/${t.subs.length}<div class="bar lime"><span style="width:${sd/t.subs.length*100}%"></span></div></div>
@@ -285,20 +368,20 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
-  const start = 7 * 60 + 30, end = 21 * 60 + 30, span = end - start, pct = m => ((m - start) / span * 100).toFixed(2);
+  const start = 7 * 60 + 30, end = 23 * 60, span = end - start, pct = m => ((m - start) / span * 100).toFixed(2);
   const n = nowMin();
   let hours = '';
-  for (let h = 8; h <= 21; h++) hours += `<span class="hour" style="left:${pct(h*60)}%">${String(h).padStart(2,'0')}</span>`;
+  for (let h = 8; h <= 22; h++) hours += `<span class="hour" style="left:${pct(h*60)}%">${String(h).padStart(2,'0')}</span>`;
   return `<div class="agenda-scroll"><div class="agenda-h"><div class="track">${hours}
-    ${AGENDA.map(a => `<div class="blk t-${a.type}" style="left:${pct(toMin(a.s))}%;width:calc(${pct(toMin(a.e)) - pct(toMin(a.s))}% - 3px)" title="${esc(a.title)} · ${a.s}–${a.e}"><b>${esc(a.title)}</b>${a.s}–${a.e}</div>`).join('')}
+    ${AGENDA.filter(a => !a.allDay).map(a => `<div class="blk t-${a.type}" style="left:${pct(toMin(a.s))}%;width:calc(${pct(toMin(a.e)) - pct(toMin(a.s))}% - 3px)" title="${esc(a.title)} · ${a.s}–${a.e}"><b>${esc(a.title)}</b>${a.s}–${a.e}</div>`).join('')}
     ${n > start && n < end ? `<span class="now" style="left:${pct(n)}%"></span>` : ''}
   </div></div></div>`;
 }
-const agendaFree = () => { const used = AGENDA.reduce((s, a) => s + toMin(a.e) - toMin(a.s), 0); return Math.max(0, (13 * 60 - used) / 60).toFixed(1).replace('.0',''); };
+const agendaFree = () => { const used = AGENDA.reduce((s, a) => s + toMin(a.e) - toMin(a.s), 0); return Math.max(0, (15 * 60 - used) / 60).toFixed(1).replace('.0',''); };
 const currentBlock = () => { const n = nowMin(); return AGENDA.find(a => toMin(a.s) <= n && n < toMin(a.e)) || AGENDA.find(a => toMin(a.s) > n); };
 
 function quickCapture(withSelect) {
@@ -316,13 +399,13 @@ const PAGES = {};
 PAGES.dashboard = () => {
   const d = NOW(), tt = todayTasks(), done = tt.filter(t => t.done).length;
   const blk = currentBlock();
-  const pipeline = DEALS.filter(x => !['Kazanıldı','Kayıp'].includes(x.stage)).reduce((s, x) => s + x.value, 0);
+  const pipeline = DEALS.filter(x => tl(x) && !['Kazanıldı','Kayıp'].includes(x.stage)).reduce((s, x) => s + x.value, 0);
   const net = BUDGET.reduce((s, x) => s + x.amt, 0);
   return `
   <div class="page-head" style="align-items:flex-end">
     <div><div class="eyebrow">${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} · ${isoWeek(d)}</div>
       <div class="hero-clock" id="heroClock">${hm(d)}</div>
-      <p class="lede" style="margin-top:0">Barış, bugün <b>${done}/${tt.length}</b> iş tamam.</p></div>
+      <p class="lede" style="margin-top:0">Oğuz, bugün <b>${done}/${tt.length}</b> iş tamam.</p></div>
     <div class="row"><a class="btn btn-outline" href="#portfoy">◐ Marka odağı</a><a class="btn btn-primary" href="#bugun">Bugün'e git <span class="arrow">→</span></a></div>
   </div>
 
@@ -338,9 +421,7 @@ PAGES.dashboard = () => {
   <div class="grid g2 mt">
     <div class="now-card"><div class="lbl">ŞİMDİ</div>${blk ? `<h3>${esc(blk.title)}</h3><div>${blk.s}–${blk.e} · ${toMin(blk.s) > nowMin() ? 'sıradaki blok' : 'devam ediyor'}</div>` : `<h3>Günün blokları bitti 🌙</h3><div>yarın sabah ajanda yeniden kurulur</div>`}</div>
     <div class="card flat"><div class="card-head"><span class="sec-label">Durum</span><small class="muted">şimdi ve önümüzdeki günler</small></div>
-      <div class="status-row full"><b>Bugün</b><span>Dolu · ${AGENDA.filter(a=>a.type==='meeting').length} toplantı · ${todayTasks().filter(t=>!t.done).length} iş sırada</span></div>
-      <div class="status-row"><b>Yarın</b><span>Orta · 1 toplantı · ${TASKS.filter(t=>t.due===1&&!t.done).length} iş planlı</span></div>
-      <div class="status-row ok"><b>${DAYS[addDays(d,2).getDay()]}</b><span>Rahat · 2 toplantı · ${TASKS.filter(t=>t.due===2&&!t.done).length} iş planlı</span></div>
+      ${[0,1,2].map(o => { const x = dayInfo(o); return `<div class="status-row ${x.cls}"><b>${o === 0 ? 'Bugün' : o === 1 ? 'Yarın' : DAYS[addDays(d,o).getDay()]}</b><span>${x.label} · ${x.meet} toplantı · ${x.tasks} iş${x.pays ? ` · ${x.pays} ödeme` : ''}</span></div>`; }).join('')}
     </div>
   </div>
 
@@ -357,6 +438,8 @@ PAGES.dashboard = () => {
     </div>
     <div class="card"><div class="card-head"><span class="sec-label">Günün kalanı</span><small class="muted">${agendaFree()} sa boş</small></div>
       ${AGENDA.filter(a => toMin(a.e) > nowMin()).map(a => `<div class="status-row ok" style="grid-template-columns:90px 1fr"><b class="mono" style="font-size:13px">${a.s}</b><span>${esc(a.title)}</span></div>`).join('') || '<p class="muted">Kalan blok yok — dinlen.</p>'}
+      <div class="card-head mt"><span class="sec-label">Yaklaşan randevular</span><small class="muted">7 gün</small></div>
+      ${upcoming(7).map(ev => `<div class="status-row" style="grid-template-columns:120px 1fr"><b style="font-size:13px">${whenTxt(ev.off)} ${evTime(ev)}</b><span>${esc(ev.title)}</span></div>`).join('') || '<p class="muted">Yaklaşan randevu yok.</p>'}
     </div>
   </div>
 
@@ -365,14 +448,27 @@ PAGES.dashboard = () => {
   <p class="footnote">Taslak — tüm veriler örnek. Kaynaklar bağlandığında canlı veriyle dolacak.</p>`;
 };
 
+function notesFor(name) {
+  const ns = NOTES.filter(n => n.project === name);
+  if (!ns.length) return '';
+  return `<div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">${ic('lock',12)} Notlar · ${ns.length}</div>
+    ${ns.map(n => `<div class="note"><b>${esc(n.title)}</b>${n.date ? ` <small class="muted">${esc(n.date)}</small>` : ''}<ul>${n.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+}
+function dayInfo(o) {
+  const dt = addDays(NOW(), o), iso = isoDate(dt), evs = EVENTS.filter(ev => ev.date === iso);
+  const meet = (isWeekday(dt) ? RECURRING.filter(r => r.type === 'meeting').length : 0) + evs.filter(ev => ev.type === 'meeting').length;
+  const tasks = (o === 0 ? todayTasks() : TASKS.filter(t => t.due === o)).filter(t => !t.done).length;
+  const pays = evs.filter(ev => ev.kind === 'expense').length, load = meet * 2 + tasks;
+  return { meet, tasks, pays, cls: load >= 8 ? 'full' : load >= 4 ? '' : 'ok', label: load >= 8 ? 'Dolu' : load >= 4 ? 'Orta' : 'Rahat' };
+}
 function projCard(p) {
   const open = TASKS.filter(t => t.project === p.name && !t.done).length;
   const late = TASKS.filter(t => t.project === p.name && !t.done && t.due < 0).length;
-  const hc = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)' }[p.health];
+  const hc = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)' }[p.health] || 'var(--line)';
   return `<div class="card proj-card"><div class="top"><span class="pill">${gdot(p.group)} ${p.group}</span><span class="health" style="background:${hc}" title="Sağlık"></span></div>
-    <h3>${esc(p.name)}</h3><small class="muted">Sıradaki: ${esc(p.next)}</small>
-    <div class="bar" style="margin:14px 0 8px"><span style="width:${p.progress}%"></span></div>
-    <div class="row" style="font-size:13px"><span>%${p.progress}</span><span class="spacer"></span><span>${open} açık</span>${late ? `<span class="pill red">${late} gecikmiş</span>` : ''}</div></div>`;
+    <h3>${esc(p.name)}</h3>${p.parent ? `<small class="pill" style="margin-bottom:4px">↳ ${esc(p.parent)} altında</small><br>` : ''}<small class="muted">Sıradaki: ${esc(p.next)}</small>
+    ${p.progress != null ? `<div class="bar" style="margin:14px 0 8px"><span style="width:${p.progress}%"></span></div>` : '<div style="height:14px"></div>'}
+    <div class="row" style="font-size:13px"><span>${p.progress != null ? '%' + p.progress : ''}</span><span class="spacer"></span><span>${open} açık</span>${late ? `<span class="pill red">${late} gecikmiş</span>` : ''}</div></div>`;
 }
 
 PAGES.bugun = () => {
@@ -382,7 +478,7 @@ PAGES.bugun = () => {
   const gearTxt = { 'Odak':'Derin iş için en verimli saatler — bildirimleri kapat.', 'Gevşeme':'Yenilenmek için rahatla (geçiş vitesi).', 'Toparlanma':'Küçük işler, mesajlar, kapanışlar.' };
   return `
   <div class="eyebrow">${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${isoWeek(d)}</div>
-  <h1>Hafta yaşamın anı, Barış — bugüne ne alıyorsun?</h1>
+  <h1>Hafta yaşamın anı, Oğuz — bugüne ne alıyorsun?</h1>
   <p class="lede">Hafta yaşamın anıdır. Bugün haftana ne alıyorsun, neyi uzaklaştırıyorsun?</p>
 
   <div class="card mt2">
@@ -409,8 +505,10 @@ PAGES.bugun = () => {
       <div class="mt">${taskList(list, S.todayView)}</div>
     </div>
     <div class="card" style="align-self:start">
-      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${SIGNALS.length}</span></div>
-      ${SIGNALS.map((s, i) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
+      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${activeSignals().length + reminders().length}</span></div>
+      ${reminders().map(ev => { const pay = ev.kind === 'expense', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${pay?'amber':'blue'}-bg);color:var(--${pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
+        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + evTime(ev)} · ${esc(ev.short)}${amt ? ` · <span class="neg">${payStr(ev)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
+      ${activeSignals().map(s => [s, SIGNALS.indexOf(s)]).map(([s, i]) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
         <div style="flex:1"><h4>${sigText(s.t)}</h4><p>${sigText(s.p)}</p><a class="link" href="#${s.go}">${s.a} →</a></div>
         <button class="x" data-act="sig-x" data-i="${i}" aria-label="Kapat">×</button></div>`).join('') || '<p class="muted">Sinyal yok — sakin bir gün.</p>'}
     </div>
@@ -432,7 +530,11 @@ PAGES.planlama = () => {
       ${ts.map(kcardTask).join('')}</div>`;
   }).join('')}</div>
   <div class="card-head mt2"><h2>Backlog & bu hafta dışı</h2><span class="pill">${backlog.length}</span></div>
-  <div class="col" data-drop="day" data-off="99" style="min-height:120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${backlog.sort(byPri).map(kcardTask).join('')}</div>`;
+  <div class="col" data-drop="day" data-off="99" style="min-height:120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${backlog.sort(byPri).map(kcardTask).join('')}</div>
+  <div class="card-head mt2"><div><div class="eyebrow">Her hafta içi otomatik</div><h2 style="margin-top:4px">Rutinler</h2></div><span class="pill green">${ic('repeat',12)} Pzt–Cum</span></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Saat</th><th>Rutin</th><th>Marka / proje</th><th>Tür</th><th>Günler</th></tr></thead><tbody>
+    ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>Pzt–Cum</td></tr>`).join('')}
+  </tbody></table></div></div>`;
 };
 const kcardTask = t => `<div class="kcard" draggable="true" data-drag="task" data-id="${t.id}"><b>${esc(t.title)}</b><div class="meta row" style="margin-top:6px;gap:5px">${priPill(t.pri)}<span class="pill">${gdot(t.group)} ${esc(t.project)}</span>${t.due<0?`<span class="pill red">${-t.due}g</span>`:''}</div></div>`;
 
@@ -509,7 +611,8 @@ PAGES.projeler = () => `
       const ts = TASKS.filter(t => t.project === p.name && !t.done);
       return `<div class="card">${projCard(p).replace(/^<div class="card proj-card">|<\/div>$/g,'')}
         <div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">Alt projeler</div>
-        ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}</div>
+        ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}${PROJECTS.filter(c => c.parent === p.name).map(c => `<div class="qitem">↳ <b>${esc(c.name)}</b> <span class="pill">bağlı marka</span></div>`).join('')}</div>
+        ${notesFor(p.name)}
         <div class="row mt"><small class="muted">${ic('user',13)} ${p.owner}</small><span class="spacer"></span><a class="link" href="#gorevler" data-act="proj-filter" data-g="${p.group}">${ts.length} görev →</a></div></div>`;
     }).join('')}</div>`).join('')}`;
 
@@ -535,14 +638,16 @@ PAGES.oncelik = () => {
 PAGES.tarihler = () => {
   const o = openTasks();
   const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), '']];
-  const imp = [[5,'Akdeniz Dental sözleşme yenileme'],[8,'KDV beyannamesi'],[17,'Masterclass lansman (hedef)'],[38,'Yıllık şirket hesap kapanışı']];
+  const imp = [];
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Tarihler<span class="dot">.</span></h1><p class="lede">Teslim tarihlerine göre tüm açık işler ve takvimdeki önemli günler.</p></div></div>
   <div class="grid split"><div>${sec.map(([n, ts, c]) => `<div class="card mt" style="padding:20px"><div class="card-head"><h3>${n}</h3><span class="pill ${c}">${ts.length}</span></div>
     ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
-  <div class="card mt" style="align-self:start"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
-    ${imp.map(([o, t]) => `<div class="qitem"><span class="pill ${o<=7?'amber':''}">${dLabel(o)}</span><span style="flex:1">${t}</span><small class="muted">${o} gün</small></div>`).join('')}
-    <button class="btn btn-outline btn-sm mt" data-act="draft">+ Tarih ekle</button></div></div>`;
+  <div style="align-self:start"><div class="card mt"><h3>Randevular & ödemeler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşmeler, maaş ve ödeme günleri</p>
+    ${EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).sort((a,b)=>a.off-b.off).map(ev => `<div class="qitem"><span class="pill ${ev.off<0?'':ev.off<=1?'red':'blue'}">${dLabel(ev.off)} ${evTime(ev)}</span><span style="flex:1">${esc(ev.title)}<br><small class="muted">${esc(ev.note||'')}</small></span><small class="muted">${ev.off<0?'geçti':ev.off===0?'bugün':ev.off+' gün'}</small></div>`).join('')}</div>
+  <div class="card mt"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
+    ${imp.map(([o, t]) => `<div class="qitem"><span class="pill ${o<=7?'amber':''}">${dLabel(o)}</span><span style="flex:1">${t}</span><small class="muted">${o} gün</small></div>`).join('') || '<p class="muted">Henüz önemli tarih yok (sözleşme, vergi, lansman…).</p>'}
+    <button class="btn btn-outline btn-sm mt" data-act="draft">+ Tarih ekle</button></div></div></div>`;
 };
 
 PAGES.ekip = () => {
@@ -554,12 +659,12 @@ PAGES.ekip = () => {
     <div class="row"><span class="pill blue">Toplantı</span><span class="pill green">İş</span><span class="pill">İzin</span></div></div>
   <div class="table-wrap"><div class="cal" style="min-width:900px">
     <div class="ch">Kişi</div>${days.map((dd, i) => `<div class="ch ${i===ti?'today':''}">${DS[dd.getDay()]} ${dd.getDate()}</div>`).join('')}
-    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((_, i) => `<div>${(TEAM_EVENTS[p]||[]).filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
+    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((dd, i) => `<div>${[...(p === ME && i < 5 ? RECURRING.map(r => [i, `${r.s} ${r.short}`, r.type === 'meeting' ? 'm' : 't']) : []), ...(p === ME ? EVENTS.filter(ev => ev.date === `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`).map(ev => [i, `★ ${ev.allDay ? '' : ev.s + ' '}${ev.short}`, 'm']) : []), ...(TEAM_EVENTS[p]||[])].filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
   </div></div>`;
 };
 
 PAGES.portfoy = () => {
-  const rev = { 'İmes Spor':35000, 'Akdeniz Dental':42000, 'Werrise Digital':14000, 'Dentafly':0, 'Çevik / Multiligo':0, 'Gönüllü Ağı':8000, 'Kişisel Finans':0, 'Sağlık & Spor':0 };
+  const rev = { ...PRIV_REV };
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Portföy<span class="dot">.</span></h1><p class="lede">Markalar ve girişimler: sağlık, gelir ve odak payı. Hangisine bu ay daha çok zaman vermelisin?</p></div></div>
   <div class="grid g4">
@@ -570,37 +675,53 @@ PAGES.portfoy = () => {
   </div>
   <div class="card mt"><div class="table-wrap"><table><thead><tr><th>Girişim</th><th>Grup</th><th>Sağlık</th><th>İlerleme</th><th>Açık / gecikmiş</th><th class="num">Gelir · 30g</th><th>Sorumlu</th></tr></thead><tbody>
   ${PROJECTS.map(p => { const o = TASKS.filter(t=>t.project===p.name&&!t.done); return `<tr><td><strong>${esc(p.name)}</strong><small>${esc(p.next)}</small></td><td><span class="pill">${gdot(p.group)} ${p.group}</span></td>
-    <td><span class="pill ${p.health==='green'?'green':p.health==='amber'?'amber':'red'} dot">${{green:'İyi',amber:'Dikkat',red:'Risk'}[p.health]}</span></td>
-    <td style="min-width:120px"><div class="bar"><span style="width:${p.progress}%"></span></div></td><td>${o.length} / <span class="${o.some(t=>t.due<0)?'neg':''}">${o.filter(t=>t.due<0).length}</span></td><td class="num">${money(rev[p.name]||0)}</td><td>${p.owner}</td></tr>`; }).join('')}
+    <td><span class="pill ${p.health==='green'?'green':p.health==='amber'?'amber':'red'} dot">${{green:'İyi',amber:'Dikkat',red:'Risk'}[p.health] || '—'}</span></td>
+    <td style="min-width:120px">${p.progress != null ? `<div class="bar"><span style="width:${p.progress}%"></span></div>` : '<span class="muted">—</span>'}</td><td>${o.length} / <span class="${o.some(t=>t.due<0)?'neg':''}">${o.filter(t=>t.due<0).length}</span></td><td class="num">${money(rev[p.name]||0)}</td><td>${p.owner}</td></tr>`; }).join('')}
   </tbody></table></div></div>`;
 };
 
 PAGES.crm = () => `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>CRM<span class="dot">.</span></h1><p class="lede">Fırsatları aşamalar arasında sürükle. Web sitesindeki “Book a Call” ve “Enquire” formları bağlandığında yeni leadler otomatik düşecek.</p></div><button class="btn btn-primary" data-act="draft">+ Fırsat ekle</button></div>
   <div class="grid g4">
-    <div class="card kpi"><div class="eyebrow">Açık hat</div><div class="value">${money(DEALS.filter(d=>!['Kazanıldı','Kayıp'].includes(d.stage)).reduce((s,d)=>s+d.value,0))}</div></div>
+    <div class="card kpi"><div class="eyebrow">Açık hat</div><div class="value">${money(DEALS.filter(d=>tl(d)&&!['Kazanıldı','Kayıp'].includes(d.stage)).reduce((s,d)=>s+d.value,0))}</div>${DEALS.some(d=>d.cur&&d.value&&!['Kazanıldı','Kayıp'].includes(d.stage))?`<div class="delta">+ ${DEALS.filter(d=>d.cur&&d.value&&!['Kazanıldı','Kayıp'].includes(d.stage)).map(dealVal).join(' + ')}</div>`:''}</div>
     <div class="card kpi"><div class="eyebrow">Kazanılan</div><div class="value" style="color:var(--green)">${money(DEALS.filter(d=>d.stage==='Kazanıldı').reduce((s,d)=>s+d.value,0))}</div></div>
     <div class="card kpi"><div class="eyebrow">Yeni lead</div><div class="value">${DEALS.filter(d=>d.stage==='Yeni lead').length}</div></div>
     <div class="card kpi"><div class="eyebrow">Kazanma oranı</div><div class="value">${Math.round(DEALS.filter(d=>d.stage==='Kazanıldı').length / Math.max(1, DEALS.filter(d=>['Kazanıldı','Kayıp'].includes(d.stage)).length) * 100)}%</div></div>
   </div>
-  <div class="kanban mt">${STAGES.map(st => { const ds = DEALS.filter(d => d.stage === st); return `<div class="col" data-drop="stage" data-stage="${st}"><div class="col-h"><span>${st} <span class="pill">${ds.length}</span></span><small class="mono muted">${money(ds.reduce((s,d)=>s+d.value,0))}</small></div>
-    ${ds.map(d => `<div class="kcard" draggable="true" data-drag="deal" data-id="${d.id}"><b>${esc(d.name)}</b><div class="row" style="margin-top:6px;font-size:13px"><span class="muted">${esc(d.co)}</span><span class="spacer"></span><span class="mono">${money(d.value)}</span></div><span class="pill" style="margin-top:8px">${d.src}</span></div>`).join('')}</div>`; }).join('')}</div>`;
+  <div class="kanban mt">${STAGES.map(st => { const ds = DEALS.filter(d => d.stage === st); return `<div class="col" data-drop="stage" data-stage="${st}"><div class="col-h"><span>${st} <span class="pill">${ds.length}</span></span><small class="mono muted">${money(ds.filter(tl).reduce((s,d)=>s+d.value,0))}</small></div>
+    ${ds.map(d => `<div class="kcard" draggable="true" data-drag="deal" data-id="${d.id}"><b>${esc(d.name)}</b><div class="row" style="margin-top:6px;font-size:13px"><span class="muted">${esc(d.co)}</span><span class="spacer"></span><span class="mono">${dealVal(d)}</span></div><span class="pill" style="margin-top:8px">${d.src}</span>${d.note ? `<small class="muted" style="display:block;margin-top:6px">${esc(d.note)}</small>` : ''}</div>`).join('')}</div>`; }).join('')}</div>`;
 
 PAGES.butce = () => {
-  const inc = BUDGET.filter(b => b.amt > 0).reduce((s, b) => s + b.amt, 0), exp = -BUDGET.filter(b => b.amt < 0).reduce((s, b) => s + b.amt, 0);
-  const cats = {}; BUDGET.filter(b => b.amt < 0).forEach(b => cats[b.cat] = (cats[b.cat] || 0) - b.amt);
+  const inc = BUDGET.filter(b => !b.cur && b.amt > 0).reduce((s, b) => s + b.amt, 0), exp = -BUDGET.filter(b => !b.cur && b.amt < 0).reduce((s, b) => s + b.amt, 0);
+  const cats = {}; BUDGET.filter(b => !b.cur && b.amt < 0).forEach(b => cats[b.cat] = (cats[b.cat] || 0) - b.amt);
   const mx = Math.max(...Object.values(cats));
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi · son 30 gün</div><h1>Bütçe<span class="dot">.</span></h1><p class="lede">Tüm girişimlerin gelir-gider akışı tek yerde. Banka/fatura bağlantısı sonraki adımda.</p></div><button class="btn btn-primary" data-act="draft">+ Hareket ekle</button></div>
   <div class="grid g4">
     <div class="card kpi"><div class="eyebrow">Gelir</div><div class="value pos">${money(inc)}</div></div>
     <div class="card kpi"><div class="eyebrow">Gider</div><div class="value neg">${money(exp)}</div></div>
-    <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">Marj %${Math.round((inc-exp)/inc*100)}</div></div>
+    <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">${inc ? 'Marj %' + Math.round((inc-exp)/inc*100) : '—'}</div></div>
     <div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${money(150000)}</div><div class="bar lime" style="margin-top:10px"><span style="width:${Math.min(100,inc/150000*100)}%"></span></div></div>
   </div>
+  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">${INCOME.map(i => (i.cur||'₺') + Math.round(i.amt).toLocaleString('tr-TR')).join(' + ')} / ay</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
+    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${i.cur||'₺'}${Math.round(i.amt).toLocaleString('tr-TR')}/${i.per||'ay'}</td></tr>`; }).join('')}
+    </tbody></table></div></div>` : ''}
+  ${REC_EXP.length || PAYMENTS.length ? (() => {
+    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.filter(i => (i.cur||'₺') === '₺').reduce((s, i) => s + i.amt, 0);
+    const up = [...REC_EXP.flatMap(r => occurrences(r.day, 0, 30).map(o => ({ off:o.off, desc:r.desc, cat:r.cat, amt:r.amt, rec:`her ayın ${r.day}’i` }))),
+                ...PAYMENTS.filter(p => dayOff(p.date) >= 0 && dayOff(p.date) <= 30).map(p => ({ off:dayOff(p.date), desc:p.desc, cat:p.cat, amt:p.amt, cur:p.cur }))].sort((a, b) => a.off - b.off);
+    const upT = up.filter(x => !x.cur).reduce((s, x) => s + x.amt, 0), upFx = up.filter(x => x.cur);
+    return `<div class="grid g2 mt">
+      <div class="card"><div class="card-head"><h3>${ic('repeat',16)} Düzenli giderler</h3><span class="pill red">${moneyD(fixed)} / ay</span></div>
+        ${REC_EXP.map(r => { const o = occurrences(r.day, 0, 31)[0]; return `<div class="qitem"><span style="flex:1"><b>${esc(r.desc)}</b><br><small class="muted">Her ayın ${r.day}’i · sıradaki: ${o ? whenTxt(o.off) : '—'}</small></span><span class="mono neg">−${moneyD(r.amt)}</span></div>`; }).join('')}
+        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, sadece ₺</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
+      <div class="card"><div class="card-head"><h3>${ic('cal',16)} Yaklaşan ödemeler · 30 gün</h3><span class="pill red">${moneyD(upT)}</span></div>
+        ${up.map(x => `<div class="qitem"><span class="pill ${x.off<=3?'amber':''}" style="min-width:92px;justify-content:center">${whenTxt(x.off).replace(/^(\S+) \((.+)\)$/,'$2')}</span><span style="flex:1">${esc(x.desc)}<br><small class="muted">${esc(x.cat)}${x.rec ? ' · ' + x.rec : ''}</small></span><span class="mono neg">−${fmtCur(x.amt, x.cur)}</span></div>`).join('') || '<p class="muted">30 gün içinde ödeme yok.</p>'}${upFx.length ? `<p class="muted" style="font-size:12px;margin-top:8px">Toplama dahil değil (döviz): ${upFx.map(x => fmtCur(x.amt, x.cur)).join(' + ')}</p>` : ''}</div>
+    </div>`; })() : ''}
   <div class="grid split mt">
     <div class="card"><h3 style="margin-bottom:10px">Hareketler</h3><div class="table-wrap"><table><thead><tr><th>Tarih</th><th>Açıklama</th><th>Proje</th><th>Kategori</th><th class="num">Tutar</th></tr></thead><tbody>
-      ${BUDGET.map(b => `<tr><td class="mono">${dLabel(b.d)}</td><td><strong>${esc(b.desc)}</strong></td><td>${esc(b.proj)}</td><td><span class="pill">${b.cat}</span></td><td class="num ${b.amt>0?'pos':'neg'}">${b.amt>0?'+':''}${money(b.amt).replace('₺-','-₺')}</td></tr>`).join('')}
+      ${BUDGET.map(b => `<tr><td class="mono">${dLabel(b.d)}</td><td><strong>${esc(b.desc)}</strong></td><td>${esc(b.proj)}</td><td><span class="pill">${b.cat}</span></td><td class="num ${b.amt>0?'pos':'neg'}">${b.amt>0?'+':'−'}${fmtCur(Math.abs(b.amt), b.cur)}</td></tr>`).join('')}
     </tbody></table></div></div>
     <div class="card" style="align-self:start"><h3 style="margin-bottom:14px">Gider dağılımı</h3>
       ${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c, v]) => `<div style="margin-bottom:12px"><div class="row" style="font-size:14px"><span>${c}</span><span class="spacer"></span><span class="mono">${money(v)}</span></div><div class="bar" style="margin-top:6px"><span style="width:${v/mx*100}%"></span></div></div>`).join('')}</div>
@@ -629,7 +750,7 @@ PAGES.hafta = () => {
     <div>
       <div class="card">${sl('energy','Enerji',7)}${sl('focusR','Odak',6)}${sl('stress','Stres',8)}${sl('joy','Keyif',6)}</div>
       <div class="card mt"><h3 style="margin-bottom:8px">Önceki haftalar</h3>
-        ${REVIEWS.map(r => `<div class="qitem"><span class="mono" style="width:80px">${isoWeek(addDays(NOW(), r.w*7))}</span><span class="pill ${r.score>=7?'green':'amber'}">${r.score}/10</span><span style="flex:1;font-size:13px" class="muted">${esc(r.note)}</span></div>`).join('')}</div>
+        ${REVIEWS.length ? '' : '<p class="muted">Henüz kayıtlı değerlendirme yok.</p>'}${REVIEWS.map(r => `<div class="qitem"><span class="mono" style="width:80px">${isoWeek(addDays(NOW(), r.w*7))}</span><span class="pill ${r.score>=7?'green':'amber'}">${r.score}/10</span><span style="flex:1;font-size:13px" class="muted">${esc(r.note)}</span></div>`).join('')}</div>
     </div>
   </div>`;
 };
@@ -649,7 +770,7 @@ PAGES.site = () => `
     <div class="card"><h3>Yayın durumu</h3>
       <div class="setting"><div>“In development” rozeti<small>Digital products sayfası</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
       <div class="setting"><div>Bakım modu<small>Siteyi ziyaretçilerden gizle</small></div><label class="toggle"><input type="checkbox"><span></span></label></div>
-      <div class="setting"><div>Insights blog<small>4 yazı · 1 taslak</small></div><span class="pill green dot">Canlı</span></div>
+      <div class="setting"><div>Insights blog<small>Sitedeki yazılar</small></div><span class="draft-tag">Bağlanacak</span></div>
       <div class="setting"><div>Formlar → CRM<small>Book a Call, Enquire</small></div><span class="draft-tag">Bağlanacak</span></div>
     </div>
   </div>`;
@@ -660,7 +781,7 @@ PAGES.ayarlar = () => {
   <div class="eyebrow">Yapılandırma</div><h1>Ayarlar<span class="dot">.</span></h1>
   <p class="lede">Profilin, proje ağacın ve genel parametrelerin — hepsi buradan. Değişiklikler “Kaydet ve uygula” ile tüm panele işler.</p>
   <div style="max-width:940px">
-  ${card('user','Hesabım','Barış · Sahip. Eklediğin her şey yalnız sana görünür; paylaşmadıkça kimse göremez.',
+  ${card('user','Hesabım','Oğuz · Sahip. Eklediğin her şey yalnız sana görünür; paylaşmadıkça kimse göremez.',
     `<div class="row"><input class="input" type="password" placeholder="Mevcut şifre" style="flex:1;min-width:180px"><input class="input" type="password" placeholder="Yeni şifre (en az 12)" style="flex:1;min-width:180px"><button class="btn btn-outline" data-act="pw">${ic('check',15)} Şifreyi değiştir</button></div>
      <div class="row mt"><button class="btn btn-ghost btn-sm" data-act="logout-all">${ic('ban',15)} Diğer cihazlarda oturumu kapat</button><button class="btn btn-ghost btn-sm" data-act="draft">${ic('sparkle',15)} Tanıtımı yeniden göster</button></div>`)}
   ${card('bell','WhatsApp bildirimleri','Sana talep ya da görev atandığında şirket numarasından kısa bir WhatsApp mesajı gelir.',
@@ -696,7 +817,7 @@ const byId = id => TASKS.find(t => t.id === +id);
 function addTask(title, today) {
   if (!title.trim()) { toast('Önce bir şey yaz'); return; }
   const g = $('#qcGroup') ? $('#qcGroup').value : 'Kişisel';
-  TASKS.unshift(T(title.trim(), { group:g, cat: g === 'Kişisel' ? 'Kişisel' : 'Operasyon', project: PROJECTS.find(p => p.group === g)?.name || 'Sağlık & Spor', today, due: today ? 0 : 7 }));
+  TASKS.unshift(T(title.trim(), { group:g, cat: g === 'Kişisel' ? 'Kişisel' : 'Operasyon', project: PROJECTS.find(p => p.group === g)?.name || 'Genel', today, due: today ? 0 : 7 }));
   toast(today ? 'Bugüne eklendi' : "Backlog'a eklendi");
   rerender();
 }
@@ -725,7 +846,7 @@ document.addEventListener('click', e => {
     case 'drop': TASKS.splice(TASKS.indexOf(t), 1); toast('Bilinçle bırakıldı'); return rerender();
     case 'r-do': t.today = true; t.due = 0; toast('Bugüne çekildi'); return rerender();
     case 'r-small': t.title = '(Küçük adım) ' + t.title; t.est = .5; t.due = 1; toast('Küçültüldü, yarına planlandı'); return rerender();
-    case 'r-del': t.owner = PEOPLE.find(p => p !== ME); t.follow = true; t.due = 3; toast('Devredildi: ' + t.owner); return rerender();
+    case 'r-del': t.owner = 'Devredildi'; t.follow = true; t.due = 3; toast('Devredildi olarak işaretlendi — takibe alındı'); return rerender();
     case 'tf-toggle': S.tf[el.dataset.k] = !S.tf[el.dataset.k]; return rerender();
     case 'proj-filter': S.tf.group = el.dataset.g; return;
     case 'new-task': { const v = prompt('Yeni görev:'); if (v) addTask(v, false); return; }
