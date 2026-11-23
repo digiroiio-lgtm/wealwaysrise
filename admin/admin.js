@@ -71,22 +71,17 @@ const GROUPS = { 'Markalar':'#d92d20','Proje':'#e8590c','NGO':'#2f8a4c','Platfor
 const CATS = { 'Kampanya':'#d92d20','Etkinlik':'#b93a8a','İçerik / SEO':'#7048c6','Toplantı':'#0e8a8a','Satış / Lead':'#e8590c','Eğitim':'#222','Takip':'#2563c9','Operasyon':'#555','Finans':'#2f8a4c','Rapor':'#b7791f','Rutin':'#3f9142','Kişisel':'#8d8c86' };
 const PRIS = { 'Kesin':'red','Yüksek':'amber','Orta':'green','Düşük':'' };
 const PRI_ORDER = ['Kesin','Yüksek','Orta','Düşük'];
-const PEOPLE = ['Oğuz','Umut','İmran','Elif','Mert'];
+const PEOPLE = ['Oğuz'];
 const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', progress:62, health:'green', owner:'Oğuz', next:'Masterclass satış sayfası', subs:['Web sitesi','Masterclass','Danışmanlık'] },
-  { name:'İmes Spor', group:'Markalar', progress:28, health:'red', owner:'Umut', next:'2027 pazarlama planı onayı', subs:['Sosyal medya','Web sitesi','2027 Plan'] },
-  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
-  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', progress:30, health:'amber', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
-  { name:'Kök Hücre Yönlendirme', group:'Proje', progress:10, health:'amber', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
-  { name:'Parti', group:'Platform', progress:50, health:'green', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
-  { name:'Londra Depo', group:'Markalar', progress:60, health:'amber', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
-  { name:'Dentafly', group:'Markalar', progress:45, health:'amber', owner:'Oğuz', next:'Evrak teslimi', subs:['Belgeler','Landing page'] },
-  { name:'Çevik / Multiligo', group:'Platform', progress:54, health:'amber', owner:'Mert', next:'MCP entegrasyonu testi', subs:['Uygulama','Criteo ortaklığı'] },
-  { name:'Gönüllü Ağı', group:'NGO', progress:35, health:'amber', owner:'İmran', next:'Ocak etkinliği mekan', subs:['Etkinlik','Bağış'] },
-  { name:'Kişisel Finans', group:'Finans', progress:80, health:'green', owner:'Oğuz', next:'Yıl sonu vergi hazırlığı', subs:['Vergi','Yatırım'] },
-  { name:'Sağlık & Spor', group:'Yaşam', progress:40, health:'amber', owner:'Oğuz', next:'Haftada 3 antrenman', subs:['Spor','Uyku'] }
+  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'Kontrol merkezini gerçek verilerle doldurmak', subs:['wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
+  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
+  { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
+  { name:'Kişisel Finans', group:'Finans', owner:'Oğuz', next:'Aidat her ayın 1’i · kira her ayın 15’i', subs:['Düzenli giderler','Planlı ödemeler (kart, okul)','Yatırım (fon)'] }
 ];
 
 /* Hafta içi rutinler (Pzt–Cum) — takvime ve görevlere otomatik işlenir */
@@ -139,29 +134,6 @@ const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays
 let uid = 100;
 const T = (title, o) => ({ id: ++uid, title, pri:'Orta', group:'Proje', cat:'Operasyon', project:'Werrise Digital', owner:ME, due:0, today:false, done:false, follow:false, est:0, slot:'', subs:[], ...o });
 const TASKS = [
-  T('İmes – 2027 pazarlama planı, web sitesi & içerik', { pri:'Kesin', group:'Markalar', cat:'Kampanya', project:'İmes Spor', owner:'Umut', due:-34, today:true, est:4, slot:'Per 18:30–19:45', subs:[
-    { t:'2027 pazarlama planı: marka bazlı Excel planları ve 12 aylık takvimleri tamamla', done:true },
-    { t:'2027 ekip kararları: SEO sorunları, foto/video ekipmanı, sosyal medya personeli', done:false },
-    { t:'Web sitesi yeni sayfa yapısı taslağı', done:false },
-    { t:'İçerik takvimi: ilk 3 ay', done:false } ]}),
-  T('Styku gym tanıtımı için AI video', { pri:'Kesin', group:'Markalar', cat:'İçerik / SEO', project:'İmes Spor', owner:'Umut', due:-34, today:true, est:2 }),
-  T('İmes Instagram hesabı erişimi: kurtarma yolunu belirle', { pri:'Yüksek', group:'Markalar', cat:'Operasyon', project:'İmes Spor', owner:'İmran', due:-3, today:true, est:1, follow:true }),
-  T('Dentafly: pasaport ve ikametgâh belgesini gönder', { pri:'Kesin', group:'Markalar', cat:'Takip', project:'Dentafly', due:0, today:true, est:.5 }),
-  T('Masterclass satış sayfası metnini bitir', { pri:'Yüksek', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:2, today:true, est:3, subs:[{t:'Başlık ve alt başlık',done:true},{t:'12 iş akışı açıklaması',done:false},{t:'SSS bölümü',done:false}] }),
-  T('Akdeniz Dental Aralık reklam bütçesi onayı', { pri:'Yüksek', group:'Markalar', cat:'Kampanya', project:'Akdeniz Dental', owner:'Elif', due:1, est:1, follow:true }),
-  T('Google Adgrant takibi', { pri:'Orta', group:'NGO', cat:'Rutin', project:'Gönüllü Ağı', due:0, today:true, est:.5 }),
-  T('Criteo x Multiligo toplantı notlarını aksiyona çevir', { pri:'Orta', group:'Platform', cat:'Toplantı', project:'Çevik / Multiligo', owner:'Mert', due:-1, today:true, est:1 }),
-  T('Haftalık müşteri raporu (Akdeniz Dental)', { pri:'Orta', group:'Markalar', cat:'Rapor', project:'Akdeniz Dental', due:4, est:1.5 }),
-  T('Yıl sonu vergi evraklarını topla', { pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:9, est:2 }),
-  T('Ocak gönüllü etkinliği için mekan teklifleri', { pri:'Orta', group:'NGO', cat:'Etkinlik', project:'Gönüllü Ağı', owner:'İmran', due:12, est:2, follow:true }),
-  T('MCP bağlantısını test et (Claude)', { pri:'Orta', group:'Platform', cat:'Operasyon', project:'Çevik / Multiligo', owner:'Mert', due:3, est:1 }),
-  T('Affiliate komisyon kontrolü', { pri:'Düşük', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:0, today:true, est:.7 }),
-  T('İngilizce dersi ödevi', { pri:'Düşük', group:'Yaşam', cat:'Eğitim', project:'Sağlık & Spor', due:1, est:.5 }),
-  T('Haftada 3 antrenman planı', { pri:'Orta', group:'Yaşam', cat:'Kişisel', project:'Sağlık & Spor', due:5, est:.5 }),
-  T('Werrise LinkedIn içerik serisi (4 gönderi)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:-16, est:3 }),
-  T('Eski lead listesini temizle', { pri:'Düşük', group:'Proje', cat:'Satış / Lead', project:'Werrise Digital', due:-21, est:1 }),
-  T('Sabah planı & e-posta taraması', { pri:'Orta', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 }),
-  T('Haftayı + günü planla', { pri:'Yüksek', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 }),
   T('Kim (Harex) ile WhatsApp görüşmesi — kök hücre hasta yönlendirme', { pri:'Kesin', group:'Proje', cat:'Toplantı', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.25, slot:'Çar 25 Kas · 17:00–17:15 (TR)', subs:[
     { t:'Kim’in gönderdiği hasta özetini oku (tedavi ihtiyacı, kök hücre türü, ülke)', done:false },
@@ -189,17 +161,7 @@ const TASKS = [
     due:nextWeekdayOff(), today:isWeekday(NOW()), est:(toMin(r.e) - toMin(r.s)) / 60, recur:`Hafta içi · ${r.s}`, subs:r.subs.map(t => ({ t, done:false })) }))
 ];
 
-const AGENDA = [
-  ['07:45','08:00','task','Sabah planı & e-posta taraması'],
-  ['08:40','09:00','plan','Haftayı + günü planla (20 dk)'],
-  ['10:30','11:15','task','İmes – 2027 pazarlama planı taslağı'],
-  ['12:00','13:00','plan','Öğle arası'],
-  ['13:30','14:30','meeting','Criteo x Multiligo'],
-  ['15:00','16:00','task','Masterclass satış sayfası metni'],
-  ['16:30','17:00','task','Dentafly evrak takibi'],
-  ['19:15','20:00','meeting','İngilizce dersi'],
-  ['20:10','20:50','task','Affiliate komisyon kontrolü']
-].map(([s, e, type, title]) => ({ s, e, type, title }))
+const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
  .concat(isWeekday(NOW()) ? RECURRING.map(r => ({ ...r, rec:true })) : [])
  .concat(EVENTS.filter(ev => dayOff(ev.date) === 0))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
@@ -226,58 +188,31 @@ window.WR_setPrivate = data => {
 };
 
 let SIGNALS = [
-  { ic:'gauge', tone:'red', t:'Stres makul aralığın üstünde', p:'Seviyen 8/10. Bu modda gelecek planı yapma — önce toplu uzaklaştır, öğrenme ancak rahatken açılır.', a:'Toplu uzaklaştır', go:'oncelik' },
-  { ic:'alarm', tone:'amber', t:'{overdue} işin tarihi geçti', p:'En acili: “İmes – 2027 pazarlama planı” (34 gün). Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
-  { ic:'repeat', tone:'blue', t:'Bugün {routines} rutin var', p:'{routineList}', a:'Rutinleri aç', go:'planlama' },
-  { ic:'repeat', tone:'amber', t:'{review} iş gözden geçirilmeyi bekliyor', p:'Ertelenen, geciken, bir süredir yapılmayanlar birikti. Tek tek tart: yap, küçült, devret ya da bilinçle bırak.', a:"Öncelik'te gözden geçir", go:'oncelik' },
-  { ic:'hour', tone:'red', t:'Yüksek öncelikli işler 14+ gündür yapılmadı', p:'Görünmez birikim özgüveni eritir — bugün ya küçük bir adım tanımla ya da bilinçle park et.', a:'Görevlerde görüntüle', go:'gorevler?overdue' }
+  { ic:'alarm', tone:'amber', when:() => overdueTasks().length > 0, t:'{overdue} işin tarihi geçti', p:'En acili: “{topOverdue}”. Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
+  { ic:'repeat', tone:'blue', when:() => AGENDA.some(a => a.rec), t:'Bugün {routines} rutin var', p:'{routineList}', a:'Rutinleri aç', go:'planlama' },
+  { ic:'repeat', tone:'amber', when:() => reviewTasks().length > 0, t:'{review} iş gözden geçirilmeyi bekliyor', p:'14 günden uzun süredir bekleyenler var. Tek tek tart: yap, küçült, devret ya da bilinçle bırak.', a:"Öncelik'te gözden geçir", go:'oncelik' }
 ];
+const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
-  { id:1, name:'Kagi M — Danışmanlık', co:'Kagi', value:45000, stage:'Yeni lead', src:'Web formu' },
-  { id:2, name:'Masterclass kurumsal paket', co:'Agency A', value:120000, stage:'Görüşme', src:'LinkedIn' },
-  { id:3, name:'Klinik AI asistan kurulumu', co:'Akdeniz Dental', value:60000, stage:'Teklif', src:'Mevcut müşteri' },
-  { id:4, name:'SEO + içerik retainer', co:'İmes Spor', value:35000, stage:'Kazanıldı', src:'Referans' },
-  { id:5, name:'Global Growth danışmanlığı', co:'Northwind', value:90000, stage:'Görüşme', src:'Book a Call' },
-  { id:6, name:'Etkinlik otomasyonu', co:'Events Co.', value:28000, stage:'Kayıp', src:'Web formu' },
-  { id:7, name:'Satış ekibi AI eğitimi', co:'SalesHub', value:52000, stage:'Yeni lead', src:'Book a Call' },
   { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
   { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
 ];
 const STAGES = ['Yeni lead','Görüşme','Teklif','Kazanıldı','Kayıp'];
 
-const BUDGET = [
-  { d:-1, desc:'İmes Spor — Kasım retainer', proj:'İmes Spor', cat:'Gelir', amt:35000 },
-  { d:-2, desc:'Google Ads — Akdeniz Dental', proj:'Akdeniz Dental', cat:'Reklam', amt:-18500 },
-  { d:-4, desc:'Akdeniz Dental — danışmanlık', proj:'Akdeniz Dental', cat:'Gelir', amt:42000 },
-  { d:-5, desc:'Yazılım abonelikleri (AI, CRM)', proj:'Werrise Digital', cat:'Yazılım', amt:-6200 },
-  { d:-7, desc:'Video ekipmanı kiralama', proj:'İmes Spor', cat:'Ekipman', amt:-9500 },
-  { d:-9, desc:'Masterclass ön satış', proj:'Werrise Digital', cat:'Gelir', amt:14000 },
-  { d:-11, desc:'Freelance tasarımcı', proj:'Werrise Digital', cat:'Personel', amt:-12000 },
-  { d:-14, desc:'Gönüllü Ağı bağış', proj:'Gönüllü Ağı', cat:'Gelir', amt:8000 }
-];
+const BUDGET = [];  // gerçek hareketler şifreli notlardan (private.js) gelir
 
-const TEAM_EVENTS = {
-  'Oğuz': [[0,'İngilizce','m'],[1,'Criteo görüşme','m'],[3,'Masterclass çekim','t'],[5,'İzin','o']],
-  'Umut': [[0,'İmes plan','t'],[1,'Sahada çekim','t'],[2,'İmes toplantı','m'],[4,'Rapor','t']],
-  'İmran': [[1,'Mekan ziyareti','t'],[2,'İmes toplantı','m'],[3,'İzin','o'],[4,'İzin','o']],
-  'Elif': [[0,'Akdeniz toplantı','m'],[2,'Reklam optimizasyon','t'],[4,'Haftalık rapor','t']],
-  'Mert': [[1,'Criteo görüşme','m'],[2,'MCP test','t'],[3,'Sprint demo','m']]
-};
+const TEAM_EVENTS = { 'Oğuz': [] };
 
-const REVIEWS = [
-  { w:-1, score:7, done:38, over:9, note:'İmes planı yine kaydı; toplantılar fazlaydı.' },
-  { w:-2, score:8, done:44, over:5, note:'Masterclass yapısı netleşti.' },
-  { w:-3, score:6, done:29, over:12, note:'Seyahat haftası, düşük odak.' }
-];
+const REVIEWS = [];
 
 /* ================= STATE ================= */
 const S = {
   tf: { tab:'all', q:'', hideDone:true, overdue:false, essential:false, mine:false, person:'herkes', group:'Tümü', cat:'Tümü', pri:'Tümü', view:'single' },
   todayGroup:'Tümü', todayView:'single', agendaView:'v', dashAgenda:'h', gear:'Odak',
-  open:new Set([TASKS[0].id]),
-  nowId: TASKS[0].id,
-  focus:{ taskId:TASKS[0].id, len:25, left:25*60, running:false, sessions:2 }
+  open:new Set(),
+  nowId: null,
+  focus:{ taskId:(TASKS.find(t => !t.done) || {}).id, len:25, left:25*60, running:false, sessions:0 }
 };
 
 /* ================= DERIVED ================= */
@@ -292,6 +227,7 @@ const upcoming = (max = 7) => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) }))
 const payAmt = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
 const whenTxt = off => off === 0 ? 'Bugün' : off === 1 ? 'Yarın' : `${DAYS[addDays(NOW(), off).getDay()]} (${dLabel(off)})`;
 const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
+  .replace('{topOverdue}', (overdueTasks().sort((a, b) => a.due - b.due)[0] || {}).title || '')
   .replace('{routines}', AGENDA.filter(a => a.rec).length)
   .replace('{routineList}', AGENDA.filter(a => a.rec).map(a => `${a.s} ${a.short}`).join(' · ') || 'Hafta sonu — rutin yok');
 
@@ -337,9 +273,9 @@ function renderNowbar() {
     ${t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due}g</span>` : ''}
     <button class="btn btn-ghost btn-sm" data-act="start" data-id="${t.id}">${ic('play',14)} Başla</button>
     <span class="pill">+${openTasks().length - 1}</span>
-    <a class="pill red-o lg end" href="#gorevler?overdue">${ic('alarm',14)} ${od} gecikmiş</a>`
+    ${od ? `<a class="pill red-o lg end" href="#gorevler?overdue">${ic('alarm',14)} ${od} gecikmiş</a>` : '<span class="pill green lg end">Gecikmiş iş yok ✓</span>'}`
     : `<span class="lbl">ŞİMDİ</span><span class="t">Açık iş kalmadı 🎉</span>`;
-  $('#bellCount').textContent = SIGNALS.length + od + reminders().length;
+  $('#bellCount').textContent = activeSignals().length + reminders().length;
 }
 
 /* ================= SHARED UI ================= */
@@ -449,9 +385,7 @@ PAGES.dashboard = () => {
   <div class="grid g2 mt">
     <div class="now-card"><div class="lbl">ŞİMDİ</div>${blk ? `<h3>${esc(blk.title)}</h3><div>${blk.s}–${blk.e} · ${toMin(blk.s) > nowMin() ? 'sıradaki blok' : 'devam ediyor'}</div>` : `<h3>Günün blokları bitti 🌙</h3><div>yarın sabah ajanda yeniden kurulur</div>`}</div>
     <div class="card flat"><div class="card-head"><span class="sec-label">Durum</span><small class="muted">şimdi ve önümüzdeki günler</small></div>
-      <div class="status-row full"><b>Bugün</b><span>Dolu · ${AGENDA.filter(a=>a.type==='meeting').length} toplantı · ${todayTasks().filter(t=>!t.done).length} iş sırada</span></div>
-      <div class="status-row"><b>Yarın</b><span>Orta · 1 toplantı · ${TASKS.filter(t=>t.due===1&&!t.done).length} iş planlı</span></div>
-      <div class="status-row ok"><b>${DAYS[addDays(d,2).getDay()]}</b><span>Rahat · 2 toplantı · ${TASKS.filter(t=>t.due===2&&!t.done).length} iş planlı</span></div>
+      ${[0,1,2].map(o => { const x = dayInfo(o); return `<div class="status-row ${x.cls}"><b>${o === 0 ? 'Bugün' : o === 1 ? 'Yarın' : DAYS[addDays(d,o).getDay()]}</b><span>${x.label} · ${x.meet} toplantı · ${x.tasks} iş${x.pays ? ` · ${x.pays} ödeme` : ''}</span></div>`; }).join('')}
     </div>
   </div>
 
@@ -484,14 +418,21 @@ function notesFor(name) {
   return `<div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">${ic('lock',12)} Notlar · ${ns.length}</div>
     ${ns.map(n => `<div class="note"><b>${esc(n.title)}</b>${n.date ? ` <small class="muted">${esc(n.date)}</small>` : ''}<ul>${n.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`).join('')}</div>`;
 }
+function dayInfo(o) {
+  const dt = addDays(NOW(), o), iso = isoDate(dt), evs = EVENTS.filter(ev => ev.date === iso);
+  const meet = (isWeekday(dt) ? RECURRING.filter(r => r.type === 'meeting').length : 0) + evs.filter(ev => ev.type === 'meeting').length;
+  const tasks = (o === 0 ? todayTasks() : TASKS.filter(t => t.due === o)).filter(t => !t.done).length;
+  const pays = evs.filter(ev => ev.kind === 'expense').length, load = meet * 2 + tasks;
+  return { meet, tasks, pays, cls: load >= 8 ? 'full' : load >= 4 ? '' : 'ok', label: load >= 8 ? 'Dolu' : load >= 4 ? 'Orta' : 'Rahat' };
+}
 function projCard(p) {
   const open = TASKS.filter(t => t.project === p.name && !t.done).length;
   const late = TASKS.filter(t => t.project === p.name && !t.done && t.due < 0).length;
-  const hc = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)' }[p.health];
+  const hc = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)' }[p.health] || 'var(--line)';
   return `<div class="card proj-card"><div class="top"><span class="pill">${gdot(p.group)} ${p.group}</span><span class="health" style="background:${hc}" title="Sağlık"></span></div>
     <h3>${esc(p.name)}</h3>${p.parent ? `<small class="pill" style="margin-bottom:4px">↳ ${esc(p.parent)} altında</small><br>` : ''}<small class="muted">Sıradaki: ${esc(p.next)}</small>
-    <div class="bar" style="margin:14px 0 8px"><span style="width:${p.progress}%"></span></div>
-    <div class="row" style="font-size:13px"><span>%${p.progress}</span><span class="spacer"></span><span>${open} açık</span>${late ? `<span class="pill red">${late} gecikmiş</span>` : ''}</div></div>`;
+    ${p.progress != null ? `<div class="bar" style="margin:14px 0 8px"><span style="width:${p.progress}%"></span></div>` : '<div style="height:14px"></div>'}
+    <div class="row" style="font-size:13px"><span>${p.progress != null ? '%' + p.progress : ''}</span><span class="spacer"></span><span>${open} açık</span>${late ? `<span class="pill red">${late} gecikmiş</span>` : ''}</div></div>`;
 }
 
 PAGES.bugun = () => {
@@ -528,10 +469,10 @@ PAGES.bugun = () => {
       <div class="mt">${taskList(list, S.todayView)}</div>
     </div>
     <div class="card" style="align-self:start">
-      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${SIGNALS.length + reminders().length}</span></div>
+      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${activeSignals().length + reminders().length}</span></div>
       ${reminders().map(ev => { const pay = ev.kind === 'expense', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${pay?'amber':'blue'}-bg);color:var(--${pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
         <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + ev.s} · ${esc(ev.short)}${amt ? ` · <span class="neg">${moneyD(amt)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
-      ${SIGNALS.map((s, i) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
+      ${activeSignals().map(s => [s, SIGNALS.indexOf(s)]).map(([s, i]) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
         <div style="flex:1"><h4>${sigText(s.t)}</h4><p>${sigText(s.p)}</p><a class="link" href="#${s.go}">${s.a} →</a></div>
         <button class="x" data-act="sig-x" data-i="${i}" aria-label="Kapat">×</button></div>`).join('') || '<p class="muted">Sinyal yok — sakin bir gün.</p>'}
     </div>
@@ -661,7 +602,7 @@ PAGES.oncelik = () => {
 PAGES.tarihler = () => {
   const o = openTasks();
   const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), '']];
-  const imp = [[5,'Akdeniz Dental sözleşme yenileme'],[8,'KDV beyannamesi'],[17,'Masterclass lansman (hedef)'],[38,'Yıllık şirket hesap kapanışı']];
+  const imp = [];
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Tarihler<span class="dot">.</span></h1><p class="lede">Teslim tarihlerine göre tüm açık işler ve takvimdeki önemli günler.</p></div></div>
   <div class="grid split"><div>${sec.map(([n, ts, c]) => `<div class="card mt" style="padding:20px"><div class="card-head"><h3>${n}</h3><span class="pill ${c}">${ts.length}</span></div>
@@ -669,7 +610,7 @@ PAGES.tarihler = () => {
   <div style="align-self:start"><div class="card mt"><h3>Randevular & ödemeler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşmeler, maaş ve ödeme günleri</p>
     ${EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).sort((a,b)=>a.off-b.off).map(ev => `<div class="qitem"><span class="pill ${ev.off<0?'':ev.off<=1?'red':'blue'}">${dLabel(ev.off)} ${ev.s}</span><span style="flex:1">${esc(ev.title)}<br><small class="muted">${esc(ev.note||'')}</small></span><small class="muted">${ev.off<0?'geçti':ev.off===0?'bugün':ev.off+' gün'}</small></div>`).join('')}</div>
   <div class="card mt"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
-    ${imp.map(([o, t]) => `<div class="qitem"><span class="pill ${o<=7?'amber':''}">${dLabel(o)}</span><span style="flex:1">${t}</span><small class="muted">${o} gün</small></div>`).join('')}
+    ${imp.map(([o, t]) => `<div class="qitem"><span class="pill ${o<=7?'amber':''}">${dLabel(o)}</span><span style="flex:1">${t}</span><small class="muted">${o} gün</small></div>`).join('') || '<p class="muted">Henüz önemli tarih yok (sözleşme, vergi, lansman…).</p>'}
     <button class="btn btn-outline btn-sm mt" data-act="draft">+ Tarih ekle</button></div></div></div>`;
 };
 
@@ -687,7 +628,7 @@ PAGES.ekip = () => {
 };
 
 PAGES.portfoy = () => {
-  const rev = { 'İmes Spor':35000, 'Akdeniz Dental':42000, 'Werrise Digital':14000, 'Dentafly':0, 'Çevik / Multiligo':0, 'Gönüllü Ağı':8000, 'Kişisel Finans':0, 'Sağlık & Spor':0, ...PRIV_REV };
+  const rev = { ...PRIV_REV };
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Portföy<span class="dot">.</span></h1><p class="lede">Markalar ve girişimler: sağlık, gelir ve odak payı. Hangisine bu ay daha çok zaman vermelisin?</p></div></div>
   <div class="grid g4">
@@ -698,8 +639,8 @@ PAGES.portfoy = () => {
   </div>
   <div class="card mt"><div class="table-wrap"><table><thead><tr><th>Girişim</th><th>Grup</th><th>Sağlık</th><th>İlerleme</th><th>Açık / gecikmiş</th><th class="num">Gelir · 30g</th><th>Sorumlu</th></tr></thead><tbody>
   ${PROJECTS.map(p => { const o = TASKS.filter(t=>t.project===p.name&&!t.done); return `<tr><td><strong>${esc(p.name)}</strong><small>${esc(p.next)}</small></td><td><span class="pill">${gdot(p.group)} ${p.group}</span></td>
-    <td><span class="pill ${p.health==='green'?'green':p.health==='amber'?'amber':'red'} dot">${{green:'İyi',amber:'Dikkat',red:'Risk'}[p.health]}</span></td>
-    <td style="min-width:120px"><div class="bar"><span style="width:${p.progress}%"></span></div></td><td>${o.length} / <span class="${o.some(t=>t.due<0)?'neg':''}">${o.filter(t=>t.due<0).length}</span></td><td class="num">${money(rev[p.name]||0)}</td><td>${p.owner}</td></tr>`; }).join('')}
+    <td><span class="pill ${p.health==='green'?'green':p.health==='amber'?'amber':'red'} dot">${{green:'İyi',amber:'Dikkat',red:'Risk'}[p.health] || '—'}</span></td>
+    <td style="min-width:120px">${p.progress != null ? `<div class="bar"><span style="width:${p.progress}%"></span></div>` : '<span class="muted">—</span>'}</td><td>${o.length} / <span class="${o.some(t=>t.due<0)?'neg':''}">${o.filter(t=>t.due<0).length}</span></td><td class="num">${money(rev[p.name]||0)}</td><td>${p.owner}</td></tr>`; }).join('')}
   </tbody></table></div></div>`;
 };
 
@@ -723,7 +664,7 @@ PAGES.butce = () => {
   <div class="grid g4">
     <div class="card kpi"><div class="eyebrow">Gelir</div><div class="value pos">${money(inc)}</div></div>
     <div class="card kpi"><div class="eyebrow">Gider</div><div class="value neg">${money(exp)}</div></div>
-    <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">Marj %${Math.round((inc-exp)/inc*100)}</div></div>
+    <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">${inc ? 'Marj %' + Math.round((inc-exp)/inc*100) : '—'}</div></div>
     <div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${money(150000)}</div><div class="bar lime" style="margin-top:10px"><span style="width:${Math.min(100,inc/150000*100)}%"></span></div></div>
   </div>
   ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">${INCOME.map(i => (i.cur||'₺') + Math.round(i.amt).toLocaleString('tr-TR')).join(' + ')} / ay</span></div>
@@ -773,7 +714,7 @@ PAGES.hafta = () => {
     <div>
       <div class="card">${sl('energy','Enerji',7)}${sl('focusR','Odak',6)}${sl('stress','Stres',8)}${sl('joy','Keyif',6)}</div>
       <div class="card mt"><h3 style="margin-bottom:8px">Önceki haftalar</h3>
-        ${REVIEWS.map(r => `<div class="qitem"><span class="mono" style="width:80px">${isoWeek(addDays(NOW(), r.w*7))}</span><span class="pill ${r.score>=7?'green':'amber'}">${r.score}/10</span><span style="flex:1;font-size:13px" class="muted">${esc(r.note)}</span></div>`).join('')}</div>
+        ${REVIEWS.length ? '' : '<p class="muted">Henüz kayıtlı değerlendirme yok.</p>'}${REVIEWS.map(r => `<div class="qitem"><span class="mono" style="width:80px">${isoWeek(addDays(NOW(), r.w*7))}</span><span class="pill ${r.score>=7?'green':'amber'}">${r.score}/10</span><span style="flex:1;font-size:13px" class="muted">${esc(r.note)}</span></div>`).join('')}</div>
     </div>
   </div>`;
 };
@@ -793,7 +734,7 @@ PAGES.site = () => `
     <div class="card"><h3>Yayın durumu</h3>
       <div class="setting"><div>“In development” rozeti<small>Digital products sayfası</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
       <div class="setting"><div>Bakım modu<small>Siteyi ziyaretçilerden gizle</small></div><label class="toggle"><input type="checkbox"><span></span></label></div>
-      <div class="setting"><div>Insights blog<small>4 yazı · 1 taslak</small></div><span class="pill green dot">Canlı</span></div>
+      <div class="setting"><div>Insights blog<small>Sitedeki yazılar</small></div><span class="draft-tag">Bağlanacak</span></div>
       <div class="setting"><div>Formlar → CRM<small>Book a Call, Enquire</small></div><span class="draft-tag">Bağlanacak</span></div>
     </div>
   </div>`;
@@ -840,7 +781,7 @@ const byId = id => TASKS.find(t => t.id === +id);
 function addTask(title, today) {
   if (!title.trim()) { toast('Önce bir şey yaz'); return; }
   const g = $('#qcGroup') ? $('#qcGroup').value : 'Kişisel';
-  TASKS.unshift(T(title.trim(), { group:g, cat: g === 'Kişisel' ? 'Kişisel' : 'Operasyon', project: PROJECTS.find(p => p.group === g)?.name || 'Sağlık & Spor', today, due: today ? 0 : 7 }));
+  TASKS.unshift(T(title.trim(), { group:g, cat: g === 'Kişisel' ? 'Kişisel' : 'Operasyon', project: PROJECTS.find(p => p.group === g)?.name || 'Genel', today, due: today ? 0 : 7 }));
   toast(today ? 'Bugüne eklendi' : "Backlog'a eklendi");
   rerender();
 }
@@ -869,7 +810,7 @@ document.addEventListener('click', e => {
     case 'drop': TASKS.splice(TASKS.indexOf(t), 1); toast('Bilinçle bırakıldı'); return rerender();
     case 'r-do': t.today = true; t.due = 0; toast('Bugüne çekildi'); return rerender();
     case 'r-small': t.title = '(Küçük adım) ' + t.title; t.est = .5; t.due = 1; toast('Küçültüldü, yarına planlandı'); return rerender();
-    case 'r-del': t.owner = PEOPLE.find(p => p !== ME); t.follow = true; t.due = 3; toast('Devredildi: ' + t.owner); return rerender();
+    case 'r-del': t.owner = 'Devredildi'; t.follow = true; t.due = 3; toast('Devredildi olarak işaretlendi — takibe alındı'); return rerender();
     case 'tf-toggle': S.tf[el.dataset.k] = !S.tf[el.dataset.k]; return rerender();
     case 'proj-filter': S.tf.group = el.dataset.g; return;
     case 'new-task': { const v = prompt('Yeni görev:'); if (v) addTask(v, false); return; }
