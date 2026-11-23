@@ -171,6 +171,11 @@ EVENTS.push(
   { date:'2026-12-10', key:'kb4', lead:1, s:'21:00', e:'22:40', type:'plan', short:'UK hasta dönüş uçuşu', project:'Akdeniz Dental', group:'Markalar',
     title:'✈️ UK hasta dönüşü — easyJet EZY5710 · Antalya 21:00 → London Southend 22:40', note:'Bagaj teslimi 18:30–20:00, Terminal 2. Otel check-out aynı gün.' }
 );
+/* PL hasta (akdenizdental.pl reklamından) — isim/otel şifreli notlarda */
+EVENTS.push(
+  { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
+    title:'🦷 PL hasta — otelden transfer (11:00) + muayene, Akdeniz Dental', note:'İmplant + zirkon planlaması; muayene sonrası tedaviye başlamak istiyor. Kaynak: akdenizdental.pl reklamı.' }
+);
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
   { date:'2027-06-01', lead:7, s:'09:00', e:'09:15', type:'plan', short:'ABD seyahati · tarih teyidi', project:'İTO · Filtre Kümelenmesi', group:'Proje',
@@ -281,6 +286,14 @@ const TASKS = [
     { t:'Transfer saatini teyit et (uçuş 21:00, AYT Terminal 2)', done:false },
     { t:'Tedavi sonrası kontrol / bakım talimatları iletildi mi?', done:false },
     { t:'Memnuniyet ve yorum (Google) rica et', done:false } ]}),
+  T('PL hasta: Pzt 14 Ara 11:00 transferini organize et', { key:'jlt1', pri:'Kesin', group:'Markalar', cat:'Operasyon', project:'Akdeniz Dental', due:dayOff('2026-12-11'), today:dayOff('2026-12-11') === 0, est:.25, subs:[
+    { t:'Otelden kliniğe transfer: Pzt 14 Ara 11:00 — araç ve şoförü ayarla', done:false },
+    { t:'Hasta koordinatörüne (PL) transfer detayını ilet', done:false },
+    { t:'Klinikte muayene randevusunu teyit et (implant + zirkon planlaması)', done:false } ]}),
+  T('PL hasta: muayene ve tedavi başlangıcı takibi', { key:'jlt2', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-14'), today:dayOff('2026-12-14') === 0, est:.25, slot:'Pzt 14 Ara · 11:00 transfer', subs:[
+    { t:'Transfer zamanında yapıldı mı?', done:false },
+    { t:'Muayene sonucu ve tedavi planı (implant + zirkon) netleşti mi?', done:false },
+    { t:'.pl reklam dönüşümü olarak raporla (Google Ads)', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -325,6 +338,7 @@ const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
+  { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
