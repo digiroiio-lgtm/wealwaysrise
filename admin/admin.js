@@ -85,6 +85,7 @@ const PROJECTS = [
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
+  { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
@@ -176,6 +177,11 @@ EVENTS.push(
 EVENTS.push(
   { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
     title:'🦷 PL hasta — otelden transfer (11:00) + muayene, Akdeniz Dental', note:'İmplant + zirkon planlaması; muayene sonrası tedaviye başlamak istiyor. Kaynak: akdenizdental.pl reklamı.' }
+);
+/* Best House Turkey — SEO takip & iyileştirme */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'13:30', e:'14:30', type:'task', short:'BestHouseTurkey · takip & iyileştirme', project:'Best House Turkey', group:'Markalar',
+    title:'📈 Best House Turkey — Search Console takip & iyileştirme', note:'Son 3 ay: 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7. Tıklamalar ~7 Kas sonrası öncekinin altına düştü.' }
 );
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
@@ -300,6 +306,12 @@ const TASKS = [
     { t:'Transfer zamanında yapıldı mı?', done:false },
     { t:'Muayene sonucu ve tedavi planı (implant + zirkon) netleşti mi?', done:false },
     { t:'.pl reklam dönüşümü olarak raporla (Google Ads)', done:false } ]}),
+  T('Best House Turkey: takip ve iyileştirme', { pri:'Yüksek', group:'Markalar', cat:'İçerik / SEO', project:'Best House Turkey', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:1, slot:'Çar 25 Kas · 13:30', subs:[
+    { t:'Tıklama düşüşünü incele: ~5–7 Kas sonrası hangi sayfa/sorgular kaybetti?', done:false },
+    { t:'Konum 11–20 arasındaki sorguları bul (ilk sayfaya yakın fırsatlar)', done:false },
+    { t:'Gösterimi yüksek, TO’su düşük sayfalarda başlık/açıklama iyileştir', done:false },
+    { t:'Dizin oluşturma ve Önemli Web Verileri hatalarını kontrol et', done:false },
+    { t:'Yapılanları not et, 2 hafta sonra sonuçları karşılaştır', done:false } ]}),
   T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
     { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
     { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
