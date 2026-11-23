@@ -68,19 +68,39 @@ const GROUPS = { 'Markalar':'#d92d20','Proje':'#e8590c','NGO':'#2f8a4c','Platfor
 const CATS = { 'Kampanya':'#d92d20','Etkinlik':'#b93a8a','İçerik / SEO':'#7048c6','Toplantı':'#0e8a8a','Satış / Lead':'#e8590c','Eğitim':'#222','Takip':'#2563c9','Operasyon':'#555','Finans':'#2f8a4c','Rapor':'#b7791f','Rutin':'#3f9142','Kişisel':'#8d8c86' };
 const PRIS = { 'Kesin':'red','Yüksek':'amber','Orta':'green','Düşük':'' };
 const PRI_ORDER = ['Kesin','Yüksek','Orta','Düşük'];
-const PEOPLE = ['Barış','Umut','İmran','Elif','Mert'];
-const ME = 'Barış';
+const PEOPLE = ['Oğuz','Umut','İmran','Elif','Mert'];
+const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', progress:62, health:'green', owner:'Barış', next:'Masterclass satış sayfası', subs:['Web sitesi','Masterclass','Danışmanlık'] },
+  { name:'Werrise Digital', group:'Platform', progress:62, health:'green', owner:'Oğuz', next:'Masterclass satış sayfası', subs:['Web sitesi','Masterclass','Danışmanlık'] },
   { name:'İmes Spor', group:'Markalar', progress:28, health:'red', owner:'Umut', next:'2027 pazarlama planı onayı', subs:['Sosyal medya','Web sitesi','2027 Plan'] },
-  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Elif', next:'Aralık reklam bütçesi', subs:['Google Ads','Hasta operasyonu'] },
-  { name:'Dentafly', group:'Markalar', progress:45, health:'amber', owner:'Barış', next:'Evrak teslimi', subs:['Belgeler','Landing page'] },
+  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Elif', next:'Her gün 09:30 Soğuyan Fırsatlar · 22:30 tıklama raporu', subs:['Plan Ports CRM · hasta takibi','Günlük raporlama','Google Ads'] },
+  { name:'Parti', group:'Platform', progress:50, health:'green', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Günlük huddle'] },
+  { name:'Londra Depo', group:'Markalar', progress:60, health:'amber', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
+  { name:'Dentafly', group:'Markalar', progress:45, health:'amber', owner:'Oğuz', next:'Evrak teslimi', subs:['Belgeler','Landing page'] },
   { name:'Çevik / Multiligo', group:'Platform', progress:54, health:'amber', owner:'Mert', next:'MCP entegrasyonu testi', subs:['Uygulama','Criteo ortaklığı'] },
   { name:'Gönüllü Ağı', group:'NGO', progress:35, health:'amber', owner:'İmran', next:'Ocak etkinliği mekan', subs:['Etkinlik','Bağış'] },
-  { name:'Kişisel Finans', group:'Finans', progress:80, health:'green', owner:'Barış', next:'Yıl sonu vergi hazırlığı', subs:['Vergi','Yatırım'] },
-  { name:'Sağlık & Spor', group:'Yaşam', progress:40, health:'amber', owner:'Barış', next:'Haftada 3 antrenman', subs:['Spor','Uyku'] }
+  { name:'Kişisel Finans', group:'Finans', progress:80, health:'green', owner:'Oğuz', next:'Yıl sonu vergi hazırlığı', subs:['Vergi','Yatırım'] },
+  { name:'Sağlık & Spor', group:'Yaşam', progress:40, health:'amber', owner:'Oğuz', next:'Haftada 3 antrenman', subs:['Spor','Uyku'] }
 ];
+
+/* Hafta içi rutinler (Pzt–Cum) — takvime ve görevlere otomatik işlenir */
+const WEEKDAYS = [1,2,3,4,5];
+const RECURRING = [
+  { s:'09:30', e:'09:55', type:'task', short:'Soğuyan Fırsatlar', project:'Akdeniz Dental', group:'Markalar', pri:'Yüksek',
+    title:'Akdeniz Dental · Soğuyan Fırsatlar mailleri (14 temsilci + yönetici özeti)',
+    subs:['Plan Ports CRM’den temsilci bazlı hasta takip listesini çek','14 temsilciye “Soğuyan Fırsatlar” maillerini gönder','Yöneticilere özet maili gönder'] },
+  { s:'10:00', e:'10:15', type:'meeting', short:'Parti huddle', project:'Parti', group:'Platform',
+    title:'Parti · Günlük huddle (iş bulma uygulaması)' },
+  { s:'11:30', e:'12:00', type:'task', short:'Londra outreach', project:'Londra Depo', group:'Markalar', pri:'Orta',
+    title:'Londra Depo · Outreach paneli + müşteri keşif sihirbazı',
+    subs:['Müşteri keşif sihirbazını çalıştır (yeni potansiyel müşteriler)','Outreach panelinden günlük gönderimleri yap','Gelen yanıtları kontrol et'] },
+  { s:'22:30', e:'22:45', type:'task', short:'Tıklama raporu', project:'Akdeniz Dental', group:'Markalar', pri:'Yüksek',
+    title:'Akdeniz Dental · Günlük tıklama raporu → kurucu ortaklar',
+    subs:['Günlük tıklama raporunu hazırla','Kurucu ortaklara / yöneticilere gönder'] }
+];
+const isWeekday = d => WEEKDAYS.includes(d.getDay());
+const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
 
 let uid = 100;
 const T = (title, o) => ({ id: ++uid, title, pri:'Orta', group:'Proje', cat:'Operasyon', project:'Werrise Digital', owner:ME, due:0, today:false, done:false, follow:false, est:0, slot:'', subs:[], ...o });
@@ -107,26 +127,29 @@ const TASKS = [
   T('Werrise LinkedIn içerik serisi (4 gönderi)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:-16, est:3 }),
   T('Eski lead listesini temizle', { pri:'Düşük', group:'Proje', cat:'Satış / Lead', project:'Werrise Digital', due:-21, est:1 }),
   T('Sabah planı & e-posta taraması', { pri:'Orta', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 }),
-  T('Haftayı + günü planla', { pri:'Yüksek', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 })
+  T('Haftayı + günü planla', { pri:'Yüksek', group:'Kişisel', cat:'Rutin', project:'Sağlık & Spor', due:0, today:true, done:true, est:.3 }),
+  ...RECURRING.filter(r => r.type === 'task').map(r => T(r.title, { pri:r.pri, group:r.group, cat:'Rutin', project:r.project,
+    due:nextWeekdayOff(), today:isWeekday(NOW()), est:(toMin(r.e) - toMin(r.s)) / 60, recur:`Hafta içi · ${r.s}`, subs:r.subs.map(t => ({ t, done:false })) }))
 ];
 
 const AGENDA = [
   ['07:45','08:00','task','Sabah planı & e-posta taraması'],
   ['08:40','09:00','plan','Haftayı + günü planla (20 dk)'],
-  ['09:30','10:15','meeting','Akdeniz Dental haftalık toplantı'],
-  ['10:30','11:30','task','İmes – 2027 pazarlama planı taslağı'],
+  ['10:30','11:15','task','İmes – 2027 pazarlama planı taslağı'],
   ['12:00','13:00','plan','Öğle arası'],
   ['13:30','14:30','meeting','Criteo x Multiligo'],
   ['15:00','16:00','task','Masterclass satış sayfası metni'],
   ['16:30','17:00','task','Dentafly evrak takibi'],
   ['19:15','20:00','meeting','İngilizce dersi'],
   ['20:10','20:50','task','Affiliate komisyon kontrolü']
-].map(([s, e, type, title]) => ({ s, e, type, title }));
+].map(([s, e, type, title]) => ({ s, e, type, title }))
+ .concat(isWeekday(NOW()) ? RECURRING.map(r => ({ ...r, rec:true })) : [])
+ .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 let SIGNALS = [
   { ic:'gauge', tone:'red', t:'Stres makul aralığın üstünde', p:'Seviyen 8/10. Bu modda gelecek planı yapma — önce toplu uzaklaştır, öğrenme ancak rahatken açılır.', a:'Toplu uzaklaştır', go:'oncelik' },
   { ic:'alarm', tone:'amber', t:'{overdue} işin tarihi geçti', p:'En acili: “İmes – 2027 pazarlama planı” (34 gün). Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
-  { ic:'repeat', tone:'blue', t:'Bugün 1 rutin var', p:'Google Adgrant takibi', a:'Rutinleri aç', go:'gorevler' },
+  { ic:'repeat', tone:'blue', t:'Bugün {routines} rutin var', p:'{routineList}', a:'Rutinleri aç', go:'planlama' },
   { ic:'repeat', tone:'amber', t:'{review} iş gözden geçirilmeyi bekliyor', p:'Ertelenen, geciken, bir süredir yapılmayanlar birikti. Tek tek tart: yap, küçült, devret ya da bilinçle bırak.', a:"Öncelik'te gözden geçir", go:'oncelik' },
   { ic:'hour', tone:'red', t:'Yüksek öncelikli işler 14+ gündür yapılmadı', p:'Görünmez birikim özgüveni eritir — bugün ya küçük bir adım tanımla ya da bilinçle park et.', a:'Görevlerde görüntüle', go:'gorevler?overdue' }
 ];
@@ -154,7 +177,7 @@ const BUDGET = [
 ];
 
 const TEAM_EVENTS = {
-  'Barış': [[0,'Akdeniz toplantı','m'],[0,'İngilizce','m'],[1,'Criteo görüşme','m'],[3,'Masterclass çekim','t'],[5,'İzin','o']],
+  'Oğuz': [[0,'İngilizce','m'],[1,'Criteo görüşme','m'],[3,'Masterclass çekim','t'],[5,'İzin','o']],
   'Umut': [[0,'İmes plan','t'],[1,'Sahada çekim','t'],[2,'İmes toplantı','m'],[4,'Rapor','t']],
   'İmran': [[1,'Mekan ziyareti','t'],[2,'İmes toplantı','m'],[3,'İzin','o'],[4,'İzin','o']],
   'Elif': [[0,'Akdeniz toplantı','m'],[2,'Reklam optimizasyon','t'],[4,'Haftalık rapor','t']],
@@ -183,7 +206,9 @@ const todayTasks = () => TASKS.filter(t => t.today || t.due === 0);
 const reviewTasks = () => TASKS.filter(t => !t.done && t.due <= -14);
 const byPri = (a, b) => PRI_ORDER.indexOf(a.pri) - PRI_ORDER.indexOf(b.pri) || a.due - b.due;
 const nowTask = () => TASKS.find(t => t.id === S.nowId && !t.done) || openTasks().sort(byPri)[0];
-const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length);
+const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
+  .replace('{routines}', AGENDA.filter(a => a.rec).length)
+  .replace('{routineList}', AGENDA.filter(a => a.rec).map(a => `${a.s} ${a.short}`).join(' · ') || 'Hafta sonu — rutin yok');
 
 /* ================= ROUTES ================= */
 const ROUTES = [
@@ -254,6 +279,7 @@ function taskCard(t, compact) {
         ${t.est ? `<span class="pill">${ic('timer',12)} ${t.est < 1 ? Math.round(t.est*60)+' dk' : t.est+' sa'}</span>` : ''}
         ${t.subs.length ? `<span class="pill">☑ ${sd}/${t.subs.length}</span>` : ''}
         ${t.slot ? `<span class="pill blue">${ic('cal',12)} ${t.slot}</span>` : ''}
+        ${t.recur ? `<span class="pill green">${ic('repeat',12)} ${t.recur}</span>` : ''}
         ${t.follow ? '<span class="pill amber">Takip</span>' : ''}
       </div>
       ${t.subs.length && open && !compact ? `<div class="subs"><div class="sh">Alt görevler · ${sd}/${t.subs.length}<div class="bar lime"><span style="width:${sd/t.subs.length*100}%"></span></div></div>
@@ -285,20 +311,20 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
-  const start = 7 * 60 + 30, end = 21 * 60 + 30, span = end - start, pct = m => ((m - start) / span * 100).toFixed(2);
+  const start = 7 * 60 + 30, end = 23 * 60, span = end - start, pct = m => ((m - start) / span * 100).toFixed(2);
   const n = nowMin();
   let hours = '';
-  for (let h = 8; h <= 21; h++) hours += `<span class="hour" style="left:${pct(h*60)}%">${String(h).padStart(2,'0')}</span>`;
+  for (let h = 8; h <= 22; h++) hours += `<span class="hour" style="left:${pct(h*60)}%">${String(h).padStart(2,'0')}</span>`;
   return `<div class="agenda-scroll"><div class="agenda-h"><div class="track">${hours}
     ${AGENDA.map(a => `<div class="blk t-${a.type}" style="left:${pct(toMin(a.s))}%;width:calc(${pct(toMin(a.e)) - pct(toMin(a.s))}% - 3px)" title="${esc(a.title)} · ${a.s}–${a.e}"><b>${esc(a.title)}</b>${a.s}–${a.e}</div>`).join('')}
     ${n > start && n < end ? `<span class="now" style="left:${pct(n)}%"></span>` : ''}
   </div></div></div>`;
 }
-const agendaFree = () => { const used = AGENDA.reduce((s, a) => s + toMin(a.e) - toMin(a.s), 0); return Math.max(0, (13 * 60 - used) / 60).toFixed(1).replace('.0',''); };
+const agendaFree = () => { const used = AGENDA.reduce((s, a) => s + toMin(a.e) - toMin(a.s), 0); return Math.max(0, (15 * 60 - used) / 60).toFixed(1).replace('.0',''); };
 const currentBlock = () => { const n = nowMin(); return AGENDA.find(a => toMin(a.s) <= n && n < toMin(a.e)) || AGENDA.find(a => toMin(a.s) > n); };
 
 function quickCapture(withSelect) {
@@ -322,7 +348,7 @@ PAGES.dashboard = () => {
   <div class="page-head" style="align-items:flex-end">
     <div><div class="eyebrow">${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} · ${isoWeek(d)}</div>
       <div class="hero-clock" id="heroClock">${hm(d)}</div>
-      <p class="lede" style="margin-top:0">Barış, bugün <b>${done}/${tt.length}</b> iş tamam.</p></div>
+      <p class="lede" style="margin-top:0">Oğuz, bugün <b>${done}/${tt.length}</b> iş tamam.</p></div>
     <div class="row"><a class="btn btn-outline" href="#portfoy">◐ Marka odağı</a><a class="btn btn-primary" href="#bugun">Bugün'e git <span class="arrow">→</span></a></div>
   </div>
 
@@ -382,7 +408,7 @@ PAGES.bugun = () => {
   const gearTxt = { 'Odak':'Derin iş için en verimli saatler — bildirimleri kapat.', 'Gevşeme':'Yenilenmek için rahatla (geçiş vitesi).', 'Toparlanma':'Küçük işler, mesajlar, kapanışlar.' };
   return `
   <div class="eyebrow">${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${isoWeek(d)}</div>
-  <h1>Hafta yaşamın anı, Barış — bugüne ne alıyorsun?</h1>
+  <h1>Hafta yaşamın anı, Oğuz — bugüne ne alıyorsun?</h1>
   <p class="lede">Hafta yaşamın anıdır. Bugün haftana ne alıyorsun, neyi uzaklaştırıyorsun?</p>
 
   <div class="card mt2">
@@ -432,7 +458,11 @@ PAGES.planlama = () => {
       ${ts.map(kcardTask).join('')}</div>`;
   }).join('')}</div>
   <div class="card-head mt2"><h2>Backlog & bu hafta dışı</h2><span class="pill">${backlog.length}</span></div>
-  <div class="col" data-drop="day" data-off="99" style="min-height:120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${backlog.sort(byPri).map(kcardTask).join('')}</div>`;
+  <div class="col" data-drop="day" data-off="99" style="min-height:120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${backlog.sort(byPri).map(kcardTask).join('')}</div>
+  <div class="card-head mt2"><div><div class="eyebrow">Her hafta içi otomatik</div><h2 style="margin-top:4px">Rutinler</h2></div><span class="pill green">${ic('repeat',12)} Pzt–Cum</span></div>
+  <div class="card"><div class="table-wrap"><table><thead><tr><th>Saat</th><th>Rutin</th><th>Marka / proje</th><th>Tür</th><th>Günler</th></tr></thead><tbody>
+    ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>Pzt–Cum</td></tr>`).join('')}
+  </tbody></table></div></div>`;
 };
 const kcardTask = t => `<div class="kcard" draggable="true" data-drag="task" data-id="${t.id}"><b>${esc(t.title)}</b><div class="meta row" style="margin-top:6px;gap:5px">${priPill(t.pri)}<span class="pill">${gdot(t.group)} ${esc(t.project)}</span>${t.due<0?`<span class="pill red">${-t.due}g</span>`:''}</div></div>`;
 
@@ -554,7 +584,7 @@ PAGES.ekip = () => {
     <div class="row"><span class="pill blue">Toplantı</span><span class="pill green">İş</span><span class="pill">İzin</span></div></div>
   <div class="table-wrap"><div class="cal" style="min-width:900px">
     <div class="ch">Kişi</div>${days.map((dd, i) => `<div class="ch ${i===ti?'today':''}">${DS[dd.getDay()]} ${dd.getDate()}</div>`).join('')}
-    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((_, i) => `<div>${(TEAM_EVENTS[p]||[]).filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
+    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((_, i) => `<div>${[...(p === ME && i < 5 ? RECURRING.map(r => [i, `${r.s} ${r.short}`, r.type === 'meeting' ? 'm' : 't']) : []), ...(TEAM_EVENTS[p]||[])].filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
   </div></div>`;
 };
 
@@ -660,7 +690,7 @@ PAGES.ayarlar = () => {
   <div class="eyebrow">Yapılandırma</div><h1>Ayarlar<span class="dot">.</span></h1>
   <p class="lede">Profilin, proje ağacın ve genel parametrelerin — hepsi buradan. Değişiklikler “Kaydet ve uygula” ile tüm panele işler.</p>
   <div style="max-width:940px">
-  ${card('user','Hesabım','Barış · Sahip. Eklediğin her şey yalnız sana görünür; paylaşmadıkça kimse göremez.',
+  ${card('user','Hesabım','Oğuz · Sahip. Eklediğin her şey yalnız sana görünür; paylaşmadıkça kimse göremez.',
     `<div class="row"><input class="input" type="password" placeholder="Mevcut şifre" style="flex:1;min-width:180px"><input class="input" type="password" placeholder="Yeni şifre (en az 12)" style="flex:1;min-width:180px"><button class="btn btn-outline" data-act="pw">${ic('check',15)} Şifreyi değiştir</button></div>
      <div class="row mt"><button class="btn btn-ghost btn-sm" data-act="logout-all">${ic('ban',15)} Diğer cihazlarda oturumu kapat</button><button class="btn btn-ghost btn-sm" data-act="draft">${ic('sparkle',15)} Tanıtımı yeniden göster</button></div>`)}
   ${card('bell','WhatsApp bildirimleri','Sana talep ya da görev atandığında şirket numarasından kısa bir WhatsApp mesajı gelir.',
