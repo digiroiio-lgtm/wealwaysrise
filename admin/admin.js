@@ -60,7 +60,7 @@ const hm = d => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()
 const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
 const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(); };
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}${d.getFullYear() !== NOW().getFullYear() ? ' ' + d.getFullYear() : ''}`; };
-const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
+const money = n => '₺' + (Math.round(n) || 0).toLocaleString('tr-TR');
 const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
 const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : d.value ? money(d.value) : '—';
 const tl = d => !d.cur;
@@ -86,6 +86,7 @@ const PROJECTS = [
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
   { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
+  { name:'UK Hasta Referans', group:'Proje', owner:'Oğuz', next:'Cmt 5 Ara 14:00 · David’e takip mesajı', subs:['David & Neil — UK reviews platformu ve Facebook grupları','Banner + benzersiz takip linki (Turkey Teeth on Finance)','Finans metni onayı · referans anlaşması','Hastalar → Akdeniz Dental'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
@@ -124,6 +125,10 @@ const MONTHLY = [
   { day:5, s:'09:00', e:'09:10', type:'plan', short:'Maaş günü · Parti', project:'Parti', group:'Platform',
     title:'💰 Maaş günü · Parti (iş geliştirme & pazarlama yöneticisi)',
     note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' },
+  { day:1, key:'gbp1', kind:'income', lead:1, s:'09:15', e:'09:20', type:'plan', short:'GBP ödemesi', project:'Kişisel Finans', group:'Finans',
+    title:'💷 GBP ödeme günü (ayın 1’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
+  { day:15, key:'gbp15', kind:'income', lead:1, s:'09:15', e:'09:20', type:'plan', short:'GBP ödemesi', project:'Kişisel Finans', group:'Finans',
+    title:'💷 GBP ödeme günü (ayın 15’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
   { day:1, key:'aidat', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Aidat', project:'Kişisel Finans', group:'Finans',
     title:'🏢 Aidat ödemesi', note:'Her ayın 1’i. Tutar Bütçe › Düzenli giderler’de.' },
   { day:15, key:'kira', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kira', project:'Kişisel Finans', group:'Finans',
@@ -189,6 +194,11 @@ EVENTS.push(
     title:'🔎 SE Ranking — iş geliştirme için tool incelemesi (seranking.com/subscription)', note:'Planlar, fiyatlar ve kotalar; Best House / DMC / Akdeniz SEO ihtiyaçlarına uygunluk.' },
   { date:'2026-11-26', key:'k26', allDay:true, lead:2, s:'07:00', e:'07:15', type:'plan', short:'Önemli gün', project:'Aile & Kişisel', group:'Yaşam',
     title:'⭐ Önemli gün — kişisel', note:'Detaylar şifreli notlarda.' }
+);
+/* UK dental hasta referansı — David & Neil (reviews platform / Facebook grupları) */
+EVENTS.push(
+  { date:'2026-12-05', lead:2, s:'14:00', e:'14:15', type:'task', short:'David · takip mesajı', project:'UK Hasta Referans', group:'Proje',
+    title:'💬 David (UK) — dental hasta referans iş birliği takip mesajı', note:'David, Neil ile ortak görüşmeyi ayarlayacağını ve gruplarda paylaşıma başlayacağını söyledi.' }
 );
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
@@ -332,6 +342,14 @@ const TASKS = [
     { t:'Kullanım alanları: Best House, DMC, Akdeniz (.pl/.de/.ro), müşteri raporlaması', done:false },
     { t:'Karar: hangi plan / beyaz etiket (white-label) raporlama gerekli mi?', done:false } ]}),
   T('Kişisel araştırma', { key:'ev', pri:'Yüksek', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:1.5 }),
+  T('David’e (UK) referans iş birliği takip mesajı yaz', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'UK Hasta Referans', due:dayOff('2026-12-05'), today:dayOff('2026-12-05') === 0, est:.25, follow:true, slot:'Cmt 5 Ara · 14:00', subs:[
+    { t:'Neil ile ortak WhatsApp görüşmesi için gün/saat iste', done:false },
+    { t:'Facebook gruplarındaki paylaşımlar başladı mı? Gelen talepleri sor', done:false },
+    { t:'Banner + benzersiz takip linki önerisini hatırlat (Turkey Teeth on Finance)', done:false },
+    { t:'Referans anlaşması çerçevesi: hasta başı / yüzde, ödeme ve takip yöntemi', done:false } ]}),
+  T('Neil + David ile WhatsApp görüşmesi (UK hasta referansı)', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'UK Hasta Referans', due:null, est:.5, follow:true, subs:[
+    { t:'David görüşme zamanını iletecek — gelince takvime ekle (Claude’a yaz)', done:false },
+    { t:'Gündem: grup paylaşımları, finans metni onayı, banner + takip linki, referans modeli', done:false } ]}),
   T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
     { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
     { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
@@ -368,15 +386,16 @@ const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
-let NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
+let TARGET = 0, NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
 /* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
 const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
 window.WR_setPrivate = data => {
-  NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
   for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
   REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
   // Son 30 günde gerçekleşmiş düzenli giderler ve planlı ödemeler → Hareketler
+  INCOME.filter(i => i.auto).forEach(i => occurrences(i.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${i.src} — ${fmtCur(i.amt, i.cur)}${i.rate ? ` × ${i.rate}` : ''} (her ayın ${i.day}’i)`, proj:i.proj || 'Kişisel Finans', cat:'Gelir', amt:incTL(i), priv:true })));
   REC_EXP.forEach(r => occurrences(r.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${r.desc} (her ayın ${r.day}’i)`, proj:'Kişisel Finans', cat:r.cat, amt:-r.amt, priv:true })));
   PAYMENTS.filter(p => dayOff(p.date) < 0 && dayOff(p.date) >= -30).forEach(p => BUDGET.push({ d:dayOff(p.date), desc:p.desc, proj:'Kişisel Finans', cat:p.cat, amt:-p.amt, cur:p.cur, priv:true }));
   BUDGET.sort((a, b) => b.d - a.d);
@@ -399,6 +418,7 @@ const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
   { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
+  { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
@@ -433,8 +453,9 @@ const reminders = () => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).filte
 const upcoming = (max = 7) => EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= max).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
 const evTime = ev => ev.allDay ? 'tüm gün' : ev.s;
 const fmtCur = (amt, cur) => !cur || cur === '₺' ? moneyD(amt) : cur + Number(amt).toLocaleString('tr-TR', { maximumFractionDigits:2 });
-const payStr = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return fmtCur(r.amt, r.cur); const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? fmtCur(p.amt, p.cur) : ''; };
-const payAmt = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
+const incTL = i => i.amt * (i.rate || 1);
+const payStr = ev => { const inc = INCOME.find(x => x.key && x.key === ev.key); if (inc) return fmtCur(inc.amt, inc.cur) + (inc.rate ? ` (≈ ${moneyD(incTL(inc))})` : ''); const r = REC_EXP.find(x => x.key === ev.key); if (r) return fmtCur(r.amt, r.cur); const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? fmtCur(p.amt, p.cur) : ''; };
+const payAmt = ev => { const inc = INCOME.find(x => x.key && x.key === ev.key); if (inc) return inc.amt; const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
 const whenTxt = off => off === 0 ? 'Bugün' : off === 1 ? 'Yarın' : `${DAYS[addDays(NOW(), off).getDay()]} (${dLabel(off)})`;
 const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
   .replace('{topOverdue}', (overdueTasks().sort((a, b) => a.due - b.due)[0] || {}).title || '')
@@ -542,7 +563,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'income' && payAmt(a) ? ` <span class="pill green">gelir · ${payStr(a)}</span>` : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -680,8 +701,8 @@ PAGES.bugun = () => {
     </div>
     <div class="card" style="align-self:start">
       <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${activeSignals().length + reminders().length}</span></div>
-      ${reminders().map(ev => { const pay = ev.kind === 'expense', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${pay?'amber':'blue'}-bg);color:var(--${pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
-        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + evTime(ev)} · ${esc(ev.short)}${amt ? ` · <span class="neg">${payStr(ev)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
+      ${reminders().map(ev => { const pay = ev.kind === 'expense' || ev.kind === 'income', inc = ev.kind === 'income', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${inc?'green':pay?'amber':'blue'}-bg);color:var(--${inc?'green':pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
+        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + evTime(ev)} · ${esc(ev.short)}${amt ? ` · <span class="${inc?'pos':'neg'}">${inc?'+':''}${payStr(ev)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
       ${activeSignals().map(s => [s, SIGNALS.indexOf(s)]).map(([s, i]) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
         <div style="flex:1"><h4>${sigText(s.t)}</h4><p>${sigText(s.p)}</p><a class="link" href="#${s.go}">${s.a} →</a></div>
         <button class="x" data-act="sig-x" data-i="${i}" aria-label="Kapat">×</button></div>`).join('') || '<p class="muted">Sinyal yok — sakin bir gün.</p>'}
@@ -876,21 +897,24 @@ PAGES.butce = () => {
     <div class="card kpi"><div class="eyebrow">Gelir</div><div class="value pos">${money(inc)}</div></div>
     <div class="card kpi"><div class="eyebrow">Gider</div><div class="value neg">${money(exp)}</div></div>
     <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">${inc ? 'Marj %' + Math.round((inc-exp)/inc*100) : '—'}</div></div>
-    <div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${money(150000)}</div><div class="bar lime" style="margin-top:10px"><span style="width:${Math.min(100,inc/150000*100)}%"></span></div></div>
+    ${(() => { const rec = INCOME.reduce((s, i) => s + incTL(i), 0), pct = TARGET ? Math.min(100, rec / TARGET * 100) : 0;
+      return `<div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${TARGET ? money(TARGET) : '🔒'}</div>
+        <div class="bar lime" style="margin:10px 0 6px"><span style="width:${pct}%"></span></div>
+        <div class="delta">${TARGET ? `Düzenli gelir ${money(rec)} · %${Math.round(pct)} · kalan ${money(Math.max(0, TARGET - rec))}` : 'Giriş sonrası görünür'}</div></div>`; })()}
   </div>
-  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">${INCOME.map(i => (i.cur||'₺') + Math.round(i.amt).toLocaleString('tr-TR')).join(' + ')} / ay</span></div>
+  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">≈ ${moneyD(INCOME.reduce((s, i) => s + incTL(i), 0))} / ay</span></div>
     <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
-    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${i.cur||'₺'}${Math.round(i.amt).toLocaleString('tr-TR')}/${i.per||'ay'}</td></tr>`; }).join('')}
+    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${fmtCur(i.amt, i.cur)}${i.rate ? ` <small class="muted">(≈ ${moneyD(incTL(i))}, kur ${i.rate})</small>` : ''}</td></tr>`; }).join('')}
     </tbody></table></div></div>` : ''}
   ${REC_EXP.length || PAYMENTS.length ? (() => {
-    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.filter(i => (i.cur||'₺') === '₺').reduce((s, i) => s + i.amt, 0);
+    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.reduce((s, i) => s + incTL(i), 0);
     const up = [...REC_EXP.flatMap(r => occurrences(r.day, 0, 30).map(o => ({ off:o.off, desc:r.desc, cat:r.cat, amt:r.amt, rec:`her ayın ${r.day}’i` }))),
                 ...PAYMENTS.filter(p => dayOff(p.date) >= 0 && dayOff(p.date) <= 30).map(p => ({ off:dayOff(p.date), desc:p.desc, cat:p.cat, amt:p.amt, cur:p.cur }))].sort((a, b) => a.off - b.off);
     const upT = up.filter(x => !x.cur).reduce((s, x) => s + x.amt, 0), upFx = up.filter(x => x.cur);
     return `<div class="grid g2 mt">
       <div class="card"><div class="card-head"><h3>${ic('repeat',16)} Düzenli giderler</h3><span class="pill red">${moneyD(fixed)} / ay</span></div>
         ${REC_EXP.map(r => { const o = occurrences(r.day, 0, 31)[0]; return `<div class="qitem"><span style="flex:1"><b>${esc(r.desc)}</b><br><small class="muted">Her ayın ${r.day}’i · sıradaki: ${o ? whenTxt(o.off) : '—'}</small></span><span class="mono neg">−${moneyD(r.amt)}</span></div>`; }).join('')}
-        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, sadece ₺</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
+        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, döviz ≈ TL</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
       <div class="card"><div class="card-head"><h3>${ic('cal',16)} Yaklaşan ödemeler · 30 gün</h3><span class="pill red">${moneyD(upT)}</span></div>
         ${up.map(x => `<div class="qitem"><span class="pill ${x.off<=3?'amber':''}" style="min-width:92px;justify-content:center">${whenTxt(x.off).replace(/^(\S+) \((.+)\)$/,'$2')}</span><span style="flex:1">${esc(x.desc)}<br><small class="muted">${esc(x.cat)}${x.rec ? ' · ' + x.rec : ''}</small></span><span class="mono neg">−${fmtCur(x.amt, x.cur)}</span></div>`).join('') || '<p class="muted">30 gün içinde ödeme yok.</p>'}${upFx.length ? `<p class="muted" style="font-size:12px;margin-top:8px">Toplama dahil değil (döviz): ${upFx.map(x => fmtCur(x.amt, x.cur)).join(' + ')}</p>` : ''}</div>
     </div>`; })() : ''}
