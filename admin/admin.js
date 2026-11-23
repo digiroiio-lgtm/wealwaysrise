@@ -635,7 +635,7 @@ PAGES.hafta = () => {
 };
 
 PAGES.site = () => `
-  <div class="page-head"><div><div class="eyebrow">Site · wealwaysrise.com</div><h1>Site İçeriği<span class="dot">.</span></h1></div><a class="btn btn-outline" href="../" target="_blank">Siteyi aç ↗</a></div>
+  <div class="page-head"><div><div class="eyebrow">Site · wealwaysrise.com</div><h1>Site İçeriği<span class="dot">.</span></h1></div><a class="btn btn-outline" href="https://wealwaysrise.com" target="_blank">Siteyi aç ↗</a></div>
   <div class="grid split">
     <div class="card">
       <div class="card-head"><span class="eyebrow">Digital products / coming soon</span><span class="pill lime dot">In development</span></div>
