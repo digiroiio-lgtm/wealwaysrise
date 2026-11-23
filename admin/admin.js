@@ -61,6 +61,7 @@ const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m;
 const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(); };
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`; };
 const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
+const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
 const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : money(d.value);
 const tl = d => !d.cur;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); };
@@ -118,8 +119,18 @@ const isWeekday = d => WEEKDAYS.includes(d.getDay());
 const MONTHLY = [
   { day:5, s:'09:00', e:'09:10', type:'plan', short:'Maaş günü · Parti', project:'Parti', group:'Platform',
     title:'💰 Maaş günü · Parti (iş geliştirme & pazarlama yöneticisi)',
-    note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' }
+    note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' },
+  { day:1, key:'aidat', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Aidat', project:'Kişisel Finans', group:'Finans',
+    title:'🏢 Aidat ödemesi', note:'Her ayın 1’i. Tutar Bütçe › Düzenli giderler’de.' },
+  { day:15, key:'kira', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kira', project:'Kişisel Finans', group:'Finans',
+    title:'🏠 Kira ödemesi', note:'Her ayın 15’i. Tutar Bütçe › Düzenli giderler’de.' }
 ];
+/* Tek seferlik planlı ödemeler (banka takviminden) — tutarlar şifreli notlarda */
+EVENTS.push(
+  { date:'2026-12-07', key:'okul', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Okul ödemesi', project:'Kişisel Finans', group:'Finans', title:'🎓 Okul ödemesi', note:'Banka takviminde planlı ödeme.' },
+  { date:'2026-12-09', key:'kart', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kart ekstresi', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı ekstre ödemesi', note:'Ekstre borcu son ödeme günü.' },
+  { date:'2026-12-09', key:'fon', kind:'expense', s:'09:10', e:'09:20', type:'plan', short:'Fon alışı', project:'Kişisel Finans', group:'Finans', title:'📈 Fon alışı (yatırım)', note:'Otomatik fon alışı.' }
+);
 const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
 MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
@@ -166,6 +177,10 @@ const TASKS = [
     { t:'Görüşme sonrası: notları ve kararları panele işle', done:false } ]}),
   T('Parti maaşının hesaba geçtiğini kontrol et', { pri:'Orta', group:'Finans', cat:'Finans', project:'Parti',
     due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
+  ...MONTHLY.filter(m => m.kind === 'expense').map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
+    due:dayOff(nextMonthly(m)), today:dayOff(nextMonthly(m)) === 0, est:.1, recur:`Her ayın ${m.day}’i` })),
+  T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
+  T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -190,12 +205,22 @@ const AGENDA = [
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
-let NOTES = [], INCOME = [], PRIV_REV = {};
+let NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
+/* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
+const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
 window.WR_setPrivate = data => {
   NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
   for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
+  REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
+  // Son 30 günde gerçekleşmiş düzenli giderler ve planlı ödemeler → Hareketler
+  REC_EXP.forEach(r => occurrences(r.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${r.desc} (her ayın ${r.day}’i)`, proj:'Kişisel Finans', cat:r.cat, amt:-r.amt, priv:true })));
+  PAYMENTS.filter(p => dayOff(p.date) < 0 && dayOff(p.date) >= -30).forEach(p => BUDGET.push({ d:dayOff(p.date), desc:p.desc, proj:'Kişisel Finans', cat:p.cat, amt:-p.amt, priv:true }));
   BUDGET.sort((a, b) => b.d - a.d);
+  // Özel başlıklar (ör. site / okul adı) — sadece giriş sonrası
+  const L = data.labels || {};
+  EVENTS.forEach(ev => { if (!ev.key) return; ev._t = ev._t || ev.title; ev._s = ev._s || ev.short; ev.title = L[ev.key]?.title || ev._t; ev.short = L[ev.key]?.short || ev._s; });
+  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; });
   (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
   render();
 };
@@ -262,7 +287,9 @@ const todayTasks = () => TASKS.filter(t => t.today || t.due === 0);
 const reviewTasks = () => TASKS.filter(t => !t.done && t.due <= -14);
 const byPri = (a, b) => PRI_ORDER.indexOf(a.pri) - PRI_ORDER.indexOf(b.pri) || a.due - b.due;
 const nowTask = () => TASKS.find(t => t.id === S.nowId && !t.done) || openTasks().sort(byPri)[0];
+const reminders = () => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= (ev.lead || 2)).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
 const upcoming = (max = 7) => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= max).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
+const payAmt = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
 const whenTxt = off => off === 0 ? 'Bugün' : off === 1 ? 'Yarın' : `${DAYS[addDays(NOW(), off).getDay()]} (${dLabel(off)})`;
 const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
   .replace('{routines}', AGENDA.filter(a => a.rec).length)
@@ -312,7 +339,7 @@ function renderNowbar() {
     <span class="pill">+${openTasks().length - 1}</span>
     <a class="pill red-o lg end" href="#gorevler?overdue">${ic('alarm',14)} ${od} gecikmiş</a>`
     : `<span class="lbl">ŞİMDİ</span><span class="t">Açık iş kalmadı 🎉</span>`;
-  $('#bellCount').textContent = SIGNALS.length + od + upcoming(2).length;
+  $('#bellCount').textContent = SIGNALS.length + od + reminders().length;
 }
 
 /* ================= SHARED UI ================= */
@@ -369,7 +396,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + moneyD(payAmt(a)) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -501,9 +528,9 @@ PAGES.bugun = () => {
       <div class="mt">${taskList(list, S.todayView)}</div>
     </div>
     <div class="card" style="align-self:start">
-      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${SIGNALS.length + upcoming(2).length}</span></div>
-      ${upcoming(2).map(ev => `<div class="signal"><span class="ic" style="background:var(--blue-bg);color:var(--blue)">${ic('cal')}</span>
-        <div style="flex:1"><h4>${whenTxt(ev.off)} ${ev.s} · ${esc(ev.short)}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#tarihler">Randevuları aç →</a></div></div>`).join('')}
+      <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${SIGNALS.length + reminders().length}</span></div>
+      ${reminders().map(ev => { const pay = ev.kind === 'expense', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${pay?'amber':'blue'}-bg);color:var(--${pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
+        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + ev.s} · ${esc(ev.short)}${amt ? ` · <span class="neg">${moneyD(amt)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
       ${SIGNALS.map((s, i) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
         <div style="flex:1"><h4>${sigText(s.t)}</h4><p>${sigText(s.p)}</p><a class="link" href="#${s.go}">${s.a} →</a></div>
         <button class="x" data-act="sig-x" data-i="${i}" aria-label="Kapat">×</button></div>`).join('') || '<p class="muted">Sinyal yok — sakin bir gün.</p>'}
@@ -639,7 +666,7 @@ PAGES.tarihler = () => {
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Tarihler<span class="dot">.</span></h1><p class="lede">Teslim tarihlerine göre tüm açık işler ve takvimdeki önemli günler.</p></div></div>
   <div class="grid split"><div>${sec.map(([n, ts, c]) => `<div class="card mt" style="padding:20px"><div class="card-head"><h3>${n}</h3><span class="pill ${c}">${ts.length}</span></div>
     ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
-  <div style="align-self:start"><div class="card mt"><h3>Randevular</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşme ve toplantılar</p>
+  <div style="align-self:start"><div class="card mt"><h3>Randevular & ödemeler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşmeler, maaş ve ödeme günleri</p>
     ${EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).sort((a,b)=>a.off-b.off).map(ev => `<div class="qitem"><span class="pill ${ev.off<0?'':ev.off<=1?'red':'blue'}">${dLabel(ev.off)} ${ev.s}</span><span style="flex:1">${esc(ev.title)}<br><small class="muted">${esc(ev.note||'')}</small></span><small class="muted">${ev.off<0?'geçti':ev.off===0?'bugün':ev.off+' gün'}</small></div>`).join('')}</div>
   <div class="card mt"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
     ${imp.map(([o, t]) => `<div class="qitem"><span class="pill ${o<=7?'amber':''}">${dLabel(o)}</span><span style="flex:1">${t}</span><small class="muted">${o} gün</small></div>`).join('')}
@@ -703,9 +730,21 @@ PAGES.butce = () => {
     <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
     ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${i.cur||'₺'}${Math.round(i.amt).toLocaleString('tr-TR')}/${i.per||'ay'}</td></tr>`; }).join('')}
     </tbody></table></div></div>` : ''}
+  ${REC_EXP.length || PAYMENTS.length ? (() => {
+    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.filter(i => (i.cur||'₺') === '₺').reduce((s, i) => s + i.amt, 0);
+    const up = [...REC_EXP.flatMap(r => occurrences(r.day, 0, 30).map(o => ({ off:o.off, desc:r.desc, cat:r.cat, amt:r.amt, rec:`her ayın ${r.day}’i` }))),
+                ...PAYMENTS.filter(p => dayOff(p.date) >= 0 && dayOff(p.date) <= 30).map(p => ({ off:dayOff(p.date), desc:p.desc, cat:p.cat, amt:p.amt }))].sort((a, b) => a.off - b.off);
+    const upT = up.reduce((s, x) => s + x.amt, 0);
+    return `<div class="grid g2 mt">
+      <div class="card"><div class="card-head"><h3>${ic('repeat',16)} Düzenli giderler</h3><span class="pill red">${moneyD(fixed)} / ay</span></div>
+        ${REC_EXP.map(r => { const o = occurrences(r.day, 0, 31)[0]; return `<div class="qitem"><span style="flex:1"><b>${esc(r.desc)}</b><br><small class="muted">Her ayın ${r.day}’i · sıradaki: ${o ? whenTxt(o.off) : '—'}</small></span><span class="mono neg">−${moneyD(r.amt)}</span></div>`; }).join('')}
+        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, sadece ₺</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
+      <div class="card"><div class="card-head"><h3>${ic('cal',16)} Yaklaşan ödemeler · 30 gün</h3><span class="pill red">${moneyD(upT)}</span></div>
+        ${up.map(x => `<div class="qitem"><span class="pill ${x.off<=3?'amber':''}" style="min-width:92px;justify-content:center">${whenTxt(x.off).replace(/^(\S+) \((.+)\)$/,'$2')}</span><span style="flex:1">${esc(x.desc)}<br><small class="muted">${esc(x.cat)}${x.rec ? ' · ' + x.rec : ''}</small></span><span class="mono neg">−${moneyD(x.amt)}</span></div>`).join('') || '<p class="muted">30 gün içinde ödeme yok.</p>'}</div>
+    </div>`; })() : ''}
   <div class="grid split mt">
     <div class="card"><h3 style="margin-bottom:10px">Hareketler</h3><div class="table-wrap"><table><thead><tr><th>Tarih</th><th>Açıklama</th><th>Proje</th><th>Kategori</th><th class="num">Tutar</th></tr></thead><tbody>
-      ${BUDGET.map(b => `<tr><td class="mono">${dLabel(b.d)}</td><td><strong>${esc(b.desc)}</strong></td><td>${esc(b.proj)}</td><td><span class="pill">${b.cat}</span></td><td class="num ${b.amt>0?'pos':'neg'}">${b.amt>0?'+':''}${money(b.amt).replace('₺-','-₺')}</td></tr>`).join('')}
+      ${BUDGET.map(b => `<tr><td class="mono">${dLabel(b.d)}</td><td><strong>${esc(b.desc)}</strong></td><td>${esc(b.proj)}</td><td><span class="pill">${b.cat}</span></td><td class="num ${b.amt>0?'pos':'neg'}">${b.amt>0?'+':'−'}${moneyD(Math.abs(b.amt))}</td></tr>`).join('')}
     </tbody></table></div></div>
     <div class="card" style="align-self:start"><h3 style="margin-bottom:14px">Gider dağılımı</h3>
       ${Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([c, v]) => `<div style="margin-bottom:12px"><div class="row" style="font-size:14px"><span>${c}</span><span class="spacer"></span><span class="mono">${money(v)}</span></div><div class="bar" style="margin-top:6px"><span style="width:${v/mx*100}%"></span></div></div>`).join('')}</div>
