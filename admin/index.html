@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Admin — Werrise Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inter+Tight:wght@500;600;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="app">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <a href="../" class="brand">
+      <span class="brand-mark">W</span><span class="brand-divider"></span>
+      <span class="brand-name"><b>WERRISE</b><span>DIGITAL LTD</span></span>
+    </a>
+    <div>
+      <div class="nav-label">Workspace</div>
+      <nav class="nav">
+        <a href="#dashboard" class="active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+        <a href="#enquiries"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h16v12H5.2L4 17.2z"/></svg>Enquiries<span class="count">12</span></a>
+        <a href="#products"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M12 12l8-4.5M12 12v9M12 12L4 7.5"/></svg>Digital Products</a>
+        <a href="#insights"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4h14v16H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>Insights</a>
+        <a href="#team"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 016 5"/></svg>Our Team</a>
+        <a href="#settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>Settings</a>
+      </nav>
+    </div>
+    <div class="sidebar-foot">
+      <div class="avatar">WD</div>
+      <div><strong style="color:var(--ink);font-size:14px">Admin</strong><small>Werrise Digital</small></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <!-- Topbar -->
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="Menu"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><input placeholder="Search enquiries, products, posts…"></label>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" aria-label="Toggle theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg></button>
+        <a href="../" class="btn btn-outline btn-sm">View site ↗</a>
+        <button class="btn btn-primary btn-sm"><span>+</span><span class="label">New entry</span></button>
+      </div>
+    </header>
+
+    <main class="content">
+      <!-- DASHBOARD -->
+      <section class="section active" id="dashboard">
+        <div class="page-head">
+          <div><div class="eyebrow">Admin / Overview</div><h1>Good morning<span class="dot">.</span></h1><p class="lede">Here's what's moving across enquiries, products and content today.</p></div>
+          <span class="pill">Site live</span>
+        </div>
+        <div class="grid kpis">
+          <div class="card kpi"><div class="eyebrow">Visitors · 30d</div><div class="value">18,420</div><div class="delta">↑ 12.4% vs last month</div><div class="bar"><span style="width:72%"></span></div></div>
+          <div class="card kpi"><div class="eyebrow">New enquiries</div><div class="value">146</div><div class="delta">↑ 8.1%</div><div class="bar"><span style="width:58%"></span></div></div>
+          <div class="card kpi"><div class="eyebrow">Calls booked</div><div class="value">37</div><div class="delta">↑ 4 this week</div><div class="bar"><span style="width:44%"></span></div></div>
+          <div class="card kpi"><div class="eyebrow">Conversion</div><div class="value">3.2%</div><div class="delta down">↓ 0.3 pts</div><div class="bar"><span style="width:32%"></span></div></div>
+        </div>
+        <div class="grid split" style="margin-top:20px">
+          <div class="card">
+            <div class="card-head"><div><div class="eyebrow">Enquiries per week</div><h3 style="margin-top:6px">Last 10 weeks</h3></div>
+              <div class="chips"><button class="chip active">Weekly</button><button class="chip">Monthly</button></div></div>
+            <div class="chart" id="chart"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="window-dots"><i></i><i></i><i></i></span><small style="color:var(--muted)">Daily brief</small><span>↗</span></div>
+            <div class="eyebrow">Start with clarity</div>
+            <h2 style="margin:6px 0 10px">Today's priorities</h2>
+            <ul class="arrow-list">
+              <li>→ Reply to 4 new enquiries<em>01</em></li>
+              <li>→ Review Masterclass waitlist<em>02</em></li>
+              <li>→ Publish weekly insight post<em>03</em></li>
+            </ul>
+            <div style="margin-top:16px"><span class="review">✓ Review before sending</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-head"><div><div class="eyebrow">Latest</div><h3 style="margin-top:6px">Recent enquiries</h3></div><a href="#enquiries" class="btn btn-ghost">View all <span class="arrow">→</span></a></div>
+          <div class="table-wrap"><table><thead><tr><th>Contact</th><th>Interest</th><th>Role</th><th>Status</th><th>Date</th></tr></thead><tbody id="recentRows"></tbody></table></div>
+        </div>
+        <p class="footnote">Illustrative data — connect your form/CRM to show live numbers.</p>
+      </section>
+
+      <!-- ENQUIRIES -->
+      <section class="section" id="enquiries">
+        <div class="page-head"><div><div class="eyebrow">Admin / Enquiries</div><h1>Enquiries<span class="dot">.</span></h1></div><button class="btn btn-primary">Export CSV <span class="arrow">↗</span></button></div>
+        <div class="chips" id="roleChips" style="margin-bottom:20px"></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr><th>Contact</th><th>Interest</th><th>Role</th><th>Status</th><th>Date</th><th></th></tr></thead><tbody id="enqRows"></tbody></table></div></div>
+      </section>
+
+      <!-- PRODUCTS -->
+      <section class="section" id="products">
+        <div class="page-head"><div><div class="eyebrow">Admin / Digital Products</div><h1>Digital Products<span class="dot">.</span></h1></div><button class="btn btn-primary">Add product <span class="arrow">→</span></button></div>
+        <div class="grid split">
+          <div class="card">
+            <div class="card-head"><span class="eyebrow">Digital products / coming soon</span><span class="pill">In development</span></div>
+            <h2>AI Daily Assistant &amp; Operations Masterclass</h2>
+            <p class="lede">12 practical workflows. Video training. Editable templates. Anonymized case studies.</p>
+            <div class="grid" style="grid-template-columns:1fr 1fr;margin-top:24px;gap:16px">
+              <div class="field"><label>Status</label><select class="input"><option>In development</option><option>Waitlist open</option><option>Live</option></select></div>
+              <div class="field"><label>Price (GBP)</label><input class="input" value="—" ></div>
+            </div>
+            <div class="field"><label>Primary CTA</label><input class="input" value="Enquire About Launch"></div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
+              <button class="btn btn-primary">Save changes <span class="arrow">↗</span></button>
+              <button class="btn btn-ghost">Preview page <span class="arrow">→</span></button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="eyebrow">Curriculum</div><h3 style="margin:6px 0 10px">Workflows (12)</h3>
+            <ul class="arrow-list" id="workflows"></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- INSIGHTS -->
+      <section class="section" id="insights">
+        <div class="page-head"><div><div class="eyebrow">Admin / Insights</div><h1>Insights &amp; Reports<span class="dot">.</span></h1></div><button class="btn btn-primary">New post <span class="arrow">→</span></button></div>
+        <div class="grid kpis" id="posts"></div>
+      </section>
+
+      <!-- TEAM -->
+      <section class="section" id="team">
+        <div class="page-head"><div><div class="eyebrow">Admin / Our Team</div><h1>Team &amp; Access<span class="dot">.</span></h1></div><button class="btn btn-primary">Invite member <span class="arrow">→</span></button></div>
+        <div class="card"><div class="table-wrap"><table><thead><tr><th>Name</th><th>Role</th><th>Access</th><th>Last active</th></tr></thead><tbody>
+          <tr><td><strong>Admin User</strong><small>Founder</small></td><td>Owner</td><td><span class="pill dark">Full</span></td><td>Now</td></tr>
+          <tr><td><strong>Content Editor</strong><small>Insights</small></td><td>Editor</td><td><span class="pill">Content</span></td><td>2h ago</td></tr>
+          <tr><td><strong>Advisor</strong><small>Advisory</small></td><td>Viewer</td><td><span class="pill neutral">Read-only</span></td><td>3d ago</td></tr>
+        </tbody></table></div></div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section class="section" id="settings">
+        <div class="page-head"><div><div class="eyebrow">Admin / Settings</div><h1>Settings<span class="dot">.</span></h1></div></div>
+        <div class="grid split">
+          <div class="card">
+            <h3 style="margin-bottom:18px">Site details</h3>
+            <div class="field"><label>Company name</label><input class="input" value="Werrise Digital Ltd"></div>
+            <div class="field"><label>Header CTA label</label><input class="input" value="Book a Call"></div>
+            <div class="field"><label>Hero headline</label><input class="input" value="Make AI part of your working day."></div>
+            <div class="field"><label>Hero subtext</label><textarea class="input">A practical masterclass and daily assistant setup kit for managing messages, research, follow-ups and reporting with AI.</textarea></div>
+            <button class="btn btn-primary">Save settings <span class="arrow">↗</span></button>
+          </div>
+          <div class="card">
+            <h3 style="margin-bottom:6px">Preferences</h3>
+            <div class="setting"><div>Email me new enquiries<small>Instant notification per form</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+            <div class="setting"><div>Show "In development" badge<small>Digital products page</small></div><label class="toggle"><input type="checkbox" checked><span></span></label></div>
+            <div class="setting"><div>Maintenance mode<small>Hide site from visitors</small></div><label class="toggle"><input type="checkbox"><span></span></label></div>
+            <div class="setting"><div>Dark mode by default<small>Visitors can still switch</small></div><label class="toggle"><input type="checkbox"><span></span></label></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+const statusPill={New:'pill',Contacted:'pill neutral',Booked:'pill dark',Closed:'pill neutral'};
+const enquiries=[
+ ['Client B','Agency A','AI Masterclass','Agency Owners','New','Nov 23'],
+ ['Elif K.','Consultancy','Advisory','Consultants','Booked','Nov 22'],
+ ['Mark T.','Northwind','Global Growth','Small Business Owners','Contacted','Nov 21'],
+ ['Sara L.','Freelance','AI Masterclass','Virtual Assistants','New','Nov 21'],
+ ['Dr. Aydın','Clinic','Services','Clinic Coordinators','Contacted','Nov 20'],
+ ['James R.','Events Co.','AI Masterclass','Travel & Event Professionals','Closed','Nov 18'],
+ ['Nina P.','SalesHub','Reports','Sales Professionals','New','Nov 17'],
+];
+const row=(e,act)=>`<tr data-role="${e[3]}"><td><strong>${e[0]}</strong><small>${e[1]}</small></td><td>${e[2]}</td><td>${e[3]}</td><td><span class="${statusPill[e[4]]}">${e[4]}</span></td><td>${e[5]}</td>${act?'<td><button class="btn btn-outline btn-sm">Open →</button></td>':''}</tr>`;
+document.getElementById('recentRows').innerHTML=enquiries.slice(0,4).map(e=>row(e)).join('');
+const enqRows=document.getElementById('enqRows');
+const renderEnq=r=>enqRows.innerHTML=enquiries.filter(e=>r==='All'||e[3]===r).map(e=>row(e,1)).join('')||'<tr><td colspan="6">No enquiries for this role yet.</td></tr>';
+const roles=['All','Agency Owners','Consultants','Virtual Assistants','Small Business Owners','Sales Professionals','Travel & Event Professionals','Clinic Coordinators'];
+const chipsEl=document.getElementById('roleChips');
+chipsEl.innerHTML=roles.map((r,i)=>`<button class="chip${i?'':' active'}">${r}</button>`).join('');
+chipsEl.addEventListener('click',e=>{if(!e.target.matches('.chip'))return;chipsEl.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));e.target.classList.add('active');renderEnq(e.target.textContent)});
+renderEnq('All');
+
+const data=[8,11,9,14,12,17,15,19,16,22];
+document.getElementById('chart').innerHTML=data.map((v,i)=>`<div class="col${i===data.length-1?' hi':''}" title="${v} enquiries"><span style="height:${v/22*100}%"></span><small>W${i+1}</small></div>`).join('');
+
+const wf=['Your Daily Brief','Inbox triage','Prepare a client reply','Research summary','Follow-up tracker','Weekly client report','Meeting notes → actions','Proposal first draft','Campaign review','Supplier comparison','Content calendar','Workflow library'];
+document.getElementById('workflows').innerHTML=wf.map((w,i)=>`<li>→ ${w}<em>${String(i+1).padStart(2,'0')}</em></li>`).join('');
+
+const posts=[['Lead Generation','Better workflows. More room to grow.','Published'],['Architecture','AI in design studios','Draft'],['Advisory','The everyday advantage','Published'],['Hospitality','Guest replies at scale','Scheduled']];
+document.getElementById('posts').innerHTML=posts.map(p=>`<div class="card"><span class="tag">${p[0]}</span><div style="font-size:42px;color:var(--line);line-height:1;margin:18px 0 6px">“</div><h3>${p[1]}</h3><div style="width:40px;height:2px;background:var(--lime);margin:16px 0"></div><span class="${p[2]==='Published'?'pill':'pill neutral'}">${p[2]}</span></div>`).join('');
+
+// navigation
+const show=id=>{document.querySelectorAll('.section').forEach(s=>s.classList.toggle('active',s.id===id));document.querySelectorAll('.nav a').forEach(a=>a.classList.toggle('active',a.hash==='#'+id));document.getElementById('sidebar').classList.remove('open');window.scrollTo(0,0)};
+window.addEventListener('hashchange',()=>show(location.hash.slice(1)||'dashboard'));
+if(location.hash)show(location.hash.slice(1));
+document.getElementById('menuBtn').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
+
+// theme
+const root=document.documentElement;
+try{const t=localStorage.getItem('wr-admin-theme');if(t)root.dataset.theme=t}catch(e){}
+document.getElementById('themeBtn').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme:dark)').matches;root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('wr-admin-theme',root.dataset.theme)}catch(e){}};
+</script>
+</body>
+</html>
