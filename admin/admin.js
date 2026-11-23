@@ -174,6 +174,11 @@ EVENTS.push(
   { date:'2026-12-10', key:'kb4', lead:1, s:'21:00', e:'22:40', type:'plan', short:'UK hasta dönüş uçuşu', project:'Akdeniz Dental', group:'Markalar',
     title:'✈️ UK hasta dönüşü — easyJet EZY5710 · Antalya 21:00 → London Southend 22:40', note:'Bagaj teslimi 18:30–20:00, Terminal 2. Otel check-out aynı gün.' }
 );
+/* UK lead — ağız içi fotoğraflar doktora iletilecek (detay şifreli) */
+EVENTS.push(
+  { date:'2026-11-24', key:'ukl1', lead:1, s:'09:55', e:'10:00', type:'task', short:'UK lead · fotoğrafları doktora ilet', project:'Akdeniz Dental', group:'Markalar',
+    title:'🦷 UK lead — ağız içi fotoğrafları doktora ilet', note:'Hastaya sabah ileteceğimizi söyledik; ardından tedavi planı, fiyat ve paket dönülecek.' }
+);
 /* PL hasta (akdenizdental.pl reklamından) — isim/otel şifreli notlarda */
 EVENTS.push(
   { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
@@ -211,6 +216,7 @@ EVENTS.push(
 );
 EVENTS.push(
   { date:'2026-12-07', key:'okul', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Okul ödemesi', project:'Kişisel Finans', group:'Finans', title:'🎓 Okul ödemesi', note:'Banka takviminde planlı ödeme.' },
+  { date:'2026-11-25', key:'kart2', kind:'expense', lead:3, s:'09:05', e:'09:10', type:'plan', short:'Kart #2 son ödeme', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı #2 — son ödeme günü', note:'Ekstre borcu son ödeme günü. Tutar şifreli notlarda.' },
   { date:'2026-12-09', key:'kart', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kart ekstresi', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı ekstre ödemesi', note:'Ekstre borcu son ödeme günü.' },
   { date:'2027-02-15', key:'deniz', kind:'expense', lead:7, s:'09:00', e:'09:15', type:'plan', short:'Planlı USD ödemesi', project:'Kişisel Finans', group:'Finans', title:'💵 Planlı ödeme (USD)', note:'Detay ve tutar şifreli notlarda.' },
   { date:'2026-12-09', key:'fon', kind:'expense', s:'09:10', e:'09:20', type:'plan', short:'Fon alışı', project:'Kişisel Finans', group:'Finans', title:'📈 Fon alışı (yatırım)', note:'Otomatik fon alışı.' }
@@ -247,6 +253,7 @@ const TASKS = [
     due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
   ...MONTHLY.filter(m => m.kind === 'expense').map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
     due:dayOff(nextMonthly(m)), today:dayOff(nextMonthly(m)) === 0, est:.1, recur:`Her ayın ${m.day}’i` })),
+  T('Kredi kartı #2 ekstre borcunu öde (son gün)', { key:'kart2', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.1 }),
   T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
   T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
   T('Akbank eğitimi: İzmir ulaşım & konaklama ayarla (7–8 Ara)', { pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:.5 }),
@@ -318,6 +325,11 @@ const TASKS = [
     { t:'Transfer saatini teyit et (uçuş 21:00, AYT Terminal 2)', done:false },
     { t:'Tedavi sonrası kontrol / bakım talimatları iletildi mi?', done:false },
     { t:'Memnuniyet ve yorum (Google) rica et', done:false } ]}),
+  T('UK lead: ağız içi fotoğrafları doktora ilet → plan & fiyatla dön', { key:'uklt1', pri:'Kesin', group:'Markalar', cat:'Satış / Lead', project:'Akdeniz Dental', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, slot:'Sal 24 Kas · 09:55', subs:[
+    { t:'Fotoğrafları doktora WhatsApp’tan ilet', done:false },
+    { t:'Doktordan tedavi planı ve fiyat al', done:false },
+    { t:'Hastaya plan, fiyat ve paket detaylarını gönder', done:false },
+    { t:'CRM’de aşamayı güncelle', done:false } ]}),
   T('PL hasta: Pzt 14 Ara 11:00 transferini organize et', { key:'jlt1', pri:'Kesin', group:'Markalar', cat:'Operasyon', project:'Akdeniz Dental', due:dayOff('2026-12-11'), today:dayOff('2026-12-11') === 0, est:.25, subs:[
     { t:'Otelden kliniğe transfer: Pzt 14 Ara 11:00 — araç ve şoförü ayarla', done:false },
     { t:'Hasta koordinatörüne (PL) transfer detayını ilet', done:false },
@@ -413,6 +425,7 @@ const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Per 26 Kas 09:00 UK (12:00 TR) — kesin' },
+  { id:17, name:'UK lead — tam ağız tedavisi (fotoğraflar alındı)', co:'Akdeniz Dental', value:0, stage:'Yeni lead', src:'WhatsApp', note:'24 Kas: fotoğraflar doktora iletilecek → plan & fiyat' },
   { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
   { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
