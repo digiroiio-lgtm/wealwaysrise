@@ -86,6 +86,7 @@ const PROJECTS = [
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
   { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
+  { name:'UK Hasta Referans', group:'Proje', owner:'Oğuz', next:'Cmt 5 Ara 14:00 · David’e takip mesajı', subs:['David & Neil — UK reviews platformu ve Facebook grupları','Banner + benzersiz takip linki (Turkey Teeth on Finance)','Finans metni onayı · referans anlaşması','Hastalar → Akdeniz Dental'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
@@ -193,6 +194,11 @@ EVENTS.push(
     title:'🔎 SE Ranking — iş geliştirme için tool incelemesi (seranking.com/subscription)', note:'Planlar, fiyatlar ve kotalar; Best House / DMC / Akdeniz SEO ihtiyaçlarına uygunluk.' },
   { date:'2026-11-26', key:'k26', allDay:true, lead:2, s:'07:00', e:'07:15', type:'plan', short:'Önemli gün', project:'Aile & Kişisel', group:'Yaşam',
     title:'⭐ Önemli gün — kişisel', note:'Detaylar şifreli notlarda.' }
+);
+/* UK dental hasta referansı — David & Neil (reviews platform / Facebook grupları) */
+EVENTS.push(
+  { date:'2026-12-05', lead:2, s:'14:00', e:'14:15', type:'task', short:'David · takip mesajı', project:'UK Hasta Referans', group:'Proje',
+    title:'💬 David (UK) — dental hasta referans iş birliği takip mesajı', note:'David, Neil ile ortak görüşmeyi ayarlayacağını ve gruplarda paylaşıma başlayacağını söyledi.' }
 );
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
@@ -336,6 +342,14 @@ const TASKS = [
     { t:'Kullanım alanları: Best House, DMC, Akdeniz (.pl/.de/.ro), müşteri raporlaması', done:false },
     { t:'Karar: hangi plan / beyaz etiket (white-label) raporlama gerekli mi?', done:false } ]}),
   T('Kişisel araştırma', { key:'ev', pri:'Yüksek', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:1.5 }),
+  T('David’e (UK) referans iş birliği takip mesajı yaz', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'UK Hasta Referans', due:dayOff('2026-12-05'), today:dayOff('2026-12-05') === 0, est:.25, follow:true, slot:'Cmt 5 Ara · 14:00', subs:[
+    { t:'Neil ile ortak WhatsApp görüşmesi için gün/saat iste', done:false },
+    { t:'Facebook gruplarındaki paylaşımlar başladı mı? Gelen talepleri sor', done:false },
+    { t:'Banner + benzersiz takip linki önerisini hatırlat (Turkey Teeth on Finance)', done:false },
+    { t:'Referans anlaşması çerçevesi: hasta başı / yüzde, ödeme ve takip yöntemi', done:false } ]}),
+  T('Neil + David ile WhatsApp görüşmesi (UK hasta referansı)', { pri:'Yüksek', group:'Proje', cat:'Toplantı', project:'UK Hasta Referans', due:null, est:.5, follow:true, subs:[
+    { t:'David görüşme zamanını iletecek — gelince takvime ekle (Claude’a yaz)', done:false },
+    { t:'Gündem: grup paylaşımları, finans metni onayı, banner + takip linki, referans modeli', done:false } ]}),
   T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
     { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
     { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
@@ -404,6 +418,7 @@ const DEALS = [
   { id:13, name:'UK Longevity iş geliştirme', co:'Ezgi (UK)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Çar 2 Ara 11:30 görüşme · Gani ile ön görüşme yapıldı' },
   { id:12, name:'Luenire SPA görüşmesi', co:'Luenire SPA · Sabrina', value:0, stage:'Görüşme', src:'WhatsApp', note:'Salı 09:00 UK (12:00 TR) — teyit bekliyor; alternatif Perşembe' },
   { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
+  { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
