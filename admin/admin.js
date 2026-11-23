@@ -211,6 +211,7 @@ EVENTS.push(
 );
 EVENTS.push(
   { date:'2026-12-07', key:'okul', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Okul ödemesi', project:'Kişisel Finans', group:'Finans', title:'🎓 Okul ödemesi', note:'Banka takviminde planlı ödeme.' },
+  { date:'2026-11-25', key:'kart2', kind:'expense', lead:3, s:'09:05', e:'09:10', type:'plan', short:'Kart #2 son ödeme', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı #2 — son ödeme günü', note:'Ekstre borcu son ödeme günü. Tutar şifreli notlarda.' },
   { date:'2026-12-09', key:'kart', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kart ekstresi', project:'Kişisel Finans', group:'Finans', title:'💳 Kredi kartı ekstre ödemesi', note:'Ekstre borcu son ödeme günü.' },
   { date:'2027-02-15', key:'deniz', kind:'expense', lead:7, s:'09:00', e:'09:15', type:'plan', short:'Planlı USD ödemesi', project:'Kişisel Finans', group:'Finans', title:'💵 Planlı ödeme (USD)', note:'Detay ve tutar şifreli notlarda.' },
   { date:'2026-12-09', key:'fon', kind:'expense', s:'09:10', e:'09:20', type:'plan', short:'Fon alışı', project:'Kişisel Finans', group:'Finans', title:'📈 Fon alışı (yatırım)', note:'Otomatik fon alışı.' }
@@ -247,6 +248,7 @@ const TASKS = [
     due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
   ...MONTHLY.filter(m => m.kind === 'expense').map(m => T(`${m.short} ödemesini yap`, { key:m.key, pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans',
     due:dayOff(nextMonthly(m)), today:dayOff(nextMonthly(m)) === 0, est:.1, recur:`Her ayın ${m.day}’i` })),
+  T('Kredi kartı #2 ekstre borcunu öde (son gün)', { key:'kart2', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.1 }),
   T('Kredi kartı ekstre borcunu öde', { key:'kart', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-09'), today:dayOff('2026-12-09') === 0, est:.1 }),
   T('Okul ödemesinin hesaptan çekildiğini kontrol et', { key:'okul', pri:'Orta', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.1 }),
   T('Akbank eğitimi: İzmir ulaşım & konaklama ayarla (7–8 Ara)', { pri:'Yüksek', group:'Proje', cat:'Operasyon', project:'İnnova Akademi · Akbank', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:.5 }),
