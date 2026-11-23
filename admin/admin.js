@@ -162,6 +162,15 @@ EVENTS.push(
   { date:'2026-12-06', key:'tatil2', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'Tatil (2. gün)', project:'Aile & Kişisel', group:'Yaşam',
     title:'🌴 Tatil — 2. gün (dönüş)', note:'' }
 );
+/* UK hasta gelişi — Akdeniz Dental (isim/otel/referans şifreli notlarda) */
+EVENTS.push(
+  { date:'2026-12-07', key:'kb1', allDay:true, lead:4, s:'07:00', e:'07:15', type:'plan', short:'UK hasta gelişi', project:'Akdeniz Dental', group:'Markalar',
+    title:'🦷 UK hasta gelişi — Akdeniz Dental (7–10 Ara, otel check-in)', note:'Diş tedavisi için geliyor. Detaylar şifreli notlarda.' },
+  { date:'2026-12-08', key:'kb2', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'UK hasta Antalya’da', project:'Akdeniz Dental', group:'Markalar', title:'🦷 UK hasta Antalya’da — tedavi süreci', note:'' },
+  { date:'2026-12-09', key:'kb3', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'UK hasta Antalya’da', project:'Akdeniz Dental', group:'Markalar', title:'🦷 UK hasta Antalya’da — tedavi süreci', note:'' },
+  { date:'2026-12-10', key:'kb4', lead:1, s:'21:00', e:'22:40', type:'plan', short:'UK hasta dönüş uçuşu', project:'Akdeniz Dental', group:'Markalar',
+    title:'✈️ UK hasta dönüşü — easyJet EZY5710 · Antalya 21:00 → London Southend 22:40', note:'Bagaj teslimi 18:30–20:00, Terminal 2. Otel check-out aynı gün.' }
+);
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
   { date:'2027-06-01', lead:7, s:'09:00', e:'09:15', type:'plan', short:'ABD seyahati · tarih teyidi', project:'İTO · Filtre Kümelenmesi', group:'Proje',
@@ -262,6 +271,16 @@ const TASKS = [
     { t:'Siteler bitince: .de Google Ads kampanya kurgusu', done:false },
     { t:'Siteler bitince: .ro Google Ads kampanya kurgusu', done:false } ]}),
   T('Tatil hazırlığı: rezervasyon ve plan kontrolü', { key:'tatil', pri:'Orta', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-12-03'), today:dayOff('2026-12-03') === 0, est:.25 }),
+  T('UK hasta gelişi hazırlığı (Akdeniz Dental, 7–10 Ara)', { key:'kbt1', pri:'Kesin', group:'Markalar', cat:'Operasyon', project:'Akdeniz Dental', due:dayOff('2026-12-03'), today:dayOff('2026-12-03') === 0, est:.5, subs:[
+    { t:'Akdeniz Dental’e geliş bilgisini ilet (7–10 Ara, otel, dönüş uçuşu)', done:false },
+    { t:'Tedavi planı ve randevu saatlerini netleştir', done:false },
+    { t:'Geliş uçuşu bilgisini hastadan al → havalimanı transferi', done:false },
+    { t:'Referans veren kişiye bilgi ver', done:false } ]}),
+  T('UK hasta: geliş ve otel check-in kontrolü', { key:'kbt2', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-07'), today:dayOff('2026-12-07') === 0, est:.2 }),
+  T('UK hasta dönüşü: otel → havalimanı transferi ve tedavi sonrası takip', { key:'kbt3', pri:'Yüksek', group:'Markalar', cat:'Takip', project:'Akdeniz Dental', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:.25, slot:'Per 10 Ara · bagaj 18:30–20:00', subs:[
+    { t:'Transfer saatini teyit et (uçuş 21:00, AYT Terminal 2)', done:false },
+    { t:'Tedavi sonrası kontrol / bakım talimatları iletildi mi?', done:false },
+    { t:'Memnuniyet ve yorum (Google) rica et', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
