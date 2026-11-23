@@ -69,6 +69,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="admin.js"></script>
+<script src="private.js"></script>
 <script>
 // --- Login gate (PBKDF2-SHA256). Şifreyi değiştirmek için SALT + HASH yeniden üretilir. ---
 const SALT='1b80a16a91c9dc3b10cd3bf06c7890c1', HASH='6d29826476d01e46fffd381ea538c243d9ed7816c248916680b409bb319d3af4', ITER=250000;
@@ -77,14 +78,19 @@ const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(
 const unhex=h=>new Uint8Array(h.match(/../g).map(x=>parseInt(x,16)));
 async function derive(pw){const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveBits']);return hex(await crypto.subtle.deriveBits({name:'PBKDF2',salt:unhex(SALT),iterations:ITER,hash:'SHA-256'},k,256))}
 const unlock=()=>document.documentElement.classList.remove('locked');
-try{if(sessionStorage.getItem(KEY)===HASH)unlock()}catch(e){}
+// Özel notlar: şifreden ayrı bir AES anahtarı türetilir; oturum boyunca sessionStorage'da tutulur.
+const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+async function privKey(pw){const P=window.WR_PRIV;const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(P.salt),iterations:P.iter,hash:'SHA-256'},k,{name:'AES-GCM',length:256},true,['decrypt'])}
+async function openPrivate(key){try{const P=window.WR_PRIV;if(!P||!key)return;const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(P.iv)},key,b64(P.ct));window.WR_setPrivate&&window.WR_setPrivate(JSON.parse(new TextDecoder().decode(pt)))}catch(e){console.warn('Özel notlar açılamadı')}}
+try{if(sessionStorage.getItem(KEY)===HASH){unlock();const raw=sessionStorage.getItem('wr-admin-pk');if(raw)crypto.subtle.importKey('raw',b64(raw),'AES-GCM',false,['decrypt']).then(openPrivate)}}catch(e){}
 document.getElementById('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();const btn=e.target.querySelector('button');btn.disabled=true;
   const ok=await derive(document.getElementById('pw').value)===HASH;btn.disabled=false;
   document.getElementById('loginError').classList.toggle('show',!ok);
-  if(ok){try{sessionStorage.setItem(KEY,HASH)}catch(e){}unlock();document.getElementById('pw').value=''}
+  if(ok){const pw=document.getElementById('pw').value;try{sessionStorage.setItem(KEY,HASH)}catch(e){}unlock();document.getElementById('pw').value='';
+    if(window.WR_PRIV){const k=await privKey(pw);try{sessionStorage.setItem('wr-admin-pk',btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.exportKey('raw',k)))))}catch(e){}openPrivate(k)}}
 });
-document.getElementById('logoutBtn').onclick=()=>{try{sessionStorage.removeItem(KEY)}catch(e){}document.documentElement.classList.add('locked')};
+document.getElementById('logoutBtn').onclick=()=>{try{sessionStorage.removeItem(KEY);sessionStorage.removeItem('wr-admin-pk')}catch(e){}if(window.WR_setPrivate)window.WR_setPrivate({notes:[],deals:[{id:9,value:0,note:''}]});document.documentElement.classList.add('locked')};
 </script>
 </body>
 </html>

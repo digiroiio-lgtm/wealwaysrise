@@ -61,6 +61,8 @@ const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m;
 const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(); };
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}`; };
 const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
+const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : money(d.value);
+const tl = d => !d.cur;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); };
 
 /* ================= DEMO DATA ================= */
@@ -74,7 +76,8 @@ const ME = 'Oğuz';
 const PROJECTS = [
   { name:'Werrise Digital', group:'Platform', progress:62, health:'green', owner:'Oğuz', next:'Masterclass satış sayfası', subs:['Web sitesi','Masterclass','Danışmanlık'] },
   { name:'İmes Spor', group:'Markalar', progress:28, health:'red', owner:'Umut', next:'2027 pazarlama planı onayı', subs:['Sosyal medya','Web sitesi','2027 Plan'] },
-  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Elif', next:'Her gün 09:30 Soğuyan Fırsatlar · 22:30 tıklama raporu', subs:['Plan Ports CRM · hasta takibi','Günlük raporlama','Google Ads'] },
+  { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', progress:30, health:'amber', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', progress:10, health:'amber', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'Parti', group:'Platform', progress:50, health:'green', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Günlük huddle'] },
   { name:'Londra Depo', group:'Markalar', progress:60, health:'amber', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
@@ -104,7 +107,10 @@ const RECURRING = [
 const EVENTS = [
   { date:'2026-11-25', s:'17:00', e:'17:15', type:'meeting', short:'Kim · kök hücre', project:'Kök Hücre Yönlendirme', group:'Proje',
     title:'Kim (Harex) · WhatsApp görüşmesi — kök hücre hasta yönlendirme',
-    note:'Türkiye, ABD ve Avustralya’dan kök hücre tedavisi düşünen hasta adayları. Kim görüşme detaylarını gönderecek; hasta ihtiyaçlarının özetini istedik.' }
+    note:'Türkiye, ABD ve Avustralya’dan kök hücre tedavisi düşünen hasta adayları. Kim görüşme detaylarını gönderecek; hasta ihtiyaçlarının özetini istedik.' },
+  { date:'2026-11-27', s:'19:00', e:'20:00', type:'meeting', short:'Akdeniz Dental ekibi', project:'Akdeniz Dental', group:'Markalar',
+    title:'Akdeniz Dental ekibi · ortak yol haritası & dijital büyüme paketi görüşmesi',
+    note:'Tüm dijital geliştirme ve büyüme işlerinin (Dental Ops, Polonya sitesi + Google Ads, UK finans) uzaktan, freelance formatta tek pakette yönetilmesi. Teklif detayları: Projeler › Akdeniz Dental notları.' }
 ];
 const dayOff = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(NOW().toDateString())) / 864e5);
 const isWeekday = d => WEEKDAYS.includes(d.getDay());
@@ -142,6 +148,13 @@ const TASKS = [
     { t:'Tıbbi ekiple ön değerlendirme: hangi konsültasyon/tedaviler mümkün', done:false },
     { t:'Görüşme: hasta sayısı, ülkeler (TR/ABD/AU), süreç ve iş birliği modeli', done:false },
     { t:'Görüşme notunu CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Akdeniz Dental ekibiyle paket görüşmesi (Cuma 19:00)', { pri:'Kesin', group:'Markalar', cat:'Toplantı', project:'Akdeniz Dental',
+    due:dayOff('2026-11-27'), today:dayOff('2026-11-27') === 0, est:1, slot:'Cum 27 Kas · 19:00–20:00', subs:[
+    { t:'Teklif özetini gözden geçir (Projeler › Akdeniz Dental › Notlar)', done:false },
+    { t:'Kapsamı netleştir: Dental Ops, Polonya sitesi + Google Ads, UK finans (Ideal for Finance)', done:false },
+    { t:'Yapay zeka araçlarının kendi kartlarından ödenmesini teyit et', done:false },
+    { t:'Başlangıç tarihi, ödeme günü ve sözleşme adımını konuş', done:false },
+    { t:'Görüşme sonrası: notları ve kararları panele işle', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -165,6 +178,14 @@ const AGENDA = [
  .concat(EVENTS.filter(ev => dayOff(ev.date) === 0))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
+/* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
+let NOTES = [];
+window.WR_setPrivate = data => {
+  NOTES = data.notes || [];
+  (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
+  render();
+};
+
 let SIGNALS = [
   { ic:'gauge', tone:'red', t:'Stres makul aralığın üstünde', p:'Seviyen 8/10. Bu modda gelecek planı yapma — önce toplu uzaklaştır, öğrenme ancak rahatken açılır.', a:'Toplu uzaklaştır', go:'oncelik' },
   { ic:'alarm', tone:'amber', t:'{overdue} işin tarihi geçti', p:'En acili: “İmes – 2027 pazarlama planı” (34 gün). Ya bugüne çek ya da bilinçle yeni bir güne ertele — belirsizlikte bırakma.', a:'Gecikmişleri aç', go:'gorevler?overdue' },
@@ -181,7 +202,8 @@ const DEALS = [
   { id:5, name:'Global Growth danışmanlığı', co:'Northwind', value:90000, stage:'Görüşme', src:'Book a Call' },
   { id:6, name:'Etkinlik otomasyonu', co:'Events Co.', value:28000, stage:'Kayıp', src:'Web formu' },
   { id:7, name:'Satış ekibi AI eğitimi', co:'SalesHub', value:52000, stage:'Yeni lead', src:'Book a Call' },
-  { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' }
+  { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
+  { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
 ];
 const STAGES = ['Yeni lead','Görüşme','Teklif','Kazanıldı','Kayıp'];
 
@@ -364,7 +386,7 @@ const PAGES = {};
 PAGES.dashboard = () => {
   const d = NOW(), tt = todayTasks(), done = tt.filter(t => t.done).length;
   const blk = currentBlock();
-  const pipeline = DEALS.filter(x => !['Kazanıldı','Kayıp'].includes(x.stage)).reduce((s, x) => s + x.value, 0);
+  const pipeline = DEALS.filter(x => tl(x) && !['Kazanıldı','Kayıp'].includes(x.stage)).reduce((s, x) => s + x.value, 0);
   const net = BUDGET.reduce((s, x) => s + x.amt, 0);
   return `
   <div class="page-head" style="align-items:flex-end">
@@ -415,12 +437,18 @@ PAGES.dashboard = () => {
   <p class="footnote">Taslak — tüm veriler örnek. Kaynaklar bağlandığında canlı veriyle dolacak.</p>`;
 };
 
+function notesFor(name) {
+  const ns = NOTES.filter(n => n.project === name);
+  if (!ns.length) return '';
+  return `<div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">${ic('lock',12)} Notlar · ${ns.length}</div>
+    ${ns.map(n => `<div class="note"><b>${esc(n.title)}</b>${n.date ? ` <small class="muted">${esc(n.date)}</small>` : ''}<ul>${n.lines.map(l => `<li>${esc(l)}</li>`).join('')}</ul></div>`).join('')}</div>`;
+}
 function projCard(p) {
   const open = TASKS.filter(t => t.project === p.name && !t.done).length;
   const late = TASKS.filter(t => t.project === p.name && !t.done && t.due < 0).length;
   const hc = { green:'var(--green)', amber:'var(--amber)', red:'var(--red)' }[p.health];
   return `<div class="card proj-card"><div class="top"><span class="pill">${gdot(p.group)} ${p.group}</span><span class="health" style="background:${hc}" title="Sağlık"></span></div>
-    <h3>${esc(p.name)}</h3><small class="muted">Sıradaki: ${esc(p.next)}</small>
+    <h3>${esc(p.name)}</h3>${p.parent ? `<small class="pill" style="margin-bottom:4px">↳ ${esc(p.parent)} altında</small><br>` : ''}<small class="muted">Sıradaki: ${esc(p.next)}</small>
     <div class="bar" style="margin:14px 0 8px"><span style="width:${p.progress}%"></span></div>
     <div class="row" style="font-size:13px"><span>%${p.progress}</span><span class="spacer"></span><span>${open} açık</span>${late ? `<span class="pill red">${late} gecikmiş</span>` : ''}</div></div>`;
 }
@@ -565,7 +593,8 @@ PAGES.projeler = () => `
       const ts = TASKS.filter(t => t.project === p.name && !t.done);
       return `<div class="card">${projCard(p).replace(/^<div class="card proj-card">|<\/div>$/g,'')}
         <div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">Alt projeler</div>
-        ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}</div>
+        ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}${PROJECTS.filter(c => c.parent === p.name).map(c => `<div class="qitem">↳ <b>${esc(c.name)}</b> <span class="pill">bağlı marka</span></div>`).join('')}</div>
+        ${notesFor(p.name)}
         <div class="row mt"><small class="muted">${ic('user',13)} ${p.owner}</small><span class="spacer"></span><a class="link" href="#gorevler" data-act="proj-filter" data-g="${p.group}">${ts.length} görev →</a></div></div>`;
     }).join('')}</div>`).join('')}`;
 
@@ -636,13 +665,13 @@ PAGES.portfoy = () => {
 PAGES.crm = () => `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>CRM<span class="dot">.</span></h1><p class="lede">Fırsatları aşamalar arasında sürükle. Web sitesindeki “Book a Call” ve “Enquire” formları bağlandığında yeni leadler otomatik düşecek.</p></div><button class="btn btn-primary" data-act="draft">+ Fırsat ekle</button></div>
   <div class="grid g4">
-    <div class="card kpi"><div class="eyebrow">Açık hat</div><div class="value">${money(DEALS.filter(d=>!['Kazanıldı','Kayıp'].includes(d.stage)).reduce((s,d)=>s+d.value,0))}</div></div>
+    <div class="card kpi"><div class="eyebrow">Açık hat</div><div class="value">${money(DEALS.filter(d=>tl(d)&&!['Kazanıldı','Kayıp'].includes(d.stage)).reduce((s,d)=>s+d.value,0))}</div>${DEALS.some(d=>d.cur&&d.value&&!['Kazanıldı','Kayıp'].includes(d.stage))?`<div class="delta">+ ${DEALS.filter(d=>d.cur&&d.value&&!['Kazanıldı','Kayıp'].includes(d.stage)).map(dealVal).join(' + ')}</div>`:''}</div>
     <div class="card kpi"><div class="eyebrow">Kazanılan</div><div class="value" style="color:var(--green)">${money(DEALS.filter(d=>d.stage==='Kazanıldı').reduce((s,d)=>s+d.value,0))}</div></div>
     <div class="card kpi"><div class="eyebrow">Yeni lead</div><div class="value">${DEALS.filter(d=>d.stage==='Yeni lead').length}</div></div>
     <div class="card kpi"><div class="eyebrow">Kazanma oranı</div><div class="value">${Math.round(DEALS.filter(d=>d.stage==='Kazanıldı').length / Math.max(1, DEALS.filter(d=>['Kazanıldı','Kayıp'].includes(d.stage)).length) * 100)}%</div></div>
   </div>
-  <div class="kanban mt">${STAGES.map(st => { const ds = DEALS.filter(d => d.stage === st); return `<div class="col" data-drop="stage" data-stage="${st}"><div class="col-h"><span>${st} <span class="pill">${ds.length}</span></span><small class="mono muted">${money(ds.reduce((s,d)=>s+d.value,0))}</small></div>
-    ${ds.map(d => `<div class="kcard" draggable="true" data-drag="deal" data-id="${d.id}"><b>${esc(d.name)}</b><div class="row" style="margin-top:6px;font-size:13px"><span class="muted">${esc(d.co)}</span><span class="spacer"></span><span class="mono">${money(d.value)}</span></div><span class="pill" style="margin-top:8px">${d.src}</span></div>`).join('')}</div>`; }).join('')}</div>`;
+  <div class="kanban mt">${STAGES.map(st => { const ds = DEALS.filter(d => d.stage === st); return `<div class="col" data-drop="stage" data-stage="${st}"><div class="col-h"><span>${st} <span class="pill">${ds.length}</span></span><small class="mono muted">${money(ds.filter(tl).reduce((s,d)=>s+d.value,0))}</small></div>
+    ${ds.map(d => `<div class="kcard" draggable="true" data-drag="deal" data-id="${d.id}"><b>${esc(d.name)}</b><div class="row" style="margin-top:6px;font-size:13px"><span class="muted">${esc(d.co)}</span><span class="spacer"></span><span class="mono">${dealVal(d)}</span></div><span class="pill" style="margin-top:8px">${d.src}</span>${d.note ? `<small class="muted" style="display:block;margin-top:6px">${esc(d.note)}</small>` : ''}</div>`).join('')}</div>`; }).join('')}</div>`;
 
 PAGES.butce = () => {
   const inc = BUDGET.filter(b => b.amt > 0).reduce((s, b) => s + b.amt, 0), exp = -BUDGET.filter(b => b.amt < 0).reduce((s, b) => s + b.amt, 0);

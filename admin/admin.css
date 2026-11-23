@@ -374,3 +374,7 @@ td small{color:var(--muted)}
 .quick b{white-space:nowrap}
 .quick .plus{flex:none}
 @media (max-width:860px){.quick .kbd{display:none}.quick b{display:none}.now-card{min-height:auto}}
+.note{background:var(--surface-2);border-radius:10px;padding:10px 12px;margin-bottom:8px;font-size:13px}
+.note b{color:var(--ink);font-size:14px}
+.note ul{margin:6px 0 0 18px;color:var(--ink-2)}
+.note li{margin:2px 0}
