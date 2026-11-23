@@ -79,7 +79,7 @@ const PROJECTS = [
   { name:'Akdeniz Dental', group:'Markalar', progress:71, health:'green', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', progress:30, health:'amber', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', progress:10, health:'amber', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
-  { name:'Parti', group:'Platform', progress:50, health:'green', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Günlük huddle'] },
+  { name:'Parti', group:'Platform', progress:50, health:'green', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Londra Depo', group:'Markalar', progress:60, health:'amber', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dentafly', group:'Markalar', progress:45, health:'amber', owner:'Oğuz', next:'Evrak teslimi', subs:['Belgeler','Landing page'] },
   { name:'Çevik / Multiligo', group:'Platform', progress:54, health:'amber', owner:'Mert', next:'MCP entegrasyonu testi', subs:['Uygulama','Criteo ortaklığı'] },
@@ -114,6 +114,15 @@ const EVENTS = [
 ];
 const dayOff = iso => Math.round((new Date(iso + 'T00:00:00') - new Date(NOW().toDateString())) / 864e5);
 const isWeekday = d => WEEKDAYS.includes(d.getDay());
+/* Aylık tekrar eden günler (her ayın X’i) — önümüzdeki 3 ay için takvime düşer */
+const MONTHLY = [
+  { day:5, s:'09:00', e:'09:10', type:'plan', short:'Maaş günü · Parti', project:'Parti', group:'Platform',
+    title:'💰 Maaş günü · Parti (iş geliştirme & pazarlama yöneticisi)',
+    note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' }
+];
+const isoDate = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const nextMonthly = m => { const n = NOW(); let d = new Date(n.getFullYear(), n.getMonth(), m.day); if (dayOff(isoDate(d)) < 0) d = new Date(n.getFullYear(), n.getMonth() + 1, m.day); return isoDate(d); };
+MONTHLY.forEach(m => { const n = NOW(); for (let k = 0; k < 3; k++) EVENTS.push({ ...m, monthly:true, date:isoDate(new Date(n.getFullYear(), n.getMonth() + k, m.day)) }); });
 const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
 
 let uid = 100;
@@ -155,6 +164,8 @@ const TASKS = [
     { t:'Yapay zeka araçlarının kendi kartlarından ödenmesini teyit et', done:false },
     { t:'Başlangıç tarihi, ödeme günü ve sözleşme adımını konuş', done:false },
     { t:'Görüşme sonrası: notları ve kararları panele işle', done:false } ]}),
+  T('Parti maaşının hesaba geçtiğini kontrol et', { pri:'Orta', group:'Finans', cat:'Finans', project:'Parti',
+    due:dayOff(nextMonthly(MONTHLY[0])), today:dayOff(nextMonthly(MONTHLY[0])) === 0, est:.1, recur:'Her ayın 5’i' }),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -179,9 +190,12 @@ const AGENDA = [
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
-let NOTES = [];
+let NOTES = [], INCOME = [], PRIV_REV = {};
 window.WR_setPrivate = data => {
-  NOTES = data.notes || [];
+  NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
+  (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
+  BUDGET.sort((a, b) => b.d - a.d);
   (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
   render();
 };
@@ -355,7 +369,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.s}<small>${a.e}</small></div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -646,7 +660,7 @@ PAGES.ekip = () => {
 };
 
 PAGES.portfoy = () => {
-  const rev = { 'İmes Spor':35000, 'Akdeniz Dental':42000, 'Werrise Digital':14000, 'Dentafly':0, 'Çevik / Multiligo':0, 'Gönüllü Ağı':8000, 'Kişisel Finans':0, 'Sağlık & Spor':0 };
+  const rev = { 'İmes Spor':35000, 'Akdeniz Dental':42000, 'Werrise Digital':14000, 'Dentafly':0, 'Çevik / Multiligo':0, 'Gönüllü Ağı':8000, 'Kişisel Finans':0, 'Sağlık & Spor':0, ...PRIV_REV };
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Portföy<span class="dot">.</span></h1><p class="lede">Markalar ve girişimler: sağlık, gelir ve odak payı. Hangisine bu ay daha çok zaman vermelisin?</p></div></div>
   <div class="grid g4">
@@ -685,6 +699,10 @@ PAGES.butce = () => {
     <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">Marj %${Math.round((inc-exp)/inc*100)}</div></div>
     <div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${money(150000)}</div><div class="bar lime" style="margin-top:10px"><span style="width:${Math.min(100,inc/150000*100)}%"></span></div></div>
   </div>
+  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">${INCOME.map(i => (i.cur||'₺') + Math.round(i.amt).toLocaleString('tr-TR')).join(' + ')} / ay</span></div>
+    <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
+    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${i.cur||'₺'}${Math.round(i.amt).toLocaleString('tr-TR')}/${i.per||'ay'}</td></tr>`; }).join('')}
+    </tbody></table></div></div>` : ''}
   <div class="grid split mt">
     <div class="card"><h3 style="margin-bottom:10px">Hareketler</h3><div class="table-wrap"><table><thead><tr><th>Tarih</th><th>Açıklama</th><th>Proje</th><th>Kategori</th><th class="num">Tutar</th></tr></thead><tbody>
       ${BUDGET.map(b => `<tr><td class="mono">${dLabel(b.d)}</td><td><strong>${esc(b.desc)}</strong></td><td>${esc(b.proj)}</td><td><span class="pill">${b.cat}</span></td><td class="num ${b.amt>0?'pos':'neg'}">${b.amt>0?'+':''}${money(b.amt).replace('₺-','-₺')}</td></tr>`).join('')}
