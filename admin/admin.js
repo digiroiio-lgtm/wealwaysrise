@@ -77,7 +77,7 @@ const ME = 'Oğuz';
 const PROJECTS = [
   { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','UK Market Inspection · Tahtakale (fırsat)','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
   { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
-  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
+  { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
   { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
@@ -333,6 +333,14 @@ const TASKS = [
     { t:'Alan adı ve e-posta yenilemeleri', done:false },
     { t:'Müşteriye yansıyan / müşteri kartından ödenen araçları ayır', done:false },
     { t:'Ay toplamını Bütçe’ye işle (Claude’a yaz)', done:false } ]})] : []),
+  T('Dental Ops: logo + Sağlık Bakanlığı (Health) logosu ve açıklamasını ilet', { key:'dops1', pri:'Yüksek', group:'Markalar', cat:'Operasyon', project:'Dental Ops', due:dayOff('2026-11-26'), today:dayOff('2026-11-26') === 0, est:.5, subs:[
+    { t:'Kurum logosu (yüksek çözünürlük)', done:false },
+    { t:'Sağlık Bakanlığı Health logosu', done:false },
+    { t:'Logo yanındaki kısa açıklama metni', done:false },
+    { t:'Ömer Bey ile kimin ileteceğini netleştir', done:false } ]}),
+  T('Dental Ops: sonraki toplantıda 22 Kas maddelerinin takibi', { key:'dops2', pri:'Orta', group:'Markalar', cat:'Toplantı', project:'Dental Ops', due:null, est:.5, follow:true, subs:[
+    { t:'Madde 1–6 durumunu gözden geçir (detay: Projeler › Dental Ops › Notlar)', done:false },
+    { t:'Toplantı tarihi gelince takvime ekle (Claude’a yaz)', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
@@ -362,7 +370,7 @@ window.WR_setPrivate = data => {
   // Özel başlıklar (ör. site / okul adı) — sadece giriş sonrası
   const L = data.labels || {};
   EVENTS.forEach(ev => { if (!ev.key) return; ev._t = ev._t || ev.title; ev._s = ev._s || ev.short; ev.title = L[ev.key]?.title || ev._t; ev.short = L[ev.key]?.short || ev._s; });
-  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; });
+  TASKS.forEach(t => { if (!t.key) return; t._t = t._t || t.title; t.title = L[t.key]?.task || t._t; t._subs = t._subs || t.subs; t.subs = L[t.key]?.subs ? L[t.key].subs.map(x => ({ t:x, done:false })) : t._subs; });
   (data.deals || []).forEach(p => { const d = DEALS.find(x => x.id === p.id); if (d) Object.assign(d, p); });
   render();
 };
@@ -470,7 +478,7 @@ function renderNowbar() {
 /* ================= SHARED UI ================= */
 const gdot = g => `<span class="cdot" style="background:${GROUPS[g] || '#999'}"></span>`;
 const priPill = p => `<span class="pill ${PRIS[p]} dot">${p}</span>`;
-const dueBadge = t => t.done ? '' : t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due} gün gecikti</span>` : t.due === 0 ? '' : `<span class="pill">${dLabel(t.due)}</span>`;
+const dueBadge = t => t.done ? '' : t.due == null ? '<span class="pill amber">Tarih bekliyor</span>' : t.due < 0 ? `<span class="pill red-o">${ic('alarm',12)} ${-t.due} gün gecikti</span>` : t.due === 0 ? '' : `<span class="pill">${dLabel(t.due)}</span>`;
 
 function taskCard(t, compact) {
   const sd = t.subs.filter(s => s.done).length;
@@ -672,7 +680,7 @@ PAGES.planlama = () => {
   const d = NOW(), mon = addDays(d, -((d.getDay() + 6) % 7));
   const days = [...Array(7)].map((_, i) => addDays(mon, i));
   const off = dd => Math.round((new Date(dd.toDateString()) - new Date(d.toDateString())) / 864e5);
-  const backlog = TASKS.filter(t => !t.done && (t.due < off(days[0]) || t.due > off(days[6])));
+  const backlog = TASKS.filter(t => !t.done && (t.due == null || t.due < off(days[0]) || t.due > off(days[6])));
   return `
   <div class="page-head"><div><div class="eyebrow">Planlama · ${isoWeek(d)}</div><h1>Haftanı yerleştir<span class="dot">.</span></h1><p class="lede">İşleri sürükleyip günlere bırak. Her günün dolulük çubuğu ~6 saatlik odak kapasitesine göre hesaplanır.</p></div>
     <button class="btn btn-primary" data-act="place">Haftayı otomatik dağıt <span class="arrow">→</span></button></div>
@@ -791,12 +799,12 @@ PAGES.oncelik = () => {
 
 PAGES.tarihler = () => {
   const o = openTasks();
-  const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), '']];
+  const sec = [['Gecikmiş', o.filter(t => t.due < 0), 'red'], ['Bugün', o.filter(t => t.due === 0), 'lime'], ['Bu hafta', o.filter(t => t.due > 0 && t.due <= 7), 'blue'], ['Daha sonra', o.filter(t => t.due > 7), ''], ['Tarih bekleyen', o.filter(t => t.due == null), 'amber']];
   const imp = [];
   return `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Tarihler<span class="dot">.</span></h1><p class="lede">Teslim tarihlerine göre tüm açık işler ve takvimdeki önemli günler.</p></div></div>
   <div class="grid split"><div>${sec.map(([n, ts, c]) => `<div class="card mt" style="padding:20px"><div class="card-head"><h3>${n}</h3><span class="pill ${c}">${ts.length}</span></div>
-    ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
+    ${ts.sort((a,b)=>a.due-b.due).map(t => `<div class="qitem"><span class="mono" style="width:64px;color:var(--muted)">${t.due == null ? '—' : dLabel(t.due)}</span>${gdot(t.group)}<span style="flex:1">${esc(t.title)}</span>${priPill(t.pri)}</div>`).join('') || '<p class="muted">Yok</p>'}</div>`).join('')}</div>
   <div style="align-self:start"><div class="card mt"><h3>Randevular & ödemeler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Tarihli görüşmeler, maaş ve ödeme günleri</p>
     ${EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).sort((a,b)=>a.off-b.off).map(ev => `<div class="qitem"><span class="pill ${ev.off<0?'':ev.off<=1?'red':'blue'}">${dLabel(ev.off)} ${evTime(ev)}</span><span style="flex:1">${esc(ev.title)}<br><small class="muted">${esc(ev.note||'')}</small></span><small class="muted">${ev.off<0?'geçti':ev.off===0?'bugün':ev.off+' gün'}</small></div>`).join('')}</div>
   <div class="card mt"><h3>Önemli tarihler</h3><p class="muted" style="font-size:14px;margin-bottom:10px">Sözleşmeler, vergiler, lansmanlar</p>
