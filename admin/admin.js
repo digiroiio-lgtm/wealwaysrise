@@ -75,14 +75,16 @@ const PEOPLE = ['Oğuz'];
 const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'Kontrol merkezini gerçek verilerle doldurmak', subs:['wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
-  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Polonya sitesi · akdenizdental.pl','Polonya Google Ads','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
+  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
+  { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
+  { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
   { name:'Kişisel Finans', group:'Finans', owner:'Oğuz', next:'Aidat her ayın 1’i · kira her ayın 15’i', subs:['Düzenli giderler','Planlı ödemeler (kart, okul)','Yatırım (fon)'] }
 ];
 
@@ -131,6 +133,19 @@ EVENTS.push(
     title:'📍 İzmir’de (2. gün)', note:'' },
   { date:'2026-12-08', lead:5, s:'15:30', e:'17:30', type:'meeting', short:'Akbank eğitimi · İzmir', project:'İnnova Akademi · Akbank', group:'Proje',
     title:'🎤 İnnova Akademi × Akbank — dijital dönüşüm & satış eğitimi (eğitmen)', note:'İzmir, Salı 15:30. Eğitmen olarak aktif görev.' }
+);
+/* 23 Kas 2026 eklenenler: Ask a Roamer, Werrise Ltd UK, Akdeniz çok dilli siteler, tatil */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'11:30', e:'12:00', type:'task', short:'Ask a Roamer · rehber PDF', project:'Ask a Roamer', group:'Markalar',
+    title:'📘 Ask a Roamer — rehber PDF geliştirmelerini takip et', note:'Yeni marka. Rehber (.pdf) üzerindeki geliştirmelerin durumu.' },
+  { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
+    title:'📝 Werrise Ltd — İngiltere’de şirket kurma işi', note:'Not: UK şirket kuruluşu adımlarını başlat.' },
+  { date:'2026-12-01', lead:2, s:'12:30', e:'12:45', type:'plan', short:'Akdeniz çok dilli siteler', project:'Akdeniz Dental', group:'Markalar',
+    title:'📝 Akdeniz Dental çok dilli siteler: .pl → .de → .ro, ardından Google Ads', note:'.pl’den sonra sırasıyla .de ve .ro siteleri kurgulanacak; siteler bitince Google Ads kampanya kurguları yapılacak.' },
+  { date:'2026-12-05', key:'tatil1', allDay:true, lead:3, s:'07:00', e:'07:15', type:'plan', short:'Tatil (1 gece 2 gün)', project:'Aile & Kişisel', group:'Yaşam',
+    title:'🌴 Aile & eş dost tatili (5–6 Aralık, 1 gece 2 gün)', note:'Konaklamalı.' },
+  { date:'2026-12-06', key:'tatil2', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'Tatil (2. gün)', project:'Aile & Kişisel', group:'Yaşam',
+    title:'🌴 Tatil — 2. gün (dönüş)', note:'' }
 );
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
@@ -186,6 +201,22 @@ const TASKS = [
     { t:'Vize, uçuş ve konaklama durumunu kontrol et', done:false } ]}),
   T('Planlı ödeme için nakit hazırla', { key:'bes', pri:'Yüksek', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-01'), today:dayOff('2027-02-01') === 0, est:.25 }),
   T('Planlı USD ödemesini yap', { key:'deniz', pri:'Kesin', group:'Finans', cat:'Finans', project:'Kişisel Finans', due:dayOff('2027-02-15'), today:dayOff('2027-02-15') === 0, est:.25 }),
+  T('Ask a Roamer: rehber PDF geliştirmelerini takip et', { pri:'Orta', group:'Markalar', cat:'Takip', project:'Ask a Roamer', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, follow:true, slot:'Çar 25 Kas · 11:30', subs:[
+    { t:'Rehber PDF’in son sürümünü gözden geçir', done:false },
+    { t:'Bekleyen geliştirmeleri ve sorumluları listele', done:false },
+    { t:'Bir sonraki takip tarihini belirle', done:false } ]}),
+  T('Werrise Ltd (UK) şirket kuruluşunu başlat', { pri:'Yüksek', group:'Platform', cat:'Operasyon', project:'Werrise Digital', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 11:00', subs:[
+    { t:'Kuruluş yolunu seç (Companies House doğrudan / formation agent)', done:false },
+    { t:'Registered office adresi ve direktör/hissedar bilgileri', done:false },
+    { t:'UK iş bankası hesabı', done:false },
+    { t:'Muhasebeci ve vergi kayıtları (Corporation Tax, gerekirse VAT)', done:false } ]}),
+  T('Akdeniz Dental çok dilli siteler + Google Ads planı', { pri:'Yüksek', group:'Markalar', cat:'İçerik / SEO', project:'Akdeniz Dental', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 12:30', subs:[
+    { t:'.pl sitesi (mevcut) — referans yapı olarak kullan', done:true },
+    { t:'1. sıra: Almanca site (.de) kurgusu', done:false },
+    { t:'2. sıra: Rumence site (.ro) kurgusu', done:false },
+    { t:'Siteler bitince: .de Google Ads kampanya kurgusu', done:false },
+    { t:'Siteler bitince: .ro Google Ads kampanya kurgusu', done:false } ]}),
+  T('Tatil hazırlığı: rezervasyon ve plan kontrolü', { key:'tatil', pri:'Orta', group:'Yaşam', cat:'Kişisel', project:'Aile & Kişisel', due:dayOff('2026-12-03'), today:dayOff('2026-12-03') === 0, est:.25 }),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
