@@ -185,3 +185,12 @@ textarea.input{min-height:110px;resize:vertical}
   .topbar .btn-primary span.label{display:none}
 }
 @media (max-width:480px){.kpis{grid-template-columns:1fr}.search{display:none}}
+
+/* ---------- Login gate ---------- */
+.login{display:none}
+.locked .login{display:grid}
+.locked .app{display:none}
+.login .brand{display:flex}
+.login-error{display:none;color:var(--danger);font-size:13px;margin:-6px 0 14px}
+.login-error.show{display:block}
+.btn:disabled{opacity:.6;cursor:wait}
