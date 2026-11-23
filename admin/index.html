@@ -81,12 +81,12 @@ const unlock=()=>document.documentElement.classList.remove('locked');
 // Özel notlar: şifreden ayrı bir AES anahtarı türetilir; oturum boyunca sessionStorage'da tutulur.
 const b64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 async function privKey(pw){const P=window.WR_PRIV;const k=await crypto.subtle.importKey('raw',new TextEncoder().encode(pw),'PBKDF2',false,['deriveKey']);return crypto.subtle.deriveKey({name:'PBKDF2',salt:b64(P.salt),iterations:P.iter,hash:'SHA-256'},k,{name:'AES-GCM',length:256},true,['decrypt'])}
-async function openPrivate(key){try{const P=window.WR_PRIV;if(!P||!key)return;const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(P.iv)},key,b64(P.ct));window.WR_setPrivate&&window.WR_setPrivate(JSON.parse(new TextDecoder().decode(pt)))}catch(e){console.warn('Özel notlar açılamadı')}}
-try{if(sessionStorage.getItem(KEY)===HASH){unlock();const raw=sessionStorage.getItem('wr-admin-pk');if(raw)crypto.subtle.importKey('raw',b64(raw),'AES-GCM',false,['decrypt']).then(openPrivate)}}catch(e){}
+async function openPrivate(key,fromSession){try{const P=window.WR_PRIV;if(!P||!key)return;const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64(P.iv)},key,b64(P.ct));window.WR_setPrivate&&window.WR_setPrivate(JSON.parse(new TextDecoder().decode(pt)))}catch(e){console.warn('Özel notlar açılamadı');if(fromSession){try{sessionStorage.removeItem(KEY);sessionStorage.removeItem('wr-admin-pk')}catch(_){}const er=document.getElementById('loginError');er.textContent='Panel güncellendi — özel notları açmak için tekrar giriş yap.';er.classList.add('show');document.documentElement.classList.add('locked')}}}
+try{if(sessionStorage.getItem(KEY)===HASH){unlock();const raw=sessionStorage.getItem('wr-admin-pk');if(raw)crypto.subtle.importKey('raw',b64(raw),'AES-GCM',false,['decrypt']).then(k=>openPrivate(k,true))}}catch(e){}
 document.getElementById('loginForm').addEventListener('submit',async e=>{
   e.preventDefault();const btn=e.target.querySelector('button');btn.disabled=true;
   const ok=await derive(document.getElementById('pw').value)===HASH;btn.disabled=false;
-  document.getElementById('loginError').classList.toggle('show',!ok);
+  const er=document.getElementById('loginError');er.textContent='Şifre hatalı. Tekrar dene.';er.classList.toggle('show',!ok);
   if(ok){const pw=document.getElementById('pw').value;try{sessionStorage.setItem(KEY,HASH)}catch(e){}unlock();document.getElementById('pw').value='';
     if(window.WR_PRIV){const k=await privKey(pw);try{sessionStorage.setItem('wr-admin-pk',btoa(String.fromCharCode(...new Uint8Array(await crypto.subtle.exportKey('raw',k)))))}catch(e){}openPrivate(k)}}
 });

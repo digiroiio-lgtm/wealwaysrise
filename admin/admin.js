@@ -60,7 +60,7 @@ const hm = d => `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()
 const toMin = s => { const [h, m] = s.split(':').map(Number); return h * 60 + m; };
 const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(); };
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}${d.getFullYear() !== NOW().getFullYear() ? ' ' + d.getFullYear() : ''}`; };
-const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
+const money = n => '₺' + (Math.round(n) || 0).toLocaleString('tr-TR');
 const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
 const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : d.value ? money(d.value) : '—';
 const tl = d => !d.cur;
@@ -124,6 +124,10 @@ const MONTHLY = [
   { day:5, s:'09:00', e:'09:10', type:'plan', short:'Maaş günü · Parti', project:'Parti', group:'Platform',
     title:'💰 Maaş günü · Parti (iş geliştirme & pazarlama yöneticisi)',
     note:'Her ayın 5’i. Ödemenin hesaba geçtiğini kontrol et; tutar Bütçe › Düzenli gelirler’de.' },
+  { day:1, key:'gbp1', kind:'income', lead:1, s:'09:15', e:'09:20', type:'plan', short:'GBP ödemesi', project:'Kişisel Finans', group:'Finans',
+    title:'💷 GBP ödeme günü (ayın 1’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
+  { day:15, key:'gbp15', kind:'income', lead:1, s:'09:15', e:'09:20', type:'plan', short:'GBP ödemesi', project:'Kişisel Finans', group:'Finans',
+    title:'💷 GBP ödeme günü (ayın 15’i)', note:'Tutar Bütçe › Düzenli gelirler’de.' },
   { day:1, key:'aidat', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Aidat', project:'Kişisel Finans', group:'Finans',
     title:'🏢 Aidat ödemesi', note:'Her ayın 1’i. Tutar Bütçe › Düzenli giderler’de.' },
   { day:15, key:'kira', kind:'expense', lead:3, s:'09:00', e:'09:10', type:'plan', short:'Kira', project:'Kişisel Finans', group:'Finans',
@@ -377,6 +381,7 @@ window.WR_setPrivate = data => {
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
   REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
   // Son 30 günde gerçekleşmiş düzenli giderler ve planlı ödemeler → Hareketler
+  INCOME.filter(i => i.auto).forEach(i => occurrences(i.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${i.src} — ${fmtCur(i.amt, i.cur)}${i.rate ? ` × ${i.rate}` : ''} (her ayın ${i.day}’i)`, proj:i.proj || 'Kişisel Finans', cat:'Gelir', amt:incTL(i), priv:true })));
   REC_EXP.forEach(r => occurrences(r.day, -30, -1).forEach(o => BUDGET.push({ d:o.off, desc:`${r.desc} (her ayın ${r.day}’i)`, proj:'Kişisel Finans', cat:r.cat, amt:-r.amt, priv:true })));
   PAYMENTS.filter(p => dayOff(p.date) < 0 && dayOff(p.date) >= -30).forEach(p => BUDGET.push({ d:dayOff(p.date), desc:p.desc, proj:'Kişisel Finans', cat:p.cat, amt:-p.amt, cur:p.cur, priv:true }));
   BUDGET.sort((a, b) => b.d - a.d);
@@ -433,8 +438,9 @@ const reminders = () => EVENTS.map(ev => ({ ...ev, off:dayOff(ev.date) })).filte
 const upcoming = (max = 7) => EVENTS.filter(ev => !ev.hideInList).map(ev => ({ ...ev, off:dayOff(ev.date) })).filter(ev => ev.off >= 0 && ev.off <= max).sort((a, b) => a.off - b.off || toMin(a.s) - toMin(b.s));
 const evTime = ev => ev.allDay ? 'tüm gün' : ev.s;
 const fmtCur = (amt, cur) => !cur || cur === '₺' ? moneyD(amt) : cur + Number(amt).toLocaleString('tr-TR', { maximumFractionDigits:2 });
-const payStr = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return fmtCur(r.amt, r.cur); const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? fmtCur(p.amt, p.cur) : ''; };
-const payAmt = ev => { const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
+const incTL = i => i.amt * (i.rate || 1);
+const payStr = ev => { const inc = INCOME.find(x => x.key && x.key === ev.key); if (inc) return fmtCur(inc.amt, inc.cur) + (inc.rate ? ` (≈ ${moneyD(incTL(inc))})` : ''); const r = REC_EXP.find(x => x.key === ev.key); if (r) return fmtCur(r.amt, r.cur); const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? fmtCur(p.amt, p.cur) : ''; };
+const payAmt = ev => { const inc = INCOME.find(x => x.key && x.key === ev.key); if (inc) return inc.amt; const r = REC_EXP.find(x => x.key === ev.key); if (r) return r.amt; const p = PAYMENTS.find(x => x.key === ev.key && x.date === ev.date); return p ? p.amt : 0; };
 const whenTxt = off => off === 0 ? 'Bugün' : off === 1 ? 'Yarın' : `${DAYS[addDays(NOW(), off).getDay()]} (${dLabel(off)})`;
 const sigText = s => s.replace('{overdue}', overdueTasks().length).replace('{review}', reviewTasks().length)
   .replace('{topOverdue}', (overdueTasks().sort((a, b) => a.due - b.due)[0] || {}).title || '')
@@ -542,7 +548,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'income' && payAmt(a) ? ` <span class="pill green">gelir · ${payStr(a)}</span>` : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -680,8 +686,8 @@ PAGES.bugun = () => {
     </div>
     <div class="card" style="align-self:start">
       <div class="card-head"><h3>İçeri sinyalleri</h3><span class="pill red dot">${activeSignals().length + reminders().length}</span></div>
-      ${reminders().map(ev => { const pay = ev.kind === 'expense', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${pay?'amber':'blue'}-bg);color:var(--${pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
-        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + evTime(ev)} · ${esc(ev.short)}${amt ? ` · <span class="neg">${payStr(ev)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
+      ${reminders().map(ev => { const pay = ev.kind === 'expense' || ev.kind === 'income', inc = ev.kind === 'income', amt = pay ? payAmt(ev) : 0; return `<div class="signal"><span class="ic" style="background:var(--${inc?'green':pay?'amber':'blue'}-bg);color:var(--${inc?'green':pay?'amber':'blue'})">${ic(pay?'budget':'cal')}</span>
+        <div style="flex:1"><h4>${whenTxt(ev.off)}${pay ? '' : ' ' + evTime(ev)} · ${esc(ev.short)}${amt ? ` · <span class="${inc?'pos':'neg'}">${inc?'+':''}${payStr(ev)}</span>` : ''}</h4><p>${esc(ev.title)}. ${esc(ev.note || '')}</p><a class="link" href="#${pay?'butce':'tarihler'}">${pay?'Ödemeleri aç':'Randevuları aç'} →</a></div></div>`; }).join('')}
       ${activeSignals().map(s => [s, SIGNALS.indexOf(s)]).map(([s, i]) => `<div class="signal"><span class="ic" style="background:var(--${s.tone}-bg);color:var(--${s.tone})">${ic(s.ic)}</span>
         <div style="flex:1"><h4>${sigText(s.t)}</h4><p>${sigText(s.p)}</p><a class="link" href="#${s.go}">${s.a} →</a></div>
         <button class="x" data-act="sig-x" data-i="${i}" aria-label="Kapat">×</button></div>`).join('') || '<p class="muted">Sinyal yok — sakin bir gün.</p>'}
@@ -876,21 +882,21 @@ PAGES.butce = () => {
     <div class="card kpi"><div class="eyebrow">Gelir</div><div class="value pos">${money(inc)}</div></div>
     <div class="card kpi"><div class="eyebrow">Gider</div><div class="value neg">${money(exp)}</div></div>
     <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">${inc ? 'Marj %' + Math.round((inc-exp)/inc*100) : '—'}</div></div>
-    <div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${money(150000)}</div><div class="bar lime" style="margin-top:10px"><span style="width:${Math.min(100,inc/150000*100)}%"></span></div></div>
+    <div class="card kpi"><div class="eyebrow">Aylık düzenli gelir</div><div class="value pos">${money(INCOME.reduce((s, i) => s + incTL(i), 0))}</div><div class="delta">${INCOME.length ? INCOME.length + ' kaynak · ≈ TL' : 'Giriş sonrası görünür'}</div></div>
   </div>
-  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">${INCOME.map(i => (i.cur||'₺') + Math.round(i.amt).toLocaleString('tr-TR')).join(' + ')} / ay</span></div>
+  ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">≈ ${moneyD(INCOME.reduce((s, i) => s + incTL(i), 0))} / ay</span></div>
     <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
-    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${i.cur||'₺'}${Math.round(i.amt).toLocaleString('tr-TR')}/${i.per||'ay'}</td></tr>`; }).join('')}
+    ${INCOME.map(i => { const o = dayOff(nextMonthly({ day:i.day })); return `<tr><td><strong>${esc(i.src)}</strong></td><td>${esc(i.role||'')}</td><td>Her ayın ${i.day}’i</td><td><span class="pill ${o<=3?'lime':''}">${whenTxt(o)}</span></td><td class="num pos">+${fmtCur(i.amt, i.cur)}${i.rate ? ` <small class="muted">(≈ ${moneyD(incTL(i))}, kur ${i.rate})</small>` : ''}</td></tr>`; }).join('')}
     </tbody></table></div></div>` : ''}
   ${REC_EXP.length || PAYMENTS.length ? (() => {
-    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.filter(i => (i.cur||'₺') === '₺').reduce((s, i) => s + i.amt, 0);
+    const fixed = REC_EXP.reduce((s, r) => s + r.amt, 0), incM = INCOME.reduce((s, i) => s + incTL(i), 0);
     const up = [...REC_EXP.flatMap(r => occurrences(r.day, 0, 30).map(o => ({ off:o.off, desc:r.desc, cat:r.cat, amt:r.amt, rec:`her ayın ${r.day}’i` }))),
                 ...PAYMENTS.filter(p => dayOff(p.date) >= 0 && dayOff(p.date) <= 30).map(p => ({ off:dayOff(p.date), desc:p.desc, cat:p.cat, amt:p.amt, cur:p.cur }))].sort((a, b) => a.off - b.off);
     const upT = up.filter(x => !x.cur).reduce((s, x) => s + x.amt, 0), upFx = up.filter(x => x.cur);
     return `<div class="grid g2 mt">
       <div class="card"><div class="card-head"><h3>${ic('repeat',16)} Düzenli giderler</h3><span class="pill red">${moneyD(fixed)} / ay</span></div>
         ${REC_EXP.map(r => { const o = occurrences(r.day, 0, 31)[0]; return `<div class="qitem"><span style="flex:1"><b>${esc(r.desc)}</b><br><small class="muted">Her ayın ${r.day}’i · sıradaki: ${o ? whenTxt(o.off) : '—'}</small></span><span class="mono neg">−${moneyD(r.amt)}</span></div>`; }).join('')}
-        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, sadece ₺</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
+        ${incM ? `<div class="qitem"><span style="flex:1"><b>Düzenli gelir − sabit gider</b><br><small class="muted">aylık, döviz ≈ TL</small></span><span class="mono ${incM-fixed>=0?'pos':'neg'}">${moneyD(incM - fixed)}</span></div>` : ''}</div>
       <div class="card"><div class="card-head"><h3>${ic('cal',16)} Yaklaşan ödemeler · 30 gün</h3><span class="pill red">${moneyD(upT)}</span></div>
         ${up.map(x => `<div class="qitem"><span class="pill ${x.off<=3?'amber':''}" style="min-width:92px;justify-content:center">${whenTxt(x.off).replace(/^(\S+) \((.+)\)$/,'$2')}</span><span style="flex:1">${esc(x.desc)}<br><small class="muted">${esc(x.cat)}${x.rec ? ' · ' + x.rec : ''}</small></span><span class="mono neg">−${fmtCur(x.amt, x.cur)}</span></div>`).join('') || '<p class="muted">30 gün içinde ödeme yok.</p>'}${upFx.length ? `<p class="muted" style="font-size:12px;margin-top:8px">Toplama dahil değil (döviz): ${upFx.map(x => fmtCur(x.amt, x.cur)).join(' + ')}</p>` : ''}</div>
     </div>`; })() : ''}
