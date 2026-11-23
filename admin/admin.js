@@ -85,6 +85,7 @@ const PROJECTS = [
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
+  { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Sal 24 Kas 12:00 TR · Sabrina görüşmesi (teyit bekliyor)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
   { name:'Aile & Kişisel', group:'Yaşam', owner:'Oğuz', next:'5–6 Ara tatil', subs:['Tatiller ve aile planları'] },
@@ -175,6 +176,11 @@ EVENTS.push(
 EVENTS.push(
   { date:'2026-12-14', key:'jl1', lead:3, s:'11:00', e:'12:30', type:'meeting', short:'PL hasta · transfer & muayene', project:'Akdeniz Dental', group:'Markalar',
     title:'🦷 PL hasta — otelden transfer (11:00) + muayene, Akdeniz Dental', note:'İmplant + zirkon planlaması; muayene sonrası tedaviye başlamak istiyor. Kaynak: akdenizdental.pl reklamı.' }
+);
+/* DMC Turkey Partner — outreach sihirbazı kurulumu */
+EVENTS.push(
+  { date:'2026-12-10', lead:2, s:'11:45', e:'12:45', type:'task', short:'DMC · outreach sihirbazı', project:'DMC Turkey Partner', group:'Markalar',
+    title:'🛠️ DMC Turkey Partner — outreach sihirbazını kur', note:'Londra Depo’daki outreach paneli + müşteri keşif sihirbazı modeli DMC için uyarlanacak.' }
 );
 /* İskenderun Ticaret Odası · Filtre Kümelenmesi — ABD seyahati (Ticaret Bakanlığı). Net tarih bekleniyor. */
 EVENTS.push(
@@ -294,6 +300,12 @@ const TASKS = [
     { t:'Transfer zamanında yapıldı mı?', done:false },
     { t:'Muayene sonucu ve tedavi planı (implant + zirkon) netleşti mi?', done:false },
     { t:'.pl reklam dönüşümü olarak raporla (Google Ads)', done:false } ]}),
+  T('DMC Turkey Partner: outreach sihirbazını kur', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'DMC Turkey Partner', due:dayOff('2026-12-10'), today:dayOff('2026-12-10') === 0, est:1, slot:'Per 10 Ara · 11:45', subs:[
+    { t:'Londra Depo outreach paneli + keşif sihirbazını şablon olarak al', done:false },
+    { t:'Hedef kitleyi tanımla (ör. yurt dışı tur operatörleri, acenteler, etkinlik planlayıcıları)', done:false },
+    { t:'Keşif kriterleri ve ilk lead listesi', done:false },
+    { t:'Outreach mesaj şablonları (EN) ve gönderim akışı', done:false },
+    { t:'Günlük çalıştırma rutinine ekle (Claude’a yaz)', done:false } ]}),
   T('Kim’den görüşme detaylarını ve hasta özetini bekle', { pri:'Yüksek', group:'Proje', cat:'Takip', project:'Kök Hücre Yönlendirme',
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
