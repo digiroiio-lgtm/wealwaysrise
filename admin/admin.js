@@ -62,7 +62,7 @@ const nowMin = () => { const d = NOW(); return d.getHours() * 60 + d.getMinutes(
 const dLabel = off => { const d = addDays(NOW(), off); return `${d.getDate()} ${MONTHS[d.getMonth()].slice(0,3)}${d.getFullYear() !== NOW().getFullYear() ? ' ' + d.getFullYear() : ''}`; };
 const money = n => '₺' + Math.round(n).toLocaleString('tr-TR');
 const moneyD = n => '₺' + Number(n).toLocaleString('tr-TR', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
-const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : money(d.value);
+const dealVal = d => d.cur ? (d.value ? d.cur + Math.round(d.value).toLocaleString('tr-TR') + (d.per || '') : '🔒') : d.value ? money(d.value) : '—';
 const tl = d => !d.cur;
 const toast = msg => { const t = $('#toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200); };
 
@@ -75,11 +75,11 @@ const PEOPLE = ['Oğuz'];
 const ME = 'Oğuz';
 
 const PROJECTS = [
-  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
+  { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','UK Market Inspection · Tahtakale (fırsat)','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
   { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Cuma 19:00 Akdeniz ekibiyle paket görüşmesi', subs:['A’dan Z’ye hasta yolculuğu','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
@@ -138,6 +138,8 @@ EVENTS.push(
 EVENTS.push(
   { date:'2026-11-25', lead:1, s:'11:30', e:'12:00', type:'task', short:'Ask a Roamer · rehber PDF', project:'Ask a Roamer', group:'Markalar',
     title:'📘 Ask a Roamer — rehber PDF geliştirmelerini takip et', note:'Yeni marka. Rehber (.pdf) üzerindeki geliştirmelerin durumu.' },
+  { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
+    title:'🤝 Tahtakale × Part-y App — kurumsal görüşme', note:'Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
   { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
     title:'📝 Werrise Ltd — İngiltere’de şirket kurma işi', note:'Not: UK şirket kuruluşu adımlarını başlat.' },
   { date:'2026-12-01', lead:2, s:'12:30', e:'12:45', type:'plan', short:'Akdeniz çok dilli siteler', project:'Akdeniz Dental', group:'Markalar',
@@ -205,6 +207,15 @@ const TASKS = [
     { t:'Rehber PDF’in son sürümünü gözden geçir', done:false },
     { t:'Bekleyen geliştirmeleri ve sorumluları listele', done:false },
     { t:'Bir sonraki takip tarihini belirle', done:false } ]}),
+  T('Tahtakale × Part-y App kurumsal görüşmesi (Cmt 11:00)', { pri:'Kesin', group:'Platform', cat:'Toplantı', project:'Parti', due:dayOff('2026-11-28'), today:dayOff('2026-11-28') === 0, est:1, slot:'Cmt 28 Kas · 11:00', subs:[
+    { t:'Part-y App kurumsal sunumunu hazırla (değer önerisi, kurumsal kullanım senaryoları)', done:false },
+    { t:'Tahtakale’nin ihtiyacını ve karar vericileri netleştir', done:false },
+    { t:'Gündeme ekle: UK Market Inspection fırsatı (UK vizit sırasında)', done:false },
+    { t:'Görüşme sonrası: notları CRM’e yaz, sonraki adımı belirle', done:false } ]}),
+  T('Tahtakale · UK Market Inspection fırsatını kovala', { pri:'Yüksek', group:'Platform', cat:'Satış / Lead', project:'Werrise Digital', due:dayOff('2026-11-28') + 3, today:dayOff('2026-11-28') + 3 === 0, est:.5, follow:true, subs:[
+    { t:'28 Kas görüşmesinde fırsatı aç: kapsam, beklenti, bütçe', done:false },
+    { t:'UK vizit tarihini netleştir ve inspection planını ona göre yap', done:false },
+    { t:'Kısa teklif / iş tanımı gönder', done:false } ]}),
   T('Werrise Ltd (UK) şirket kuruluşunu başlat', { pri:'Yüksek', group:'Platform', cat:'Operasyon', project:'Werrise Digital', due:dayOff('2026-12-01'), today:dayOff('2026-12-01') === 0, est:1, slot:'Sal 1 Ara · 11:00', subs:[
     { t:'Kuruluş yolunu seç (Companies House doğrudan / formation agent)', done:false },
     { t:'Registered office adresi ve direktör/hissedar bilgileri', done:false },
@@ -259,6 +270,8 @@ let SIGNALS = [
 const activeSignals = () => SIGNALS.filter(s => !s.when || s.when());
 
 const DEALS = [
+  { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
+  { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
   { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
   { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
 ];
