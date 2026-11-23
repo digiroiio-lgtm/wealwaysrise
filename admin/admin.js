@@ -372,11 +372,11 @@ const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
-let NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
+let TARGET = 0, NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
 /* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
 const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
 window.WR_setPrivate = data => {
-  NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
   for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
   REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
@@ -882,7 +882,10 @@ PAGES.butce = () => {
     <div class="card kpi"><div class="eyebrow">Gelir</div><div class="value pos">${money(inc)}</div></div>
     <div class="card kpi"><div class="eyebrow">Gider</div><div class="value neg">${money(exp)}</div></div>
     <div class="card kpi"><div class="eyebrow">Net</div><div class="value">${money(inc-exp)}</div><div class="delta">${inc ? 'Marj %' + Math.round((inc-exp)/inc*100) : '—'}</div></div>
-    <div class="card kpi"><div class="eyebrow">Aylık düzenli gelir</div><div class="value pos">${money(INCOME.reduce((s, i) => s + incTL(i), 0))}</div><div class="delta">${INCOME.length ? INCOME.length + ' kaynak · ≈ TL' : 'Giriş sonrası görünür'}</div></div>
+    ${(() => { const rec = INCOME.reduce((s, i) => s + incTL(i), 0), pct = TARGET ? Math.min(100, rec / TARGET * 100) : 0;
+      return `<div class="card kpi"><div class="eyebrow">Aylık hedef</div><div class="value">${TARGET ? money(TARGET) : '🔒'}</div>
+        <div class="bar lime" style="margin:10px 0 6px"><span style="width:${pct}%"></span></div>
+        <div class="delta">${TARGET ? `Düzenli gelir ${money(rec)} · %${Math.round(pct)} · kalan ${money(Math.max(0, TARGET - rec))}` : 'Giriş sonrası görünür'}</div></div>`; })()}
   </div>
   ${INCOME.length ? `<div class="card mt"><div class="card-head"><h3>${ic('repeat',16)} Düzenli gelirler</h3><span class="pill green">≈ ${moneyD(INCOME.reduce((s, i) => s + incTL(i), 0))} / ay</span></div>
     <div class="table-wrap"><table><thead><tr><th>Kaynak</th><th>Rol / açıklama</th><th>Ödeme günü</th><th>Sıradaki</th><th class="num">Tutar</th></tr></thead><tbody>
