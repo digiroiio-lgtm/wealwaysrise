@@ -76,7 +76,7 @@ const ME = 'Oğuz';
 
 const PROJECTS = [
   { name:'Werrise Digital', group:'Platform', owner:'Oğuz', next:'1 Ara · Werrise Ltd (UK) şirket kuruluşu', subs:['Werrise Ltd (UK) şirket kuruluşu','UK Market Inspection · Tahtakale (fırsat)','wealwaysrise.com','admin.wealwaysrise.com · kontrol merkezi','AI Daily Assistant Masterclass (geliştirmede)'] },
-  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
+  { name:'Akdeniz Dental', group:'Markalar', owner:'Oğuz', next:'Cuma 19:00 paket görüşmesi', subs:['WhitePress (içerik/PR yayınları) — tanışma 24 Kas','Çok dilli siteler: .pl ✓ → .de → .ro','Google Ads: .pl ✓ · .de ve .ro (siteler bitince)','UK finans · Ideal for Finance','Plan Ports CRM · hasta takibi','Günlük raporlama'] },
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
@@ -185,6 +185,11 @@ EVENTS.push(
   { date:'2026-12-09', key:'kb3', allDay:true, lead:0, hideInList:true, s:'07:00', e:'07:15', type:'plan', short:'UK hasta Antalya’da', project:'Akdeniz Dental', group:'Markalar', title:'🦷 UK hasta Antalya’da — tedavi süreci', note:'' },
   { date:'2026-12-10', key:'kb4', lead:1, s:'21:00', e:'22:40', type:'plan', short:'UK hasta dönüş uçuşu', project:'Akdeniz Dental', group:'Markalar',
     title:'✈️ UK hasta dönüşü — easyJet EZY5710 · Antalya 21:00 → London Southend 22:40', note:'Bagaj teslimi 18:30–20:00, Terminal 2. Otel check-out aynı gün.' }
+);
+/* WhitePress × Akdeniz Dental tanışma toplantısı (Meet linki şifreli) */
+EVENTS.push(
+  { date:'2026-11-24', key:'wp1', lead:0, s:'14:15', e:'14:45', type:'meeting', short:'WhitePress × Akdeniz', project:'Akdeniz Dental', group:'Markalar',
+    title:'🤝 WhitePress & Akdeniz Dental Clinic — tanışma toplantısı (Google Meet)', note:'Davet: Nilüfer (WhitePress). Katılım linki şifreli notlarda / Kısayollar’da.' }
 );
 /* UK lead — ağız içi fotoğraflar doktora iletilecek (detay şifreli) */
 EVENTS.push(
@@ -384,6 +389,11 @@ const TASKS = [
     { t:'Transfer saatini teyit et (uçuş 21:00, AYT Terminal 2)', done:false },
     { t:'Tedavi sonrası kontrol / bakım talimatları iletildi mi?', done:false },
     { t:'Memnuniyet ve yorum (Google) rica et', done:false } ]}),
+  T('WhitePress × Akdeniz Dental tanışma toplantısı (14:15, Meet)', { key:'wpt', pri:'Yüksek', group:'Markalar', cat:'Toplantı', project:'Akdeniz Dental', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.5, slot:'Sal 24 Kas · 14:15–14:45', subs:[
+    { t:'Hedef pazarları hazırla: .pl (mevcut), .de ve .ro (sırada)', done:false },
+    { t:'İhtiyaç: dil bazlı içerik/PR yayınları ve link kalitesi', done:false },
+    { t:'Bütçe, fiyat listesi ve raporlama sor', done:false },
+    { t:'Toplantı sonrası: notları Akdeniz Dental’e yaz, sonraki adımı belirle', done:false } ]}),
   T('UK lead: ağız içi fotoğrafları doktora ilet → plan & fiyatla dön', { key:'uklt1', pri:'Kesin', group:'Markalar', cat:'Satış / Lead', project:'Akdeniz Dental', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, slot:'Sal 24 Kas · 09:55', subs:[
     { t:'Fotoğrafları doktora WhatsApp’tan ilet', done:false },
     { t:'Doktordan tedavi planı ve fiyat al', done:false },
