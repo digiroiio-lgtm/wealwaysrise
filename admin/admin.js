@@ -87,6 +87,7 @@ const PROJECTS = [
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
   { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
   { name:'UK Hasta Referans', group:'Proje', owner:'Oğuz', next:'Cmt 5 Ara 14:00 · David’e takip mesajı', subs:['David & Neil — UK reviews platformu ve Facebook grupları','Banner + benzersiz takip linki (Turkey Teeth on Finance)','Finans metni onayı · referans anlaşması','Hastalar → Akdeniz Dental'] },
+  { name:'Expat Wealth Advisory', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 10:35 · Kyle ile iş planı', subs:['Partner: Kyle','Hedef: Tayland’a taşınmak isteyen expatlar','Ürün: Isle of Man yatırım vs private pension','Site: expatwealthadvisory.com (Vercel’de kayıtlı alan adı)'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Per 26 Kas 12:00 TR · Sabrina görüşmesi (kesin)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
@@ -202,6 +203,11 @@ EVENTS.push(
 EVENTS.push(
   { date:'2026-12-05', lead:2, s:'14:00', e:'14:15', type:'task', short:'David · takip mesajı', project:'UK Hasta Referans', group:'Proje',
     title:'💬 David (UK) — dental hasta referans iş birliği takip mesajı', note:'David, Neil ile ortak görüşmeyi ayarlayacağını ve gruplarda paylaşıma başlayacağını söyledi.' }
+);
+/* Expat Wealth Advisory — Kyle · Tayland’a taşınacaklar için Isle of Man yatırım vs private pension */
+EVENTS.push(
+  { date:'2026-11-25', lead:1, s:'10:35', e:'11:05', type:'task', short:'Expat Wealth · Kyle', project:'Expat Wealth Advisory', group:'Markalar',
+    title:'🌏 Expat Wealth Advisory — Kyle ile iş planı (Tayland’a taşınacaklar · Isle of Man yatırım vs private pension)', note:'Site için Vercel’deki expatwealthadvisory.com alan adı kullanılacak.' }
 );
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
@@ -368,6 +374,12 @@ const TASKS = [
     { t:'Gösterimi yüksek, TO’su düşük sayfalarda başlık/açıklama iyileştir', done:false },
     { t:'Dizin oluşturma ve Önemli Web Verileri hatalarını kontrol et', done:false },
     { t:'Yapılanları not et, 2 hafta sonra sonuçları karşılaştır', done:false } ]}),
+  T('Expat Wealth Advisory: Kyle ile iş planı + site kurgusu', { pri:'Yüksek', group:'Markalar', cat:'Satış / Lead', project:'Expat Wealth Advisory', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 10:35', subs:[
+    { t:'Hedef kitle: Tayland’a taşınmak isteyen expatlar (UK kökenli öncelikli?)', done:false },
+    { t:'Teklif: Isle of Man yatırım çözümleri vs private pension karşılaştırması', done:false },
+    { t:'Kyle ile rol dağılımı ve gelir/komisyon modeli', done:false },
+    { t:'Site: Vercel’deki expatwealthadvisory.com alan adını projeye bağla (ilk sayfa + lead formu)', done:false },
+    { t:'Uyum: finansal tavsiye ibareleri / yetkilendirme (Kyle tarafı) kontrolü', done:false } ]}),
   T('SE Ranking’i incele (iş geliştirme)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 14:30', subs:[
     { t:'Plan ve fiyatları karşılaştır: seranking.com/subscription.html', done:false },
     { t:'Kotalar: takip edilen anahtar kelime, proje, site denetimi, kullanıcı sayısı', done:false },
@@ -452,6 +464,7 @@ const DEALS = [
   { id:17, name:'UK lead — tam ağız tedavisi (fotoğraflar alındı)', co:'Akdeniz Dental', value:0, stage:'Yeni lead', src:'WhatsApp', note:'24 Kas: fotoğraflar doktora iletilecek → plan & fiyat' },
   { id:15, name:'PL hasta — implant + zirkon (.pl reklam)', co:'Akdeniz Dental', value:0, stage:'Kazanıldı', src:'akdenizdental.pl · Google Ads', note:'23 Kas: PL koordinatör satışı · 14 Ara muayene' },
   { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
+  { id:18, name:'Expat Wealth Advisory — Tayland expat yatırım/pension', co:'Kyle', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Çar 25 Kas 10:35 · Isle of Man yatırım vs private pension' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
   { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
