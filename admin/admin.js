@@ -80,7 +80,7 @@ const PROJECTS = [
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Etkinlik takipleri (2–3 Ara)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
@@ -209,6 +209,9 @@ EVENTS.push(
   { date:'2026-11-25', lead:1, s:'10:35', e:'11:05', type:'task', short:'Expat Wealth · Kyle', project:'Expat Wealth Advisory', group:'Markalar',
     title:'🌏 Expat Wealth Advisory — Kyle ile iş planı (Tayland’a taşınacaklar · Isle of Man yatırım vs private pension)', note:'Site için Vercel’deki expatwealthadvisory.com alan adı kullanılacak.' }
 );
+/* Part-y — etkinlik takipleri (2 ve 3 Aralık, 09:00) */
+EVENTS.push(...['2026-12-02','2026-12-03'].map(date => ({ date, lead:1, s:'09:00', e:'09:30', type:'task', short:'Part-y · etkinlik takibi', project:'Parti', group:'Platform',
+  title:'🎉 Part-y — etkinlik takipleri', note:'Etkinliklerin durumu, katılım ve iletişim takibi.' })));
 /* DMC Turkey Partner — outreach sihirbazı kurulumu */
 EVENTS.push(
   { date:'2026-12-10', lead:2, s:'11:45', e:'12:45', type:'task', short:'DMC · outreach sihirbazı', project:'DMC Turkey Partner', group:'Markalar',
@@ -381,6 +384,10 @@ const TASKS = [
     { t:'Site: Vercel’deki expatwealthadvisory.com alan adını projeye bağla (ilk sayfa + lead formu)', done:false },
     { t:'DNS (Namecheap): alan adı şu an Namecheap hosting’e (66.29.141.63) gidiyor → A kaydı 216.150.1.1 veya 76.76.21.21, www için CNAME cname.vercel-dns.com', done:false },
     { t:'Uyum: finansal tavsiye ibareleri / yetkilendirme (Kyle tarafı) kontrolü', done:false } ]}),
+  ...['2026-12-02','2026-12-03'].map((date, i) => T(`Part-y etkinlik takibi (${i === 0 ? 'Çar 2' : 'Per 3'} Ara)`, { pri:'Yüksek', group:'Platform', cat:'Etkinlik', project:'Parti', due:dayOff(date), today:dayOff(date) === 0, est:.5, slot:`${i === 0 ? 'Çar 2' : 'Per 3'} Ara · 09:00`, subs:[
+    { t:'Yaklaşan etkinliklerin listesi ve durumu', done:false },
+    { t:'Katılım / kayıt sayıları ve organizatör iletişimi', done:false },
+    { t:'Bekleyen aksiyonları huddle’a (10:00) taşı', done:false } ]})),
   T('SE Ranking’i incele (iş geliştirme)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 14:30', subs:[
     { t:'Plan ve fiyatları karşılaştır: seranking.com/subscription.html', done:false },
     { t:'Kotalar: takip edilen anahtar kelime, proje, site denetimi, kullanıcı sayısı', done:false },
