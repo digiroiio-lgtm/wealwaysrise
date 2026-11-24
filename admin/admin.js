@@ -87,7 +87,7 @@ const PROJECTS = [
   { name:'UK Longevity', group:'Proje', owner:'Oğuz', next:'Çar 2 Ara 11:30 · Ezgi ile iş geliştirme görüşmesi', subs:['İletişim: Ezgi (UK numarası, WhatsApp)','Gani ile ön görüşme','İş geliştirme'] },
   { name:'Best House Turkey', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 13:30 · takip & iyileştirme', subs:['besthouseturkey.com','SEO (Search Console, son 3 ay): 13,3 B tıklama · 1,02 Mn gösterim · TO %1,3 · ort. konum 12,7','Not: ~5 Kas’taki zirveden sonra tıklamalar öncekinin altına indi'] },
   { name:'UK Hasta Referans', group:'Proje', owner:'Oğuz', next:'Cmt 5 Ara 14:00 · David’e takip mesajı', subs:['David & Neil — UK reviews platformu ve Facebook grupları','Banner + benzersiz takip linki (Turkey Teeth on Finance)','Finans metni onayı · referans anlaşması','Hastalar → Akdeniz Dental'] },
-  { name:'Expat Wealth Advisory', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 10:35 · Kyle ile iş planı', subs:['Partner: Kyle','Hedef: Tayland’a taşınmak isteyen expatlar','Ürün: Isle of Man yatırım vs private pension','Site: expatwealthadvisory.com (Vercel’de kayıtlı alan adı)'] },
+  { name:'Expat Wealth Advisory', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 10:35 · Kyle ile iş planı', subs:['Partner: Kyle','Hedef: Tayland’a taşınmak isteyen expatlar','Ürün: Isle of Man yatırım vs private pension','Site: expatwealthadvisory.com (Vercel’de kayıtlı; DNS henüz Namecheap’e yönlü)'] },
   { name:'DMC Turkey Partner', group:'Markalar', owner:'Oğuz', next:'Per 10 Ara 11:45 · outreach sihirbazı kurulumu', subs:['dmcturkeypartner.com','Outreach paneli + müşteri keşif sihirbazı (kurulacak)','SEO (Search Console, son 3 ay): 42 tıklama · 7,62 B gösterim · TO %0,6 · ort. konum 43,3','Not: gösterimler 8 Ekim sonrası belirgin düştü — kontrol edilmeli'] },
   { name:'Luenire SPA', group:'Proje', owner:'Oğuz', next:'Per 26 Kas 12:00 TR · Sabrina görüşmesi (kesin)', subs:['İletişim: Sabrina (WhatsApp)','Görüşme saatleri UK saatiyle (TR = UK + 3)'] },
   { name:'Ask a Roamer', group:'Markalar', owner:'Oğuz', next:'Çar 25 Kas 11:30 · rehber PDF takibi', subs:['Rehber (.pdf) geliştirmeleri'] },
@@ -379,6 +379,7 @@ const TASKS = [
     { t:'Teklif: Isle of Man yatırım çözümleri vs private pension karşılaştırması', done:false },
     { t:'Kyle ile rol dağılımı ve gelir/komisyon modeli', done:false },
     { t:'Site: Vercel’deki expatwealthadvisory.com alan adını projeye bağla (ilk sayfa + lead formu)', done:false },
+    { t:'DNS (Namecheap): alan adı şu an Namecheap hosting’e (66.29.141.63) gidiyor → A kaydı 216.150.1.1 veya 76.76.21.21, www için CNAME cname.vercel-dns.com', done:false },
     { t:'Uyum: finansal tavsiye ibareleri / yetkilendirme (Kyle tarafı) kontrolü', done:false } ]}),
   T('SE Ranking’i incele (iş geliştirme)', { pri:'Orta', group:'Platform', cat:'İçerik / SEO', project:'Werrise Digital', due:dayOff('2026-11-25'), today:dayOff('2026-11-25') === 0, est:.5, slot:'Çar 25 Kas · 14:30', subs:[
     { t:'Plan ve fiyatları karşılaştır: seranking.com/subscription.html', done:false },
