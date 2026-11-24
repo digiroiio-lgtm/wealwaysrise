@@ -453,11 +453,21 @@ const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
+/* Kısayollar — herkese açık siteler burada; panel/giriş linkleri şifreli (private.js → links) */
+const PUBLIC_LINKS = [
+  { brand:'Akdeniz Dental', type:'Site', label:'akdenizdental.pl', url:'https://akdenizdental.pl/' },
+  { brand:'Londra Depo', type:'Site', label:'londradepo.com', url:'https://www.londradepo.com/' }
+];
+const LINK_TYPES = ['Panel','Reklam','Site','Analytics','Search Console','CRM','Diğer'];
+const LINK_ICON = { 'Panel':'dash', 'Reklam':'bolt', 'Site':'site', 'Analytics':'gauge', 'Search Console':'search', 'CRM':'crm', 'Diğer':'link' };
+let PRIV_LINKS = [];
+const allLinks = () => [...PRIV_LINKS, ...PUBLIC_LINKS].sort((a, b) => LINK_TYPES.indexOf(a.type) - LINK_TYPES.indexOf(b.type));
+const linkBtn = l => `<a class="lnk" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" title="${esc(l.url)}">${ic(LINK_ICON[l.type] || 'link', 15)}<span><b>${esc(l.type)}</b><small>${esc(l.label || '')}</small></span><span class="go">↗</span></a>`;
 let TARGET = 0, NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
 /* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
 const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
 window.WR_setPrivate = data => {
-  TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  PRIV_LINKS = data.links || []; TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
   for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
   REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
@@ -541,6 +551,8 @@ const ROUTES = [
   { id:'planlama', label:'Planlama', icon:'plan', title:'Planlama', sub:'Haftanı yerleştir' },
   { id:'odak', label:'Odak', icon:'focus', title:'Odak', sub:'Tek iş, tek zaman' },
   { id:'gorevler', label:'Görevler', icon:'tasks', title:'Görevler', sub:'Ana liste · kategori › proje › todo', count:() => overdueTasks().length, hot:true },
+  { g:'Hızlı erişim' },
+  { id:'kisayollar', label:'Kısayollar', icon:'link', title:'Kısayollar', sub:'Paneller, reklam, site, analytics — marka bazında', count:() => allLinks().length },
   { g:'İş yönetimi' },
   { id:'projeler', label:'Projeler', icon:'proj', title:'Projeler', sub:'Proje › alt proje ağacı' },
   { id:'oncelik', label:'Öncelik', icon:'flag', title:'Öncelik', sub:'Önemli mi, acil mi?' },
@@ -870,6 +882,21 @@ function renderTaskList() {
   $('#taskCount').textContent = `${l.filter(t=>t.done).length}/${l.length}`;
 }
 
+PAGES.kisayollar = () => `
+  <div class="page-head"><div><div class="eyebrow">Hızlı erişim</div><h1>Kısayollar<span class="dot">.</span></h1><p class="lede">Sık kullandığın paneller ve linkler, marka bazında. Linkler yeni sekmede açılır.</p></div>
+    <label class="search">${ic('search',16)}<input id="linkSearch" placeholder="Ara: “akdeniz panel”, “londra”…" value="${esc(S.linkQ || '')}"></label></div>
+  <div id="linkList">${linkCards()}</div>
+  ${PRIV_LINKS.length ? '' : '<p class="footnote">Panel linkleri şifreli — giriş yaptıktan sonra görünür.</p>'}`;
+function linkCards() {
+  const q = (S.linkQ || '').toLocaleLowerCase('tr').split(/\s+/).filter(Boolean);
+  const ls = allLinks().filter(l => q.every(w => `${l.brand} ${l.type} ${l.label} ${l.url}`.toLocaleLowerCase('tr').includes(w)));
+  const brands = [...new Set([...PROJECTS.map(p => p.name), ...ls.map(l => l.brand)])].filter(b => ls.some(l => l.brand === b));
+  if (!brands.length) return '<div class="empty">Eşleşen link yok.</div>';
+  return `<div class="grid g3">${brands.map(b => { const p = PROJECTS.find(x => x.name === b);
+    return `<div class="card"><div class="card-head"><h3>${p ? gdot(p.group) + ' ' : ''}${esc(b)}</h3><span class="pill">${ls.filter(l => l.brand === b).length}</span></div>
+      <div class="lnks">${ls.filter(l => l.brand === b).map(linkBtn).join('')}</div></div>`; }).join('')}</div>`;
+}
+
 PAGES.projeler = () => `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Projeler<span class="dot">.</span></h1><p class="lede">Grup › proje › alt proje. Her kartta ilerleme, sağlık ve sıradaki adım.</p></div><button class="btn btn-primary" data-act="draft">+ Proje ekle</button></div>
   ${Object.keys(GROUPS).filter(g => PROJECTS.some(p => p.group === g)).map(g => `
@@ -880,6 +907,7 @@ PAGES.projeler = () => `
         <div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">Alt projeler</div>
         ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}${PROJECTS.filter(c => c.parent === p.name).map(c => `<div class="qitem">↳ <b>${esc(c.name)}</b> <span class="pill">bağlı marka</span></div>`).join('')}</div>
         ${notesFor(p.name)}
+        ${allLinks().some(l => l.brand === p.name) ? `<div class="lnks mt">${allLinks().filter(l => l.brand === p.name).map(linkBtn).join('')}</div>` : ''}
         <div class="row mt"><small class="muted">${ic('user',13)} ${p.owner}</small><span class="spacer"></span><a class="link" href="#gorevler" data-act="proj-filter" data-g="${p.group}">${ts.length} görev →</a></div></div>`;
     }).join('')}</div>`).join('')}`;
 
@@ -1138,6 +1166,7 @@ document.addEventListener('click', e => {
 
 document.addEventListener('input', e => {
   if (e.target.id === 'taskSearch') { S.tf.q = e.target.value; renderTaskList(); }
+  if (e.target.id === 'linkSearch') { S.linkQ = e.target.value; $('#linkList').innerHTML = linkCards(); }
   if (e.target.dataset.range) $('#' + e.target.dataset.range + 'V').textContent = e.target.value;
 });
 document.addEventListener('change', e => {
