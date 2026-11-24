@@ -80,7 +80,7 @@ const PROJECTS = [
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale – Tuncay Bey (28 Kas, saat teyit)','Beyond Borders – Esra','Ankutsan – Nehir & Kamil Bey (Zoom)','Skal iş birliği (Erdoğan Turan, başkan)','Etkinlik takipleri (2–3 Ara)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Radarlar: İlan Nabzı (Pzt & Per 09:35) · Aktivasyon Radarı (Pzt 09:40)','Kurumsal görüşmeler: Tahtakale – Tuncay Bey (28 Kas, saat teyit)','Beyond Borders – Esra','Ankutsan – Nehir & Kamil Bey (Zoom)','Skal iş birliği (Erdoğan Turan, başkan)','Etkinlik takipleri (2–3 Ara)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
@@ -98,6 +98,13 @@ const PROJECTS = [
 /* Hafta içi rutinler (Pzt–Cum) — takvime ve görevlere otomatik işlenir */
 const WEEKDAYS = [1,2,3,4,5];
 const RECURRING = [
+  /* Part-y radarları — haftanın belirli günleri (days: 1=Pzt … 5=Cum) */
+  { days:[1,4], key:'ilan', s:'09:35', e:'09:45', type:'task', short:'İlan Nabzı', project:'Parti', group:'Platform', pri:'Yüksek',
+    title:'Part-y · İlan Nabzı raporunu çalıştır (Pzt & Per)',
+    subs:['Part-y admin panelini Chrome’da aç (oturum düştüyse telefon + SMS ile giriş)','Claude yan panelini aç → “İlan Nabzı’nı çalıştır”','Tarama 5–8 dk sürer — sekmeyi kapatma','PDF rapor + özet gelince önceki raporla karşılaştır'] },
+  { days:[1], key:'akt', s:'09:40', e:'09:55', type:'task', short:'Aktivasyon Radarı', project:'Parti', group:'Platform', pri:'Yüksek',
+    title:'Part-y · İşletme Aktivasyon Radarı’nı çalıştır (Pzt)',
+    subs:['Son 15–30 günde kayıt olup hiç ilan açmamış işletmeleri listele','Sektör, ilçe ve kayıt tarihine göre grupla','“Bu hafta aranacaklar” listesini satış ekibine bölge bazında dağıt','Sonuçları ilan sayısındaki değişimle birlikte takip et'] },
   { s:'09:30', e:'09:55', type:'task', short:'Soğuyan Fırsatlar', project:'Akdeniz Dental', group:'Markalar', pri:'Yüksek',
     title:'Akdeniz Dental · Soğuyan Fırsatlar mailleri (14 temsilci + yönetici özeti)',
     subs:['Plan Ports CRM’den temsilci bazlı hasta takip listesini çek','14 temsilciye “Soğuyan Fırsatlar” maillerini gönder','Yöneticilere özet maili gönder'] },
@@ -257,6 +264,10 @@ for (let y = 2026; y <= 2027; y++) for (let m = (y === 2026 ? 10 : 0); m < 12; m
 const NEXT_ME = MONTH_ENDS.find(iso => dayOff(iso) >= 0);
 MONTH_ENDS.forEach(date => EVENTS.push({ ...MONTH_END, date, hideInList: date !== NEXT_ME }));
 const nextWeekdayOff = () => { for (let i = 0; i < 7; i++) if (isWeekday(addDays(NOW(), i))) return i; return 0; };
+const recOn = (r, d) => r.days ? r.days.includes(d.getDay()) : isWeekday(d);
+const nextRecOff = r => { for (let i = 0; i < 8; i++) if (recOn(r, addDays(NOW(), i))) return i; return 0; };
+const DAYS_TR = { 1:'Pzt', 2:'Sal', 3:'Çar', 4:'Per', 5:'Cum', 6:'Cmt', 0:'Paz' };
+const recDays = r => r.days ? r.days.map(d => DAYS_TR[d]).join(' & ') : 'Hafta içi';
 
 let uid = 100;
 const T = (title, o) => ({ id: ++uid, title, pri:'Orta', group:'Proje', cat:'Operasyon', project:'Werrise Digital', owner:ME, due:0, today:false, done:false, follow:false, est:0, slot:'', subs:[], ...o });
@@ -443,12 +454,12 @@ const TASKS = [
     due:dayOff('2026-11-25') - 1, today:dayOff('2026-11-25') - 1 === 0, est:.2, follow:true, subs:[
     { t:'WhatsApp’tan görüşme davetinin geldiğini kontrol et', done:false },
     { t:'Gelmediyse kısa hatırlatma mesajı at', done:false } ]}),
-  ...RECURRING.filter(r => r.type === 'task').map(r => T(r.title, { pri:r.pri, group:r.group, cat:'Rutin', project:r.project,
-    due:nextWeekdayOff(), today:isWeekday(NOW()), est:(toMin(r.e) - toMin(r.s)) / 60, recur:`Hafta içi · ${r.s}`, subs:r.subs.map(t => ({ t, done:false })) }))
+  ...RECURRING.filter(r => r.type === 'task').map(r => T(r.title, { key:r.key ? r.key + 't' : undefined, pri:r.pri, group:r.group, cat:'Rutin', project:r.project,
+    due:nextRecOff(r), today:recOn(r, NOW()), est:(toMin(r.e) - toMin(r.s)) / 60, recur:`${recDays(r)} · ${r.s}`, subs:r.subs.map(t => ({ t, done:false })) }))
 ];
 
 const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
- .concat(isWeekday(NOW()) ? RECURRING.map(r => ({ ...r, rec:true })) : [])
+ .concat(RECURRING.filter(r => recOn(r, NOW())).map(r => ({ ...r, rec:true })))
  .concat(EVENTS.filter(ev => dayOff(ev.date) === 0))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
@@ -646,7 +657,7 @@ function agendaVertical() {
   const n = nowMin();
   return `<div class="agenda-v">${AGENDA.map(a => {
     const past = toMin(a.e) < n, cur = toMin(a.s) <= n && n < toMin(a.e);
-    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} her hafta içi</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'income' && payAmt(a) ? ` <span class="pill green">gelir · ${payStr(a)}</span>` : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
+    return `<div class="slot t-${a.type} ${past ? 'past' : ''} ${cur ? 'cur' : ''}"><div class="tm">${a.allDay ? 'Tüm<small>gün</small>' : `${a.s}<small>${a.e}</small>`}</div><div>${past && a.type === 'task' ? '✅ ' : ''}${a.type === 'meeting' ? ic('team',14)+' ' : ''}${esc(a.title)}${a.rec ? ` <span class="pill green">${ic('repeat',11)} ${a.days ? recDays(a).toLowerCase() : 'her hafta içi'}</span>` : a.monthly ? ` <span class="pill amber">${ic('repeat',11)} her ayın ${a.day}’i</span>` : a.monthEnd ? ` <span class="pill amber">${ic('repeat',11)} her ayın son günü</span>` : ''}${a.tentative ? ' <span class="pill amber">taslak tarih</span>' : ''}${a.kind === 'income' && payAmt(a) ? ` <span class="pill green">gelir · ${payStr(a)}</span>` : ''}${a.kind === 'expense' ? ` <span class="pill red">ödeme${payAmt(a) ? ' · ' + payStr(a) : ''}</span>` : ''}</div></div>`;
   }).join('')}</div>`;
 }
 function agendaHorizontal() {
@@ -734,7 +745,7 @@ function notesFor(name) {
 }
 function dayInfo(o) {
   const dt = addDays(NOW(), o), iso = isoDate(dt), evs = EVENTS.filter(ev => ev.date === iso);
-  const meet = (isWeekday(dt) ? RECURRING.filter(r => r.type === 'meeting').length : 0) + evs.filter(ev => ev.type === 'meeting').length;
+  const meet = RECURRING.filter(r => r.type === 'meeting' && recOn(r, dt)).length + evs.filter(ev => ev.type === 'meeting').length;
   const tasks = (o === 0 ? todayTasks() : TASKS.filter(t => t.due === o)).filter(t => !t.done).length;
   const pays = evs.filter(ev => ev.kind === 'expense').length, load = meet * 2 + tasks;
   return { meet, tasks, pays, cls: load >= 8 ? 'full' : load >= 4 ? '' : 'ok', label: load >= 8 ? 'Dolu' : load >= 4 ? 'Orta' : 'Rahat' };
@@ -811,7 +822,7 @@ PAGES.planlama = () => {
   <div class="col" data-drop="day" data-off="99" style="min-height:120px;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px">${backlog.sort(byPri).map(kcardTask).join('')}</div>
   <div class="card-head mt2"><div><div class="eyebrow">Her hafta içi otomatik</div><h2 style="margin-top:4px">Rutinler</h2></div><span class="pill green">${ic('repeat',12)} Pzt–Cum</span></div>
   <div class="card"><div class="table-wrap"><table><thead><tr><th>Saat</th><th>Rutin</th><th>Marka / proje</th><th>Tür</th><th>Günler</th></tr></thead><tbody>
-    ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>Pzt–Cum</td></tr>`).join('')}
+    ${RECURRING.map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong>${r.subs ? `<small>${r.subs.map(esc).join(' · ')}</small>` : ''}</td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill ${r.type==='meeting'?'blue':'green'}">${r.type==='meeting'?'Toplantı':'Görev'}</span></td><td>${r.days ? recDays(r) : 'Pzt–Cum'}</td></tr>`).join('')}
     ${[...MONTHLY, MONTH_END].map(r => `<tr><td class="mono">${r.s}–${r.e}</td><td><strong>${esc(r.title)}</strong><small>${esc(r.note || '')}</small></td><td><span class="pill">${gdot(r.group)} ${esc(r.project)}</span></td><td><span class="pill amber">${r.kind === 'expense' ? 'Ödeme' : r.monthEnd ? 'Kontrol' : 'Gelir'}</span></td><td>${r.monthEnd ? 'Her ayın son günü' : `Her ayın ${r.day}’i`}</td></tr>`).join('')}
   </tbody></table></div></div>`;
 };
@@ -954,7 +965,7 @@ PAGES.ekip = () => {
     <div class="row"><span class="pill blue">Toplantı</span><span class="pill green">İş</span><span class="pill">İzin</span></div></div>
   <div class="table-wrap"><div class="cal" style="min-width:900px">
     <div class="ch">Kişi</div>${days.map((dd, i) => `<div class="ch ${i===ti?'today':''}">${DS[dd.getDay()]} ${dd.getDate()}</div>`).join('')}
-    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((dd, i) => `<div>${[...(p === ME && i < 5 ? RECURRING.map(r => [i, `${r.s} ${r.short}`, r.type === 'meeting' ? 'm' : 't']) : []), ...(p === ME ? EVENTS.filter(ev => ev.date === `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`).map(ev => [i, `★ ${ev.allDay ? '' : ev.s + ' '}${ev.short}`, 'm']) : []), ...(TEAM_EVENTS[p]||[])].filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
+    ${PEOPLE.map(p => `<div><b style="color:var(--ink)">${p}</b><br><small class="muted">${TASKS.filter(t=>t.owner===p&&!t.done).length} açık iş</small></div>${days.map((dd, i) => `<div>${[...(p === ME && i < 5 ? RECURRING.filter(r => !r.days || r.days.includes(i + 1)).map(r => [i, `${r.s} ${r.short}`, r.type === 'meeting' ? 'm' : 't']) : []), ...(p === ME ? EVENTS.filter(ev => ev.date === `${dd.getFullYear()}-${String(dd.getMonth()+1).padStart(2,'0')}-${String(dd.getDate()).padStart(2,'0')}`).map(ev => [i, `★ ${ev.allDay ? '' : ev.s + ' '}${ev.short}`, 'm']) : []), ...(TEAM_EVENTS[p]||[])].filter(e => e[0] === i).map(e => `<span class="ev ${e[2]==='o'?'off':e[2]==='t'?'task':''}">${e[1]}</span>`).join('')}</div>`).join('')}`).join('')}
   </div></div>`;
 };
 
