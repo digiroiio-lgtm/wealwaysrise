@@ -80,7 +80,7 @@ const PROJECTS = [
   { name:'Dental Ops', group:'Markalar', parent:'Akdeniz Dental', owner:'Oğuz', next:'Sonraki toplantı: tarih bekleniyor · 22 Kas notları takipte', subs:['A’dan Z’ye hasta yolculuğu','Teklif şablonu & sistem geliştirmeleri (22 Kas toplantısı)','Kurucu ekip (Akdeniz Dental ortağı)','Proje yönetimi: Oğuz'] },
   { name:'Londra Depo', group:'Markalar', owner:'Oğuz', next:'Günlük outreach + müşteri keşfi', subs:['londradepo.com (Rayleigh, Essex)','Outreach paneli','Müşteri keşif sihirbazı'] },
   { name:'Dotneed', group:'Platform', parent:'Parti', owner:'Oğuz', next:'Sal 24 Kas 13:30 · Semih’e yanıt', subs:['Part-y’nin ana teknoloji markası','Paketleme çalışması (Semih, aday)','İşe alım / başvurular'] },
-  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale (28 Kas)','Skal iş birliği (Erdoğan Turan, başkan)','Etkinlik takipleri (2–3 Ara)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
+  { name:'Parti', group:'Platform', owner:'Oğuz', next:'Her hafta içi 10:00 huddle', subs:['İş bulma uygulaması (Part-y App)','Kurumsal görüşmeler: Tahtakale – Tuncay Bey (28 Kas, saat teyit)','Beyond Borders – Esra','Ankutsan – Nehir & Kamil Bey (Zoom)','Skal iş birliği (Erdoğan Turan, başkan)','Etkinlik takipleri (2–3 Ara)','Rol: iş geliştirme & pazarlama yöneticisi','Günlük huddle','Maaş günü: her ayın 5’i'] },
   { name:'Kök Hücre Yönlendirme', group:'Proje', owner:'Oğuz', next:'Çar 25 Kas 17:00 Kim ile görüşme', subs:['Hasta adayları (TR/ABD/AU)','Tıbbi ekip değerlendirmesi','İş birliği modeli'] },
   { name:'İnnova Akademi · Akbank', group:'Proje', owner:'Oğuz', next:'Sal 8 Ara 15:30 · İzmir eğitimi', subs:['Akbank dijital dönüşüm eğitimleri','Satış eğitimi · eğitmen rolü','İzmir 7–8 Aralık'] },
   { name:'İTO · Filtre Kümelenmesi', group:'Proje', owner:'Oğuz', next:'ABD seyahati 22–26 Haz 2027 (taslak) · 1 Haz’da teyit', subs:['İskenderun Ticaret Odası','Ticaret Bakanlığı kapsamı','ABD seyahati (filter cluster)'] },
@@ -155,8 +155,10 @@ EVENTS.push(
     title:'📞 Luenire SPA · Sabrina görüşmesi — Perşembe 09:00 UK / 12:00 TR (kesin)', note:'Gün Perşembe olarak kesinleşti.' },
   { date:'2026-11-27', lead:1, s:'11:15', e:'11:30', type:'task', short:'Skal · takip mesajı', project:'Parti', group:'Platform',
     title:'💬 Skal başkanı Erdoğan Turan’a Part-y × Skal iş birliği takip mesajı', note:'Part-y için Skal iş birliğinin takibi.' },
-  { date:'2026-11-28', lead:2, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App', project:'Parti', group:'Platform',
-    title:'🤝 Tahtakale × Part-y App — kurumsal görüşme', note:'Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
+  { date:'2026-11-28', lead:2, tentative:true, s:'11:00', e:'12:00', type:'meeting', short:'Tahtakale · Part-y App (saat teyit)', project:'Parti', group:'Platform',
+    title:'🤝 Tahtakale × Part-y App — kurumsal görüşme (Tuncay Bey · saat netleşecek)', note:'Randevuyu Tuncay Bey ile netleştir. Ayrıca gündem: UK Market Inspection fırsatı (UK vizit sırasında).' },
+  { date:'2026-11-24', lead:0, s:'14:00', e:'14:30', type:'task', short:'Part-y · iletişimleri başlat', project:'Parti', group:'Platform',
+    title:'📣 Part-y — görüşme ve iletişimleri başlat (Beyond Borders · Ankutsan · Tahtakale)', note:'Esra ile görüşme, Nehir & Kamil Bey ile Zoom, Tuncay Bey ile 28 Kas randevu teyidi.' },
   { date:'2026-12-01', lead:2, s:'11:00', e:'11:15', type:'plan', short:'Werrise Ltd UK kuruluşu', project:'Werrise Digital', group:'Platform',
     title:'📝 Werrise Ltd — İngiltere’de şirket kurma işi', note:'Not: UK şirket kuruluşu adımlarını başlat.' },
   { date:'2026-12-02', lead:2, s:'11:30', e:'12:00', type:'meeting', short:'Ezgi · UK Longevity', project:'UK Longevity', group:'Proje',
@@ -322,6 +324,19 @@ const TASKS = [
     { t:'Son konuşulanları hatırla: Part-y × Skal iş birliği kapsamı', done:false },
     { t:'Kısa takip mesajı: somut öneri + sonraki adım (görüşme tarihi)', done:false },
     { t:'Yanıt gelince CRM’de aşamayı güncelle', done:false } ]}),
+  T('Part-y · Beyond Borders: Esra ile görüş', { pri:'Yüksek', group:'Platform', cat:'Satış / Lead', project:'Parti', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, follow:true, subs:[
+    { t:'Esra’ya ulaş, kısa görüşme için gün/saat iste', done:false },
+    { t:'Part-y’yi kısaca tanıt: Beyond Borders için iş birliği fikri', done:false },
+    { t:'Görüşme saati netleşince takvime ekle (Claude’a yaz)', done:false } ]}),
+  T('Part-y · Ankutsan: Nehir ve Kamil Bey ile Zoom ayarla', { pri:'Yüksek', group:'Platform', cat:'Satış / Lead', project:'Parti', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.25, follow:true, subs:[
+    { t:'Nehir’e yaz: Kamil Bey’in de katılacağı Zoom için uygun saatler', done:false },
+    { t:'Zoom linkini oluştur ve davet gönder', done:false },
+    { t:'Kısa gündem: Part-y kurumsal kullanım / iş birliği', done:false },
+    { t:'Tarih netleşince takvime ekle (Claude’a yaz)', done:false } ]}),
+  T('Part-y · Tahtakale: Tuncay Bey ile Cmt 28 Kas randevusunu netleştir', { pri:'Kesin', group:'Platform', cat:'Takip', project:'Parti', due:dayOff('2026-11-24'), today:dayOff('2026-11-24') === 0, est:.15, follow:true, subs:[
+    { t:'Tuncay Bey’i ara / yaz: Cumartesi 28 Kas için saat ve yer', done:false },
+    { t:'Katılımcıları netleştir', done:false },
+    { t:'Kesin saati Claude’a yaz (takvim güncellensin)', done:false } ]}),
   T('Tahtakale × Part-y App kurumsal görüşmesi (Cmt 11:00)', { pri:'Kesin', group:'Platform', cat:'Toplantı', project:'Parti', due:dayOff('2026-11-28'), today:dayOff('2026-11-28') === 0, est:1, slot:'Cmt 28 Kas · 11:00', subs:[
     { t:'Part-y App kurumsal sunumunu hazırla (değer önerisi, kurumsal kullanım senaryoları)', done:false },
     { t:'Tahtakale’nin ihtiyacını ve karar vericileri netleştir', done:false },
@@ -438,11 +453,21 @@ const AGENDA = [].map(([s, e, type, title]) => ({ s, e, type, title }))
  .sort((a, b) => toMin(a.s) - toMin(b.s));
 
 /* Şifreli özel notlar (private.js) — girişten sonra çözülür ve buraya yüklenir */
+/* Kısayollar — herkese açık siteler burada; panel/giriş linkleri şifreli (private.js → links) */
+const PUBLIC_LINKS = [
+  { brand:'Akdeniz Dental', type:'Site', label:'akdenizdental.pl', url:'https://akdenizdental.pl/' },
+  { brand:'Londra Depo', type:'Site', label:'londradepo.com', url:'https://www.londradepo.com/' }
+];
+const LINK_TYPES = ['Panel','Reklam','Site','Analytics','Search Console','CRM','Diğer'];
+const LINK_ICON = { 'Panel':'dash', 'Reklam':'bolt', 'Site':'site', 'Analytics':'gauge', 'Search Console':'search', 'CRM':'crm', 'Diğer':'link' };
+let PRIV_LINKS = [];
+const allLinks = () => [...PRIV_LINKS, ...PUBLIC_LINKS].sort((a, b) => LINK_TYPES.indexOf(a.type) - LINK_TYPES.indexOf(b.type));
+const linkBtn = l => `<a class="lnk" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" title="${esc(l.url)}">${ic(LINK_ICON[l.type] || 'link', 15)}<span><b>${esc(l.type)}</b><small>${esc(l.label || '')}</small></span><span class="go">↗</span></a>`;
 let TARGET = 0, NOTES = [], INCOME = [], PRIV_REV = {}, REC_EXP = [], PAYMENTS = [];
 /* Ayın belirli günündeki tekrar tarihleri (from..to gün aralığı) */
 const occurrences = (day, from, to) => { const out = [], n = NOW(); for (let k = -2; k <= 2; k++) { const iso = isoDate(new Date(n.getFullYear(), n.getMonth() + k, day)), o = dayOff(iso); if (o >= from && o <= to) out.push({ iso, off:o }); } return out; };
 window.WR_setPrivate = data => {
-  TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
+  PRIV_LINKS = data.links || []; TARGET = data.target || 0; NOTES = data.notes || []; INCOME = data.income || []; PRIV_REV = data.rev || {};
   for (let i = BUDGET.length - 1; i >= 0; i--) if (BUDGET[i].priv) BUDGET.splice(i, 1);
   (data.budget || []).forEach(b => BUDGET.push({ ...b, d:dayOff(b.date), priv:true }));
   REC_EXP = data.recurringExp || []; PAYMENTS = data.payments || [];
@@ -474,7 +499,9 @@ const DEALS = [
   { id:16, name:'UK dental hasta referans ortaklığı', co:'David & Neil (UK reviews / FB grupları)', value:0, stage:'Görüşme', src:'WhatsApp', note:'Neil ile görüşme bekleniyor · 5 Ara takip mesajı' },
   { id:18, name:'Expat Wealth Advisory — Tayland expat yatırım/pension', co:'Kyle', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Çar 25 Kas 10:35 · Isle of Man yatırım vs private pension' },
   { id:14, name:'Part-y × Skal iş birliği', co:'Skal · Erdoğan Turan (başkan)', value:0, stage:'Görüşme', src:'İlişki ağı', note:'Cum 27 Kas 11:15 takip mesajı' },
-  { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas 11:00 görüşme' },
+  { id:10, name:'Part-y App kurumsal iş birliği', co:'Tahtakale · Tuncay Bey', value:0, stage:'Görüşme', src:'Kurumsal görüşme', note:'Cmt 28 Kas — saat Tuncay Bey ile netleşecek' },
+  { id:19, name:'Part-y iş birliği', co:'Beyond Borders · Esra', value:0, stage:'Yeni lead', src:'İlişki ağı', note:'24 Kas: görüşme talebi' },
+  { id:20, name:'Part-y kurumsal / iş birliği (Zoom)', co:'Ankutsan · Nehir & Kamil Bey', value:0, stage:'Yeni lead', src:'İlişki ağı', note:'24 Kas: Zoom ayarlanacak' },
   { id:11, name:'UK Market Inspection (UK vizit sırasında)', co:'Tahtakale', value:0, stage:'Yeni lead', src:'Kurumsal görüşme', note:'Fırsatı kovala — UK vizit tarihine göre planla' },
   { id:8, name:'Kök hücre hasta yönlendirme (TR/ABD/AU)', co:'Kim · Harex', value:0, stage:'Görüşme', src:'WhatsApp' },
   { id:9, name:'Dijital büyüme paketi (aylık, freelance)', co:'Akdeniz Dental', value:0, cur:'€', per:'/ay', stage:'Teklif', src:'Mevcut müşteri' }
@@ -524,6 +551,8 @@ const ROUTES = [
   { id:'planlama', label:'Planlama', icon:'plan', title:'Planlama', sub:'Haftanı yerleştir' },
   { id:'odak', label:'Odak', icon:'focus', title:'Odak', sub:'Tek iş, tek zaman' },
   { id:'gorevler', label:'Görevler', icon:'tasks', title:'Görevler', sub:'Ana liste · kategori › proje › todo', count:() => overdueTasks().length, hot:true },
+  { g:'Hızlı erişim' },
+  { id:'kisayollar', label:'Kısayollar', icon:'link', title:'Kısayollar', sub:'Paneller, reklam, site, analytics — marka bazında', count:() => allLinks().length },
   { g:'İş yönetimi' },
   { id:'projeler', label:'Projeler', icon:'proj', title:'Projeler', sub:'Proje › alt proje ağacı' },
   { id:'oncelik', label:'Öncelik', icon:'flag', title:'Öncelik', sub:'Önemli mi, acil mi?' },
@@ -853,6 +882,21 @@ function renderTaskList() {
   $('#taskCount').textContent = `${l.filter(t=>t.done).length}/${l.length}`;
 }
 
+PAGES.kisayollar = () => `
+  <div class="page-head"><div><div class="eyebrow">Hızlı erişim</div><h1>Kısayollar<span class="dot">.</span></h1><p class="lede">Sık kullandığın paneller ve linkler, marka bazında. Linkler yeni sekmede açılır.</p></div>
+    <label class="search">${ic('search',16)}<input id="linkSearch" placeholder="Ara: “akdeniz panel”, “londra”…" value="${esc(S.linkQ || '')}"></label></div>
+  <div id="linkList">${linkCards()}</div>
+  ${PRIV_LINKS.length ? '' : '<p class="footnote">Panel linkleri şifreli — giriş yaptıktan sonra görünür.</p>'}`;
+function linkCards() {
+  const q = (S.linkQ || '').toLocaleLowerCase('tr').split(/\s+/).filter(Boolean);
+  const ls = allLinks().filter(l => q.every(w => `${l.brand} ${l.type} ${l.label} ${l.url}`.toLocaleLowerCase('tr').includes(w)));
+  const brands = [...new Set([...PROJECTS.map(p => p.name), ...ls.map(l => l.brand)])].filter(b => ls.some(l => l.brand === b));
+  if (!brands.length) return '<div class="empty">Eşleşen link yok.</div>';
+  return `<div class="grid g3">${brands.map(b => { const p = PROJECTS.find(x => x.name === b);
+    return `<div class="card"><div class="card-head"><h3>${p ? gdot(p.group) + ' ' : ''}${esc(b)}</h3><span class="pill">${ls.filter(l => l.brand === b).length}</span></div>
+      <div class="lnks">${ls.filter(l => l.brand === b).map(linkBtn).join('')}</div></div>`; }).join('')}</div>`;
+}
+
 PAGES.projeler = () => `
   <div class="page-head"><div><div class="eyebrow">İş yönetimi</div><h1>Projeler<span class="dot">.</span></h1><p class="lede">Grup › proje › alt proje. Her kartta ilerleme, sağlık ve sıradaki adım.</p></div><button class="btn btn-primary" data-act="draft">+ Proje ekle</button></div>
   ${Object.keys(GROUPS).filter(g => PROJECTS.some(p => p.group === g)).map(g => `
@@ -863,6 +907,7 @@ PAGES.projeler = () => `
         <div class="mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="eyebrow" style="margin-bottom:6px">Alt projeler</div>
         ${p.subs.map(s => `<div class="qitem">↳ ${esc(s)}</div>`).join('')}${PROJECTS.filter(c => c.parent === p.name).map(c => `<div class="qitem">↳ <b>${esc(c.name)}</b> <span class="pill">bağlı marka</span></div>`).join('')}</div>
         ${notesFor(p.name)}
+        ${allLinks().some(l => l.brand === p.name) ? `<div class="lnks mt">${allLinks().filter(l => l.brand === p.name).map(linkBtn).join('')}</div>` : ''}
         <div class="row mt"><small class="muted">${ic('user',13)} ${p.owner}</small><span class="spacer"></span><a class="link" href="#gorevler" data-act="proj-filter" data-g="${p.group}">${ts.length} görev →</a></div></div>`;
     }).join('')}</div>`).join('')}`;
 
@@ -1121,6 +1166,7 @@ document.addEventListener('click', e => {
 
 document.addEventListener('input', e => {
   if (e.target.id === 'taskSearch') { S.tf.q = e.target.value; renderTaskList(); }
+  if (e.target.id === 'linkSearch') { S.linkQ = e.target.value; $('#linkList').innerHTML = linkCards(); }
   if (e.target.dataset.range) $('#' + e.target.dataset.range + 'V').textContent = e.target.value;
 });
 document.addEventListener('change', e => {
